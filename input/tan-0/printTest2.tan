@@ -1,0 +1,7 @@
+main {
+    print;
+    print 1;
+    print \n;
+    print 2 \s 3;
+    print \n 4 \\ 5 \n;
+}

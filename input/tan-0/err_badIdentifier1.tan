@@ -1,0 +1,6 @@
+main {
+    const main := 5;
+    const dimes := 3;
+    
+    print dimes \n;
+}

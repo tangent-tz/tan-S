@@ -1,0 +1,24 @@
+main {
+	const quarters :=  5;
+	const dimes    :=  3;
+	const nickels  :=  7;
+	const pennies  := 17;
+    
+	const value := quarters * 25 +
+    			 dimes    * 10 +
+    			 nickels  *  5 +
+    			 pennies;
+	print value \n;
+    
+	const ncoins := quarters + dimes + nickels + pennies;
+	print ncoins \n;
+    
+	const moredimes := dimes > nickels;
+	print moredimes \n;
+
+	const boot := true;
+	const boof := false;
+    
+	print boot \s boof \n;
+	print boot \\ boof \n;
+}
