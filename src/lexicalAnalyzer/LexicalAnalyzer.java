@@ -73,7 +73,14 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	}
 	private void appendSubsequentDigits(StringBuffer buffer) {
 		LocatedChar c = input.next();
-		while(c.isDigit()) {
+		boolean isFloatTriggered = false;
+		while(c.isDigit() || c.getCharacter() == '.') {
+			if(isFloatTriggered && c.getCharacter() == '.') {
+				lexicalError(c);
+			}
+			if (c.getCharacter() == '.') {
+				isFloatTriggered = true;
+			}
 			buffer.append(c.getCharacter());
 			c = input.next();
 		}
