@@ -90,14 +90,9 @@
         Printf                                 
         PushD        $print-format-space       
         Printf                                 
-        PushI        4                         
-        PushD        $print-format-integer     
-        Printf                                 
-        PushI        5                         
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $print-format-space       
-        Printf                                 
         PushD        $print-format-newline     
+        Printf                                 
+        PushI        54                        
+        PushD        $print-format-integer     
         Printf                                 
         Halt                                   
