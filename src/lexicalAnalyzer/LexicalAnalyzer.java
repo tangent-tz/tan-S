@@ -67,11 +67,11 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private Token scanNumber(LocatedChar firstChar) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(firstChar.getCharacter());
-		appendSubsequentDigits(buffer);
+		boolean isFloat = appendSubsequentDigits(buffer);
 		
-		return NumberToken.make(firstChar, buffer.toString());
+		return NumberToken.make(firstChar, buffer.toString(), isFloat);
 	}
-	private void appendSubsequentDigits(StringBuffer buffer) {
+	private boolean appendSubsequentDigits(StringBuffer buffer) {
 		LocatedChar c = input.next();
 		boolean isFloatTriggered = false;
 		while(c.isDigit() || c.getCharacter() == '.') {
@@ -85,6 +85,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 			c = input.next();
 		}
 		input.pushback(c);
+		return isFloatTriggered;
 	}
 	
 	
