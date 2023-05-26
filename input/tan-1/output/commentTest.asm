@@ -88,11 +88,9 @@
         Printf                                 
         PushD        $print-format-space       
         Printf                                 
-        PushD        $print-format-space       
-        Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        PushI        54                        
+        PushI        578684                    
         PushD        $print-format-integer     
         Printf                                 
         Halt                                   
