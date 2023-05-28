@@ -28,8 +28,7 @@ public class FloatConstantNode extends ParseNode {
 ///////////////////////////////////////////////////////////
 // accept a visitor
 
-    public void accept(ParseNodeVisitor visitor) {
-        visitor.visit(this);
+    public void accept(ParseNodeVisitor visitor) {visitor.visit(this);
     }
 
 }
