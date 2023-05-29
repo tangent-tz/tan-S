@@ -40,6 +40,10 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 			return scanIdentifier(ch);
 		}
 		else if(isPunctuatorStart(ch)) {
+			if (Punctuator.forLexeme("" + ch.getCharacter()) == Punctuator.HASH_SYMBOL) {
+				scanComment();
+				return findNextToken();
+			}
 			return PunctuatorScanner.scan(ch, input);
 		}
 		else if(isEndOfInput(ch)) {
@@ -153,8 +157,18 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private boolean isEndOfInput(LocatedChar lc) {
 		return lc == LocatedCharStream.FLAG_END_OF_INPUT;
 	}
-	
-	
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	// Comment lexical analysis
+	private void scanComment() {
+		LocatedChar c = input.next();
+		while (!(c.getCharacter() == '#' || c.getCharacter() == '\n')) {
+			c = input.next();
+		}
+	}
+
+
 	//////////////////////////////////////////////////////////////////////////////
 	// Error-reporting	
 
@@ -163,5 +177,4 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		log.severe("Lexical error: invalid character " + ch);
 	}
 
-	
 }
