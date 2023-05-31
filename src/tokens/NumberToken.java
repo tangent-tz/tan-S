@@ -18,7 +18,7 @@ public class NumberToken extends TokenImp {
 	public static NumberToken make(Locator locator, String lexeme, boolean isFloat) {
 		NumberToken result = new NumberToken(locator, lexeme);
 		if(isFloat)
-			result.setValue(Double.parseDouble(lexeme));
+			result.setValue(Float.parseFloat(lexeme));
 		else
 			result.setValue(Integer.parseInt(lexeme));
 		return result;
