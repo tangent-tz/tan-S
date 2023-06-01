@@ -1,1 +1,4 @@
-/bin/
+/bin/*
+/bin/applications/
+/.idea/*
+/tan-S.iml

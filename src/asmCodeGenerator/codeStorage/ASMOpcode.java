@@ -153,10 +153,10 @@ public enum ASMOpcode {
 
 	public static final int ASMIntSize = 4;
 	public static final int ASMFloatSize = 8;
-	
-	
+
+
 	public boolean takesFloat() {
-		return this == PushF || this == DataF;
+		return this == PushF || this == DataF || this == FAdd || this == FSubtract || this == FNegate || this == FMultiply || this == FDivide;
 	}
 	public boolean takesInteger() {
 		return this == PushI || this == DataC || this == DataI || this == DataZ;
