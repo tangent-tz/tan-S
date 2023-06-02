@@ -85,7 +85,7 @@ public class FunctionSignature {
 	// Signatures for tan-0 operators
 	// this section will probably disappear in tan-1 (in favor of FunctionSignatures)
 	
-	private static FunctionSignature addSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
+	private static FunctionSignature addIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature addFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 	private static FunctionSignature subtractSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature multiplySignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
@@ -102,7 +102,7 @@ public class FunctionSignature {
 			return addFloatSignature;
 		}
 		else {
-			return addSignature;
+			return addIntegerSignature;
 		}
 		case SUBTRACT:  return subtractSignature;
 		case MULTIPLY:	return multiplySignature;
