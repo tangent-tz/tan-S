@@ -2,6 +2,7 @@ package parseTree.nodeTypes;
 
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
+import lexicalAnalyzer.Punctuator;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import tokens.LextantToken;
@@ -11,7 +12,8 @@ public class AssignmentStatementNode extends ParseNode {
 
     public AssignmentStatementNode(Token token) {
         super(token);
-        //TODO:dont need a token infront? assert(token.isLextant(Keyword.CONST));
+        //TODO:check if identifier exist before??
+        assert(token.isLextant(Punctuator.ASSIGN));
     }
 
     public AssignmentStatementNode(ParseNode node) {
@@ -22,21 +24,21 @@ public class AssignmentStatementNode extends ParseNode {
     ////////////////////////////////////////////////////////////
     // attributes
 
-    public Lextant getDeclarationType() {
-        return lextantToken().getLextant();
-    }
-    public LextantToken lextantToken() {
-        return (LextantToken)token;
-    }
+//    public Lextant getAssignmentType() {
+//        return lextantToken().getLextant();
+//    }
+//    public LextantToken lextantToken() {
+//        return (LextantToken)token;
+//    }
 
 
     ////////////////////////////////////////////////////////////
     // convenience factory
 
-    public static DeclarationNode withChildren(Token token, ParseNode declaredName, ParseNode initializer) {
-        DeclarationNode node = new DeclarationNode(token);
-        node.appendChild(declaredName);
-        node.appendChild(initializer);
+    public static AssignmentStatementNode withChildren(Token token, ParseNode identifier, ParseNode newInitializer) {
+        AssignmentStatementNode node = new AssignmentStatementNode(token);
+        node.appendChild(identifier);
+        node.appendChild(newInitializer);
         return node;
     }
 

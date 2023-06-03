@@ -4,18 +4,7 @@ import java.util.Arrays;
 
 import logging.TanLogger;
 import parseTree.*;
-import parseTree.nodeTypes.BooleanConstantNode;
-import parseTree.nodeTypes.MainBlockNode;
-import parseTree.nodeTypes.DeclarationNode;
-import parseTree.nodeTypes.ErrorNode;
-import parseTree.nodeTypes.IdentifierNode;
-import parseTree.nodeTypes.IntegerConstantNode;
-import parseTree.nodeTypes.FloatConstantNode;
-import parseTree.nodeTypes.NewlineNode;
-import parseTree.nodeTypes.OperatorNode;
-import parseTree.nodeTypes.PrintStatementNode;
-import parseTree.nodeTypes.ProgramNode;
-import parseTree.nodeTypes.SpaceNode;
+import parseTree.nodeTypes.*;
 import symbolTable.SymbolTable;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
@@ -214,18 +203,17 @@ public class Parser {
 		if(!startsAssignmentStatement(nowReading)) {
 			return syntaxErrorNode("assignmentStatement");
 		}
-		Token assignmentStatementToken = nowReading;
-		readToken();
-
 		ParseNode identifier = parseIdentifier();
 		expect(Punctuator.ASSIGN);
-		ParseNode initializer = parseExpression();
+		ParseNode newInitializer = parseExpression();
 		expect(Punctuator.TERMINATOR);
 
-		return DeclarationNode.withChildren(declarationToken, identifier, initializer);
+		Token assignmenNodeToken = Punctuator.ASSIGN.prototype();
+		return AssignmentStatementNode.withChildren(assignmenNodeToken, identifier, newInitializer);
 	}
 	private boolean startsAssignmentStatement(Token token) {
-		return parseExistingIdentifier(token);
+		return startsIdentifier(token);
+		//todo: do we need to check if this identifier is an existing identifier at this step??
 	}
 
 
