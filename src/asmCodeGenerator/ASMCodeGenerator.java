@@ -275,7 +275,7 @@ public class ASMCodeGenerator {
 				code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
 			}
 			else {
-				ASMOpcode opcode = opcodeFoUnaryOperator(node.getOperator());
+				ASMOpcode opcode = opcodeFoUnaryIntegerOperator(node.getOperator());
 				code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
 			}
 		}
@@ -291,17 +291,17 @@ public class ASMCodeGenerator {
 				code.add(opcode);// type-dependent! (opcode is different for floats and for ints)
 			}
 			else {
-				ASMOpcode opcode = opcodeForOperator(node.getOperator(), node);
+				ASMOpcode opcode = opcodeForIntegerOperator(node.getOperator());
 				code.add(opcode);// type-dependent! (opcode is different for floats and for ints)
 			}
 
 		}
-		private ASMOpcode opcodeForOperator(Lextant lextant, ParseNode... nodes) {
+		private ASMOpcode opcodeForIntegerOperator(Lextant lextant) {
 			assert(lextant instanceof Punctuator);
 			Punctuator punctuator = (Punctuator)lextant;
 			switch(punctuator) {
 			case SUBTRACT:		return Subtract;			// (unary subtract only) type-dependent!
-			case ADD: 	   		return nodes[0].child(0).getType() == PrimitiveType.FLOAT && nodes[0].child(1).getType() == PrimitiveType.FLOAT ? FAdd : Add;				// type-dependent!// (unary subtract only) type-dependent!
+			case ADD: 	   		return Add;				// type-dependent!// (unary subtract only) type-dependent!
 			case MULTIPLY: 		return Multiply;		// type-dependent!
 			default:
 				assert false : "unimplemented operator in opcodeForOperator";
@@ -309,7 +309,7 @@ public class ASMCodeGenerator {
 			return null;
 		}
 
-		private ASMOpcode opcodeFoUnaryOperator(Lextant lextant) {
+		private ASMOpcode opcodeFoUnaryIntegerOperator(Lextant lextant) {
 			assert(lextant instanceof Punctuator);
 			Punctuator punctuator = (Punctuator)lextant;
 			switch(punctuator) {
