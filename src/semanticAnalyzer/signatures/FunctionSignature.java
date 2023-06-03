@@ -95,17 +95,12 @@ public class FunctionSignature {
 
 	
 	// the switch here is ugly compared to polymorphism.  This should perhaps be a method on Lextant.
-	public static FunctionSignature signatureOf(Lextant lextant, List<Type> types) {
+	public static FunctionSignature signatureOfInteger(Lextant lextant, List<Type> types) {
 		assert(lextant instanceof Punctuator);	
 		Punctuator punctuator = (Punctuator)lextant;
 		
 		switch(punctuator) {
-		case ADD:		if(types.get(0) == PrimitiveType.FLOAT && types.get(1) == PrimitiveType.FLOAT) {
-			return addFloatSignature;
-		}
-		else {
-			return addIntegerSignature;
-		}
+		case ADD:		return addIntegerSignature;
 		case SUBTRACT:  return subtractSignature;
 		case MULTIPLY:	return multiplySignature;
 		case GREATER:	return greaterSignature;
@@ -114,7 +109,17 @@ public class FunctionSignature {
 			return neverMatchedSignature;
 		}
 	}
-	public static FunctionSignature unarySignatureOf(Lextant lextant) {
+	public static FunctionSignature signatureOfFloat(Lextant lextant, List<Type> types) {
+		assert(lextant instanceof Punctuator);
+		Punctuator punctuator = (Punctuator)lextant;
+
+		switch(punctuator) {
+			case ADD:		return addFloatSignature;
+			default:
+				return neverMatchedSignature;
+		}
+	}
+	public static FunctionSignature unarySignatureOfInteger(Lextant lextant) {
 		assert(lextant instanceof Punctuator);
 		Punctuator punctuator = (Punctuator)lextant;
 
