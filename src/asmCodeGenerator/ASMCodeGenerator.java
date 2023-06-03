@@ -218,7 +218,10 @@ public class ASMCodeGenerator {
 			Lextant operator = node.getOperator();
 			
 			if(operator == Punctuator.SUBTRACT) {
-				visitNormalBinaryOperatorNode(node);
+				if(node.nChildren() == 1)
+					visitUnaryOperatorNode(node);
+				else
+					visitNormalBinaryOperatorNode(node);
 			}
 			else if(operator == Punctuator.GREATER) {
 				visitComparisonOperatorNode(node, operator);
@@ -272,7 +275,7 @@ public class ASMCodeGenerator {
 				code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
 			}
 			else {
-				ASMOpcode opcode = opcodeForOperator(node.getOperator(), node);
+				ASMOpcode opcode = opcodeFoUnaryOperator(node.getOperator());
 				code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
 			}
 		}
@@ -302,6 +305,17 @@ public class ASMCodeGenerator {
 			case MULTIPLY: 		return Multiply;		// type-dependent!
 			default:
 				assert false : "unimplemented operator in opcodeForOperator";
+			}
+			return null;
+		}
+
+		private ASMOpcode opcodeFoUnaryOperator(Lextant lextant) {
+			assert(lextant instanceof Punctuator);
+			Punctuator punctuator = (Punctuator)lextant;
+			switch(punctuator) {
+				case SUBTRACT:		return Negate;			// (unary subtract only) type-dependent!
+				default:
+					assert false : "unimplemented operator in opcodeForOperator";
 			}
 			return null;
 		}
