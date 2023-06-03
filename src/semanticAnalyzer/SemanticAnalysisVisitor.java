@@ -93,7 +93,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 		
 		Lextant operator = operatorFor(node);
-		FunctionSignature signature = FunctionSignature.signatureOf(operator);
+		FunctionSignature signature = childTypes.size() == 2 ? FunctionSignature.signatureOf(operator): FunctionSignature.unarySignatureOf(operator);
 		
 		if(signature.accepts(childTypes)) {
 			node.setType(signature.resultType());

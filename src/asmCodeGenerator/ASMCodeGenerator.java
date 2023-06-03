@@ -218,7 +218,7 @@ public class ASMCodeGenerator {
 			Lextant operator = node.getOperator();
 			
 			if(operator == Punctuator.SUBTRACT) {
-				visitUnaryOperatorNode(node);
+				visitNormalBinaryOperatorNode(node);
 			}
 			else if(operator == Punctuator.GREATER) {
 				visitComparisonOperatorNode(node, operator);
@@ -267,9 +267,14 @@ public class ASMCodeGenerator {
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			
 			code.append(arg1);
-			
-			ASMOpcode opcode = opcodeForOperator(node.getOperator());
-			code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
+			if(node.getType() == PrimitiveType.FLOAT) {
+				ASMOpcode opcode = opcodeForFloatOperator(node.getOperator());
+				code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
+			}
+			else {
+				ASMOpcode opcode = opcodeForOperator(node.getOperator());
+				code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
+			}
 		}
 		private void visitNormalBinaryOperatorNode(OperatorNode node) {
 			newValueCode(node);
@@ -278,19 +283,38 @@ public class ASMCodeGenerator {
 			
 			code.append(arg1);
 			code.append(arg2);
-			
-			ASMOpcode opcode = opcodeForOperator(node.getOperator());
-			code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
+			if(node.getType() == PrimitiveType.FLOAT) {
+				ASMOpcode opcode = opcodeForFloatOperator(node.getOperator());
+				code.add(opcode);// type-dependent! (opcode is different for floats and for ints)
+			}
+			else {
+				ASMOpcode opcode = opcodeForOperator(node.getOperator());
+				code.add(opcode);// type-dependent! (opcode is different for floats and for ints)
+			}
+
 		}
 		private ASMOpcode opcodeForOperator(Lextant lextant) {
 			assert(lextant instanceof Punctuator);
 			Punctuator punctuator = (Punctuator)lextant;
 			switch(punctuator) {
 			case ADD: 	   		return Add;				// type-dependent!
-			case SUBTRACT:		return Negate;			// (unary subtract only) type-dependent!
+			case SUBTRACT:		return Subtract;			// (unary subtract only) type-dependent!
 			case MULTIPLY: 		return Multiply;		// type-dependent!
 			default:
 				assert false : "unimplemented operator in opcodeForOperator";
+			}
+			return null;
+		}
+
+		private ASMOpcode opcodeForFloatOperator(Lextant lextant) {
+			assert(lextant instanceof Punctuator);
+			Punctuator punctuator = (Punctuator)lextant;
+			switch(punctuator) {
+				case ADD: 	   		return FAdd;				// type-dependent!
+				case SUBTRACT:		return FSubtract;			// (unary subtract only) type-dependent!
+				case MULTIPLY: 		return FMultiply;		// type-dependent!
+				default:
+					assert false : "unimplemented operator in opcodeForOperator";
 			}
 			return null;
 		}
