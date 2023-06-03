@@ -93,9 +93,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			logError("types do not match in AssignmentStatement");
 			return;
 		}
-
 		if(identifier.getBinding().isConstant()) {
-			logError("re-assignment to a const identifier, previously declared at location: " + identifier.getBinding().getLocation().toString());
+			logError("re-assignment to a const identifier, previously declared at location: " + identifier.getBinding().getLocation());
 			return;
 		}
 		node.setType(identifierType);

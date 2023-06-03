@@ -1,0 +1,10 @@
+main {
+    const x := 9;
+    var y := 100;
+    x := 1647365 + y;
+    print x\ny\n\n;
+    x := 5;
+    y := x;
+    a := 10;
+    print x\ny\n;
+}
