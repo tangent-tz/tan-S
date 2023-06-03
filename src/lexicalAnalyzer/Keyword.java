@@ -7,6 +7,7 @@ import tokens.Token;
 
 public enum Keyword implements Lextant {
 	CONST("const"),
+	VAR("var"),
 	PRINT("print"),
 	TRUE("true"),
 	FALSE("false"),
