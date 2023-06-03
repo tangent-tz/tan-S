@@ -25,7 +25,7 @@ main {
     print \n;
 
     # Negation of a large negative integer
-  #  const largeneg := -888888;
+ #   const largeneg := -888888;
  #   const neglargeneg := -(-888888);
  #   print neglargeneg;   Output: 888888
  #   print \n;
