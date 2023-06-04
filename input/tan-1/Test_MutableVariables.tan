@@ -1,94 +1,195 @@
 main {
-    # 1. declare a 'var' variable with simple integer, float:
-    var i := 123;
-    var f := 45.678;
-    print 1\n i \n f \n\n;
+     # Test 1: Declare a 'var' variable with a simple integer:
+     var i := 123;
+     print i;
+     print \n;
 
-    # Expected output:
-    # 123
-    # 45.678
+     # Expected output:
+     # 123
 
-    #================================================================================
+     # Test 2: Declare a 'var' variable with a float:
+     var f := 45.678;
+     print f;
+     print \n;
 
-    # 2. re-assignment of 'var' variable to new values:
-    i := 56;
-    f := 3546.00055;
-    print 2\n i \n f \n\n;
+     # Expected output:
+     # 45.678
 
-    # Expected output:
-    # 56
-    # 3546.00055
+     # Test 3: Re-assignment of 'var' variable to a new integer value:
+     i := 56;
+     print i;
+     print \n;
 
-    #================================================================================
+     # Expected output:
+     # 56
 
-    # 3. re-assignment of 'var' variable to some other 'const' variable of the same type:
-    const varone := 99;
-    i := varone;
+     # Test 4: Re-assignment of 'var' variable to a new float value:
+     f := 3546.00055;
+     print f;
+     print \n;
 
-    const vartwo := 01.245;
-    f := vartwo;
-    print 3\n i \n f \n\n;
+     # Expected output:
+     # 3546.00055
 
-    # Expected output:
-    # 99
-    # 1.245
+     # Test 5: Re-assignment of 'var' variable to a 'const' integer value:
+     const varone := 99;
+     i := varone;
+     print i;
+     print \n;
 
-    #================================================================================
+     # Expected output:
+     # 99
 
-    # 4. re-assignment of 'var' variable to some other 'var' variable of the same type:
-    var varthree := 1;
-    i := varthree;
+     # Test 6: Re-assignment of 'var' variable to a 'const' float value:
+     const vartwo := 1.245;
+     f := vartwo;
+     print f;
+     print \n;
 
-    var varfour := 1.234;
-    f := varfour;
-    print 4\n i \n f \n\n;
+     # Expected output:
+     # 1.245
 
-    # Expected output:
-    # 1
-    # 1.234
+     # Test 7: Re-assignment of 'var' variable to another 'var' integer variable:
+     var varthree := 1;
+     i := varthree;
+     print i;
+     print \n;
 
-    #================================================================================
+     # Expected output:
+     # 1
 
-    # 5. re-assignment of 'var' variable to some expression (with literals):
-    i := 1 + 2 + 3;
-    f := 1.1 + 2.22 + 3.333;
-    print 5\n i \n f \n\n;
+     # Test 8: Re-assignment of 'var' variable to another 'var' float variable:
+     var varfour := 1.234;
+     f := varfour;
+     print f;
+     print \n;
 
-    # Expected output:
-    # 6
-    # 6.653
+     # Expected output:
+     # 1.234
 
-    #================================================================================
+     # Test 9: Re-assignment of 'var' variable to an expression with literals (integer):
+     i := 1 + 2 + 3;
+     print i;
+     print \n;
 
-    # 6. re-assignment of 'var' variable to some expression (with variables):
-    var varfive := 230;
-    var varsix := 1000000;
-    const varseven := 97;
-    i := varfive + varsix + varseven;
+     # Expected output:
+     # 6
 
-    var vareight := 14354.004;
-    var varnine := 3.60;
-    const varten := 44.555;
-    f := vareight + varnine + varten;
+     # Test 10: Re-assignment of 'var' variable to an expression with literals (float):
+     f := 1.1 + 2.22 + 3.333;
+     print f;
+     print \n;
 
-    print 6\n i \n f \n\n;
+     # Expected output:
+     # 6.653
 
-    # Expected output:
-    # 1000327
-    # 14402.159
+     # Test 11: Re-assignment of 'var' variable to an expression with variables (integer):
+     var varfive := 230;
+     var varsix := 1000000;
+     const varseven := 97;
+     i := varfive + varsix + varseven;
+     print i;
+     print \n;
 
-    #================================================================================
+     # Expected output:
+     # 1000327
 
-    # 7. re-assignment of 'var' variable to some expression that references itself:
-    var vareleven := 87;
-    i := i + 100 + vareleven;
+     # Test 12: Re-assignment of 'var' variable to an expression with variables (float):
+     var vareight := 14354.004;
+     var varnine := 3.60;
+     const varten := 44.555;
+     f := vareight + varnine + varten;
+     print f;
+     print \n;
 
-    var vartwelve := 9000000.12;
-    f := f + 22.570 + vartwelve;
+     # Expected output:
+     # 14402.159
 
-    print 7\n i \n f \n\n;
+     # Test 13: Re-assignment of 'var' variable to an expression that references itself (integer):
+     var vareleven := 87;
+     i := i + 100 + vareleven;
+     print i;
+     print \n;
 
-    # Expected output:
-    # 1000514
-    # 9014424.849
+     # Expected output:
+     # 1000514
+
+     # Test 14: Re-assignment of 'var' variable to an expression that references itself (float):
+     var vartwelve := 9000000.12;
+     f := f + 22.570 + vartwelve;
+     print f;
+     print \n;
+
+     # Expected output:
+     # 9014424.849
+
+     # Test 15: Declaring and using a const variable (integer):
+     const constvalue := 10;
+     print constvalue;
+     print \n;
+
+     # Expected output:
+     # 10
+
+     # Test 16: Declaring and using a var variable (integer):
+     var varvalue := 5;
+     print varvalue;
+     print \n;
+
+     # Expected output:
+     # 5
+
+     # Test 17: Changing the value of a var variable (integer):
+     varvalue := 8;
+     print varvalue;
+     print \n;
+
+     # Expected output:
+     # 8
+
+     # Test 18: Using a const variable in an expression (integer):
+     const consta := 2;
+     const constb := 3;
+     var result := consta + constb;
+     print result;
+     print \n;
+
+     # Expected output:
+     # 5
+
+     # Test 19: Re-declaring a var variable in an inner scope (integer):
+#     var outervalue := 10;
+#     {
+#         var outervalue := 20;
+#         print outervalue;
+#         print \n;
+#     }
+#     print outervalue;
+#     print \n;
+
+     # Expected output:
+     # 20
+     # 10
+
+     # Test 20: Declaring const and var variables with different types (string and integer):
+#     const conststring := "Hello";
+#     var varinteger := 10;
+#     print conststring;
+#     print \n;
+#     print varinteger;
+#     print \n;
+
+     # Expected output:
+     # Hello
+     # 10
+
+     # Test 21: Using const and var variables in a complex expression (integer):
+     const constx := 2;
+     var vary := 3;
+     var varz := constx + vary * 2;
+     print varz;
+     print \n;
+
+     # Expected output:
+     # 8
 }
