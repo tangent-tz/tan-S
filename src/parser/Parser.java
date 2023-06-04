@@ -4,18 +4,8 @@ import java.util.Arrays;
 
 import logging.TanLogger;
 import parseTree.*;
-import parseTree.nodeTypes.BooleanConstantNode;
-import parseTree.nodeTypes.MainBlockNode;
-import parseTree.nodeTypes.DeclarationNode;
-import parseTree.nodeTypes.ErrorNode;
-import parseTree.nodeTypes.IdentifierNode;
-import parseTree.nodeTypes.IntegerConstantNode;
-import parseTree.nodeTypes.FloatConstantNode;
-import parseTree.nodeTypes.NewlineNode;
-import parseTree.nodeTypes.OperatorNode;
-import parseTree.nodeTypes.PrintStatementNode;
-import parseTree.nodeTypes.ProgramNode;
-import parseTree.nodeTypes.SpaceNode;
+import parseTree.nodeTypes.*;
+import symbolTable.SymbolTable;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
@@ -93,13 +83,16 @@ public class Parser {
 	///////////////////////////////////////////////////////////
 	// statements
 	
-	// statement-> declaration | printStmt
+	// statement-> declaration | assignmentStatement | printStmt
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {
 			return syntaxErrorNode("statement");
 		}
 		if(startsDeclaration(nowReading)) {
 			return parseDeclaration();
+		}
+		if(startsAssignmentStatement(nowReading)) {
+			return parseAssignmentStatement();
 		}
 		if(startsPrintStatement(nowReading)) {
 			return parsePrintStatement();
@@ -108,7 +101,8 @@ public class Parser {
 	}
 	private boolean startsStatement(Token token) {
 		return startsPrintStatement(token) ||
-			   startsDeclaration(token);
+			   	startsDeclaration(token) ||
+				startsAssignmentStatement(token);
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
@@ -200,8 +194,28 @@ public class Parser {
 		return DeclarationNode.withChildren(declarationToken, identifier, initializer);
 	}
 	private boolean startsDeclaration(Token token) {
-		return token.isLextant(Keyword.CONST);
+		return token.isLextant(Keyword.CONST) || token.isLextant(Keyword.VAR);
 	}
+
+
+	// assignmentStatement -> target := expression TERMINATOR
+	private ParseNode parseAssignmentStatement() { //todo: how to detect if this is a reassignment statement
+		if(!startsAssignmentStatement(nowReading)) {
+			return syntaxErrorNode("assignmentStatement");
+		}
+		ParseNode identifier = parseIdentifier();
+		expect(Punctuator.ASSIGN);
+		ParseNode newInitializer = parseExpression();
+		expect(Punctuator.TERMINATOR);
+
+		Token assignmenNodeToken = Punctuator.ASSIGN.prototype();
+		return AssignmentStatementNode.withChildren(assignmenNodeToken, identifier, newInitializer);
+	}
+	private boolean startsAssignmentStatement(Token token) {
+		return startsIdentifier(token);
+		//todo: do we need to check if this identifier is an existing identifier at this step??
+	}
+
 
 
 	

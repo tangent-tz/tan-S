@@ -15,7 +15,9 @@ public interface ParseNodeVisitor {
 	void visitEnter(DeclarationNode node);
 	void visitLeave(DeclarationNode node);
 
-	
+	void visitEnter(AssignmentStatementNode node);
+	void visitLeave(AssignmentStatementNode node);
+
 	void visitEnter(ParseNode node);
 	void visitLeave(ParseNode node);
 	
@@ -31,7 +33,6 @@ public interface ParseNodeVisitor {
 	void visit(ErrorNode node);
 	void visit(IdentifierNode node);
 	void visit(IntegerConstantNode node);
-
 	void visit(FloatConstantNode node);
 	void visit(NewlineNode node);
 	void visit(SpaceNode node);
@@ -61,7 +62,13 @@ public interface ParseNodeVisitor {
 		}
 		public void visitLeave(DeclarationNode node) {
 			defaultVisitLeave(node);
-		}					
+		}
+		public void visitEnter(AssignmentStatementNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(AssignmentStatementNode node) {
+			defaultVisitLeave(node);
+		}
 		public void visitEnter(MainBlockNode node) {
 			defaultVisitEnter(node);
 		}

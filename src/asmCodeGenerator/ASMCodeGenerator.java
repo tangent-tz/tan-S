@@ -167,7 +167,7 @@ public class ASMCodeGenerator {
 		}
 
 		///////////////////////////////////////////////////////////////////////////
-		// statements and declarations
+		// statements & declarations & assignments
 
 		public void visitLeave(PrintStatementNode node) {
 			newVoidCode(node);
@@ -196,6 +196,19 @@ public class ASMCodeGenerator {
 			Type type = node.getType();
 			code.add(opcodeForStore(type));
 		}
+
+		public void visitLeave(AssignmentStatementNode node) {
+			newVoidCode(node);
+			ASMCodeFragment lvalue = removeAddressCode(node.child(0));
+			ASMCodeFragment rvalue = removeValueCode(node.child(1));
+
+			code.append(lvalue);
+			code.append(rvalue);
+
+			Type type = node.getType();
+			code.add(opcodeForStore(type));
+		}
+
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
 				return StoreI;

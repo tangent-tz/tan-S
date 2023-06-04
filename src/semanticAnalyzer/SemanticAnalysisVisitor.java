@@ -3,6 +3,7 @@ package semanticAnalyzer;
 import java.util.Arrays;
 import java.util.List;
 
+import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
 import logging.TanLogger;
 import parseTree.ParseNode;
@@ -54,7 +55,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
-	// statements and declarations
+	// statements and declarations and assignments
 	@Override
 	public void visitLeave(PrintStatementNode node) {
 	}
@@ -70,9 +71,34 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 		Type declarationType = initializer.getType();
 		node.setType(declarationType);
-		
+
 		identifier.setType(declarationType);
-		addBinding(identifier, declarationType);
+		Binding.Constancy constancy = (node.getToken().isLextant(Keyword.CONST))? Binding.Constancy.IS_CONSTANT : Binding.Constancy.IS_VARIABLE;
+		addBinding(identifier, declarationType, constancy);
+	}
+
+	public void visitLeave(AssignmentStatementNode node) {
+		if(node.child(0) instanceof ErrorNode) {
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
+
+		IdentifierNode identifier = (IdentifierNode) node.child(0);
+		ParseNode expression = node.child(1);
+
+		Type identifierType = identifier.getType();
+		Type expressionType = expression.getType();
+
+		if(!(expressionType.equals(identifierType))) {
+			logError("types do not match in AssignmentStatement");
+			return;
+		}
+		if(identifier.getBinding().isConstant()) {
+			logError("re-assignment to a const identifier, previously declared at location: " + identifier.getBinding().getLocation());
+			return;
+		}
+		node.setType(identifierType);
+		//TODO: see if missing anything for this function
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -151,6 +177,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	// IdentifierNodes, with helper methods
 	@Override
 	public void visit(IdentifierNode node) {
+		//TODO: need to do something in this function???
 		if(!isBeingDeclared(node)) {		
 			Binding binding = node.findVariableBinding();
 			
@@ -163,9 +190,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		ParseNode parent = node.getParent();
 		return (parent instanceof DeclarationNode) && (node == parent.child(0));
 	}
-	private void addBinding(IdentifierNode identifierNode, Type type) {
+	private void addBinding(IdentifierNode identifierNode, Type type, Binding.Constancy constancy) {
 		Scope scope = identifierNode.getLocalScope();
-		Binding binding = scope.createBinding(identifierNode, type);
+		Binding binding = scope.createBinding(identifierNode, type, constancy);
 		identifierNode.setBinding(binding);
 	}
 	
