@@ -1,0 +1,25 @@
+Test 1: Declare a char variable with a simple printable ASCII character
+a
+
+Test 2: Declare a char variable with octal numeric code
+T
+
+Test 3: Re-assignment of char variable (printable ASCII -> printable ASCII)
+Z
+^
+
+Test 4: Re-assignment of char variable (octal code -> octal code)
+[
+~
+
+Test 5: Declare a const char variable
+=
+H
+
+Test 6: Re-assignment of char variable (printable ASCII -> octal code)
+w
+'
+
+Test 7: Re-assignment of char variable (octal code -> printable ASCII)
+2
+<
