@@ -2,7 +2,7 @@ main {
     # 1. declare a 'var' variable with simple integer, float:
     var i := 123;
     var f := 45.678;
-    print i \n f \n\n;
+    print 1\n i \n f \n\n;
 
     # Expected output:
     # 123
@@ -13,7 +13,7 @@ main {
     # 2. re-assignment of 'var' variable to new values:
     i := 56;
     f := 3546.00055;
-    print i \n f \n\n;
+    print 2\n i \n f \n\n;
 
     # Expected output:
     # 56
@@ -27,7 +27,7 @@ main {
 
     const vartwo := 01.245;
     f := vartwo;
-    print i \n f \n\n;
+    print 3\n i \n f \n\n;
 
     # Expected output:
     # 99
@@ -41,7 +41,7 @@ main {
 
     var varfour := 1.234;
     f := varfour;
-    print i \n f \n\n;
+    print 4\n i \n f \n\n;
 
     # Expected output:
     # 1
@@ -51,8 +51,8 @@ main {
 
     # 5. re-assignment of 'var' variable to some expression (with literals):
     i := 1 + 2 + 3;
-#    f := 1.1 + 2.22 + 3.333;
-    print i \n f \n\n;
+    f := 1.1 + 2.22 + 3.333;
+    print 5\n i \n f \n\n;
 
     # Expected output:
     # 6
@@ -69,9 +69,9 @@ main {
     var vareight := 14354.004;
     var varnine := 3.60;
     const varten := 44.555;
-#    f := vareight + varnine + varten;
+    f := vareight + varnine + varten;
 
-    print i \n f \n\n;
+    print 6\n i \n f \n\n;
 
     # Expected output:
     # 1000327
@@ -83,10 +83,10 @@ main {
     var vareleven := 87;
     i := i + 100 + vareleven;
 
-#    var vartwelve := 9000000.12;
-#    f := f + 22.570 + vartwelve;
+    var vartwelve := 9000000.12;
+    f := f + 22.570 + vartwelve;
 
-    print i \n f \n\n;
+    print 7\n i \n f \n\n;
 
     # Expected output:
     # 1000514
