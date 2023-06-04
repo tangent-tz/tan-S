@@ -1,10 +1,94 @@
 main {
-    const x := 9;
-    var y := 100;
-    x := 1647365 + y;
-    print x\ny\n\n;
-    x := 5;
-    y := x;
-    a := 10;
-    print x\ny\n;
+    # 1. declare a 'var' variable with simple integer, float:
+    var i := 123;
+    var f := 45.678;
+    print i \n f \n\n;
+
+    # Expected output:
+    # 123
+    # 45.678
+
+    #================================================================================
+
+    # 2. re-assignment of 'var' variable to new values:
+    i := 56;
+    f := 3546.00055;
+    print i \n f \n\n;
+
+    # Expected output:
+    # 56
+    # 3546.00055
+
+    #================================================================================
+
+    # 3. re-assignment of 'var' variable to some other 'const' variable of the same type:
+    const varone := 99;
+    i := varone;
+
+    const vartwo := 01.245;
+    f := vartwo;
+    print i \n f \n\n;
+
+    # Expected output:
+    # 99
+    # 1.245
+
+    #================================================================================
+
+    # 4. re-assignment of 'var' variable to some other 'var' variable of the same type:
+    var varthree := 1;
+    i := varthree;
+
+    var varfour := 1.234;
+    f := varfour;
+    print i \n f \n\n;
+
+    # Expected output:
+    # 1
+    # 1.234
+
+    #================================================================================
+
+    # 5. re-assignment of 'var' variable to some expression (with literals):
+    i := 1 + 2 + 3;
+#    f := 1.1 + 2.22 + 3.333;
+    print i \n f \n\n;
+
+    # Expected output:
+    # 6
+    # 6.653
+
+    #================================================================================
+
+    # 6. re-assignment of 'var' variable to some expression (with variables):
+    var varfive := 230;
+    var varsix := 1000000;
+    const varseven := 97;
+    i := varfive + varsix + varseven;
+
+    var vareight := 14354.004;
+    var varnine := 3.60;
+    const varten := 44.555;
+#    f := vareight + varnine + varten;
+
+    print i \n f \n\n;
+
+    # Expected output:
+    # 1000327
+    # 14402.159
+
+    #================================================================================
+
+    # 7. re-assignment of 'var' variable to some expression that references itself:
+    var vareleven := 87;
+    i := i + 100 + vareleven;
+
+#    var vartwelve := 9000000.12;
+#    f := f + 22.570 + vartwelve;
+
+    print i \n f \n\n;
+
+    # Expected output:
+    # 1000514
+    # 9014424.849
 }
