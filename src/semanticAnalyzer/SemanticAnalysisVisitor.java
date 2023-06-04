@@ -93,7 +93,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 		
 		Lextant operator = operatorFor(node);
-		FunctionSignature signature =  childTypes.size() == 2 ? node.child(0).getType() == PrimitiveType.INTEGER || node.child(1).getType() == PrimitiveType.INTEGER ? FunctionSignature.signatureOfInteger(operator, childTypes) : FunctionSignature.signatureOfFloat(operator, childTypes) : FunctionSignature.unarySignatureOfInteger(operator);
+		FunctionSignature signature =  childTypes.size() == 2 ? node.child(0).getType() == PrimitiveType.INTEGER || node.child(1).getType() == PrimitiveType.INTEGER ? FunctionSignature.signatureOfInteger(operator) : FunctionSignature.signatureOfFloat(operator) : FunctionSignature.unarySignatureOfInteger(operator);
 
 		if(signature.accepts(childTypes)) {
 			node.setType(signature.resultType());

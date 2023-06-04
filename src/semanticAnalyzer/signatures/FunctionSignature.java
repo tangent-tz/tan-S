@@ -95,7 +95,7 @@ public class FunctionSignature {
 
 	
 	// the switch here is ugly compared to polymorphism.  This should perhaps be a method on Lextant.
-	public static FunctionSignature signatureOfInteger(Lextant lextant, List<Type> types) {
+	public static FunctionSignature signatureOfInteger(Lextant lextant) {
 		assert(lextant instanceof Punctuator);	
 		Punctuator punctuator = (Punctuator)lextant;
 		
@@ -109,7 +109,7 @@ public class FunctionSignature {
 			return neverMatchedSignature;
 		}
 	}
-	public static FunctionSignature signatureOfFloat(Lextant lextant, List<Type> types) {
+	public static FunctionSignature signatureOfFloat(Lextant lextant) {
 		assert(lextant instanceof Punctuator);
 		Punctuator punctuator = (Punctuator)lextant;
 
