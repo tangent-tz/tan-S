@@ -1,0 +1,4 @@
+main {
+    var c := %178;
+    print c\1;
+}

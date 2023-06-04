@@ -74,7 +74,6 @@ public class ASMCodeGenerator {
 			codeMap = new HashMap<ParseNode, ASMCodeFragment>();
 		}
 
-
 		////////////////////////////////////////////////////////////////////
         // Make the field "code" refer to a new fragment of different sorts.
 		private void newAddressCode(ParseNode node) {
@@ -132,7 +131,7 @@ public class ASMCodeGenerator {
 			else if(node.getType() == PrimitiveType.FLOAT) {
 				code.add(LoadF);
 			}
-			else if(node.getType() == PrimitiveType.BOOLEAN) {
+			else if(node.getType() == PrimitiveType.BOOLEAN || node.getType() == PrimitiveType.CHARACTER) {
 				code.add(LoadC);
 			}	
 			else {
@@ -216,8 +215,7 @@ public class ASMCodeGenerator {
 			else if(type == PrimitiveType.FLOAT) {
 				return StoreF;
 			}
-			else
-			if(type == PrimitiveType.BOOLEAN) {
+			else if(type == PrimitiveType.BOOLEAN || type == PrimitiveType.CHARACTER) {
 				return StoreC;
 			}
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
@@ -370,13 +368,15 @@ public class ASMCodeGenerator {
 		}		
 		public void visit(IntegerConstantNode node) {
 			newValueCode(node);
-			
 			code.add(PushI, node.getValue());
 		}
 		public void visit(FloatConstantNode node) {
 			newValueCode(node);
-
 			code.add(PushF, node.getValue());
+		}
+		public void visit(CharacterNode node) {
+			newValueCode(node);
+			code.add(PushI, node.getValue());
 		}
 	}
 
