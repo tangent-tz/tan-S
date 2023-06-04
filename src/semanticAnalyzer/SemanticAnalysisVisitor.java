@@ -102,7 +102,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 				signature = FunctionSignature.signatureOfFloat(operator);
 			}
 		} else {
-			signature = FunctionSignature.unarySignatureOfInteger(operator);
+			if(node.child(0).getType() == PrimitiveType.INTEGER) {
+				signature = FunctionSignature.unarySignatureOfInteger(operator);
+			} else {
+				signature = FunctionSignature.unarySignatureOfFloat(operator);
+			}
 		}
 
 		if(signature.accepts(childTypes)) {
