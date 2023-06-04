@@ -1,5 +1,7 @@
-Float multiplication with positive values                       : 7.7
-Float multiplication with negative values                       : 4.125
-Float multiplication with zero                                  : 0.0
-Float multiplication with mixed positive and negative values    : -9.5
-Float multiplication with large values                          : 1.219875258616e+19
+Multiplying two positive floating-point numbers                                         : 7.85
+Multiplying a positive floating-point number with a negative floating-point number      : -7.85
+Multiplying a negative floating-point number with two negative floating-point number    : 7.85
+Multiplying a floating-point number by zero                                             : 0.0
+Multiplying floating-point numbers with different decimal precision                     : 8.5397
+Test the associativity of the multiplication operation                                  : 24.0
+Test for any possible edge cases or corner cases                                        : 0.0
