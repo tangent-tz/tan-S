@@ -1,0 +1,34 @@
+main {
+    const x := 10;
+    const y := 5;
+
+    # Division by zero
+    const a := 10;
+    const b := 0;
+    print a / b;  # Output: Division by zero error
+    print \n;
+
+    # Division resulting in an integer
+    const c := 15;
+    const d := 4;
+    print c / d;  # Output: 3
+    print \n;
+
+    # Division resulting in a float
+    const e := 7;
+    const f := 2;
+    print e / f;  # Output: 3.5
+    print \n;
+
+    # Division with negative numbers
+    const g := -20;
+    const h := 5;
+    print g / h;  # Output: -4
+    print \n;
+
+    # Division with mixed positive and negative numbers
+    const i := 25;
+    const j := -4;
+    print i / j;  # Output: -6.25
+    print \n;
+}

@@ -85,31 +85,49 @@ public class FunctionSignature {
 	// Signatures for tan-0 operators
 	// this section will probably disappear in tan-1 (in favor of FunctionSignatures)
 	
+	private static FunctionSignature addSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
+	private static FunctionSignature subtractSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
+	private static FunctionSignature negateSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature addIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature addFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
-	private static FunctionSignature subtractSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature multiplySignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature greaterSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
 
 	
 	// the switch here is ugly compared to polymorphism.  This should perhaps be a method on Lextant.
-	public static FunctionSignature signatureOf(Lextant lextant, List<Type> types) {
+	public static FunctionSignature signatureOfInteger(Lextant lextant) {
 		assert(lextant instanceof Punctuator);	
 		Punctuator punctuator = (Punctuator)lextant;
 		
 		switch(punctuator) {
-		case ADD:		if(types.get(0) == PrimitiveType.FLOAT && types.get(1) == PrimitiveType.FLOAT) {
-			return addFloatSignature;
-		}
-		else {
-			return addIntegerSignature;
-		}
+		case ADD:		return addIntegerSignature;
 		case SUBTRACT:  return subtractSignature;
 		case MULTIPLY:	return multiplySignature;
 		case GREATER:	return greaterSignature;
 
 		default:
 			return neverMatchedSignature;
+		}
+	}
+	public static FunctionSignature signatureOfFloat(Lextant lextant) {
+		assert(lextant instanceof Punctuator);
+		Punctuator punctuator = (Punctuator)lextant;
+
+		switch(punctuator) {
+			case ADD:		return addFloatSignature;
+			default:
+				return neverMatchedSignature;
+		}
+	}
+	public static FunctionSignature unarySignatureOfInteger(Lextant lextant) {
+		assert(lextant instanceof Punctuator);
+		Punctuator punctuator = (Punctuator)lextant;
+
+		switch(punctuator) {
+			case SUBTRACT:  return negateSignature;
+
+			default:
+				return neverMatchedSignature;
 		}
 	}
 
