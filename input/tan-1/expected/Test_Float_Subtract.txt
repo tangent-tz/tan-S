@@ -1,0 +1,5 @@
+Basic subtraction                                    : 7.25
+Subtraction with negative numbers                    : -2.75
+Subtraction with mixed positive and negative numbers : 12.25
+Subtraction resulting in zero                        : 0.0
+Subtraction with large numbers                       : 499.99

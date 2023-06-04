@@ -284,7 +284,7 @@ public class ASMCodeGenerator {
 			
 			code.append(arg1);
 			if(node.getType() == PrimitiveType.FLOAT) {
-				ASMOpcode opcode = opcodeForFloatOperator(node.getOperator());
+				ASMOpcode opcode = opcodeFoUnaryFloatOperator(node.getOperator());
 				code.add(opcode);
 			}
 			else {
@@ -340,6 +340,16 @@ public class ASMCodeGenerator {
 				case ADD: 	   		return FAdd;
 				case SUBTRACT:		return FSubtract;
 				case MULTIPLY: 		return FMultiply;
+				default:
+					assert false : "unimplemented operator in opcodeForOperator";
+			}
+			return null;
+		}
+		private ASMOpcode opcodeFoUnaryFloatOperator(Lextant lextant) {
+			assert(lextant instanceof Punctuator);
+			Punctuator punctuator = (Punctuator)lextant;
+			switch(punctuator) {
+				case SUBTRACT:		return FNegate;			// (unary subtract only)
 				default:
 					assert false : "unimplemented operator in opcodeForOperator";
 			}
