@@ -1,0 +1,5 @@
+Float multiplication with positive values                       : 7.7
+Float multiplication with negative values                       : 4.125
+Float multiplication with zero                                  : 0.0
+Float multiplication with mixed positive and negative values    : -9.5
+Float multiplication with large values                          : 1.219875258616e+19

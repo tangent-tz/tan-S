@@ -1,0 +1,51 @@
+main {
+    # test 1: float multiplication with positive values
+    const floatone := 3.14;
+    const floattwo := 2.5;
+    var resultone := floatone * floattwo;
+    print resultone;
+    print \n;
+
+    # expected output:
+    # 7.85
+
+    # test 2: float multiplication with negative values
+    const floatthree := -1.5;
+    const floatfour := -2.75;
+    var resulttwo := floatthree * floatfour;
+    print resulttwo;
+    print \n;
+
+    # expected output:
+    # 4.125
+
+    # test 3: float multiplication with zero
+    const floatfive := 0.0;
+    const floatsix := 4.2;
+    var resultthree := floatfive * floatsix;
+    print resultthree;
+    print \n;
+
+    # expected output:
+    # 0.0
+
+    # test 4: float multiplication with mixed positive and negative values
+    const floatseven := -2.5;
+    const floateight := 3.8;
+    var resultfour := floatseven * floateight;
+    print resultfour;
+    print \n;
+
+    # expected output:
+    # -9.5
+
+    # test 5: float multiplication with large values
+    const floatnine := 1234567.89;
+    const floatten := 9876543.21;
+    var resultfive := floatnine * floatten;
+    print resultfive;
+    print \n;
+
+    # expected output:
+    # 1.219875258616e+13
+}
