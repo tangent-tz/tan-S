@@ -272,11 +272,11 @@ public class ASMCodeGenerator {
 			code.append(arg1);
 			if(node.getType() == PrimitiveType.FLOAT) {
 				ASMOpcode opcode = opcodeForFloatOperator(node.getOperator());
-				code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
+				code.add(opcode);
 			}
 			else {
 				ASMOpcode opcode = opcodeFoUnaryIntegerOperator(node.getOperator());
-				code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
+				code.add(opcode);
 			}
 		}
 		private void visitNormalBinaryOperatorNode(OperatorNode node) {
@@ -288,11 +288,11 @@ public class ASMCodeGenerator {
 			code.append(arg2);
 			if(node.getType() == PrimitiveType.FLOAT) {
 				ASMOpcode opcode = opcodeForFloatOperator(node.getOperator());
-				code.add(opcode);// type-dependent! (opcode is different for floats and for ints)
+				code.add(opcode);
 			}
 			else {
 				ASMOpcode opcode = opcodeForIntegerOperator(node.getOperator());
-				code.add(opcode);// type-dependent! (opcode is different for floats and for ints)
+				code.add(opcode);
 			}
 
 		}
@@ -300,9 +300,9 @@ public class ASMCodeGenerator {
 			assert(lextant instanceof Punctuator);
 			Punctuator punctuator = (Punctuator)lextant;
 			switch(punctuator) {
-			case SUBTRACT:		return Subtract;			// (unary subtract only) type-dependent!
-			case ADD: 	   		return Add;				// type-dependent!// (unary subtract only) type-dependent!
-			case MULTIPLY: 		return Multiply;		// type-dependent!
+			case SUBTRACT:		return Subtract;
+			case ADD: 	   		return Add;
+			case MULTIPLY: 		return Multiply;
 			default:
 				assert false : "unimplemented operator in opcodeForOperator";
 			}
@@ -313,7 +313,7 @@ public class ASMCodeGenerator {
 			assert(lextant instanceof Punctuator);
 			Punctuator punctuator = (Punctuator)lextant;
 			switch(punctuator) {
-				case SUBTRACT:		return Negate;			// (unary subtract only) type-dependent!
+				case SUBTRACT:		return Negate;			// (unary subtract only)
 				default:
 					assert false : "unimplemented operator in opcodeForOperator";
 			}
@@ -324,9 +324,9 @@ public class ASMCodeGenerator {
 			assert(lextant instanceof Punctuator);
 			Punctuator punctuator = (Punctuator)lextant;
 			switch(punctuator) {
-				case ADD: 	   		return FAdd;				// type-dependent!
-				case SUBTRACT:		return FSubtract;			// (unary subtract only) type-dependent!
-				case MULTIPLY: 		return FMultiply;		// type-dependent!
+				case ADD: 	   		return FAdd;
+				case SUBTRACT:		return FSubtract;
+				case MULTIPLY: 		return FMultiply;
 				default:
 					assert false : "unimplemented operator in opcodeForOperator";
 			}
