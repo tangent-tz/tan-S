@@ -132,6 +132,8 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 			return LextantToken.make(ch, "*", Punctuator.MULTIPLY);
 		case '+':
 			return LextantToken.make(ch, "+", Punctuator.ADD);
+		case '-':
+			return LextantToken.make(ch, "-", Punctuator.SUBTRACT);
 		case '>':
 			return LextantToken.make(ch, ">", Punctuator.GREATER);
 		case ':':
