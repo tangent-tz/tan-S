@@ -131,9 +131,12 @@ public class ASMCodeGenerator {
 			else if(node.getType() == PrimitiveType.FLOAT) {
 				code.add(LoadF);
 			}
-			else if(node.getType() == PrimitiveType.BOOLEAN || node.getType() == PrimitiveType.CHARACTER) {
+			else if(node.getType() == PrimitiveType.BOOLEAN) {
 				code.add(LoadC);
-			}	
+			}
+			else if(node.getType() == PrimitiveType.CHARACTER) {
+				code.add(LoadC);
+			}
 			else {
 				assert false : "node " + node;
 			}
@@ -215,7 +218,10 @@ public class ASMCodeGenerator {
 			else if(type == PrimitiveType.FLOAT) {
 				return StoreF;
 			}
-			else if(type == PrimitiveType.BOOLEAN || type == PrimitiveType.CHARACTER) {
+			else if(type == PrimitiveType.BOOLEAN) {
+				return StoreC;
+			}
+			else if(type == PrimitiveType.CHARACTER) {
 				return StoreC;
 			}
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";

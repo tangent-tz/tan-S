@@ -4,7 +4,6 @@ import inputHandler.LocatedChar;
 import inputHandler.Locator;
 import logging.TanLogger;
 
-import javax.management.loading.MLetMBean;
 
 public class CharacterToken extends TokenImp {
     protected Character value;

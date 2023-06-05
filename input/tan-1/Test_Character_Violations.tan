@@ -5,7 +5,7 @@ main {
     # 1. Initialize char variable with an empty char
 #    var c := '';
 
-    # Expected error: idk
+    # Expected error: lexical error
 
     #============================================================================================
 
@@ -36,7 +36,6 @@ main {
     # Expected error: Lexical error: not a valid ASCII character
 
     #============================================================================================
-
 
 
 }
