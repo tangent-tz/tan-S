@@ -1,0 +1,19 @@
+main {
+    const one := "ivy";
+    var two := "hello";
+    print one \n "tanzil" \n;
+    print two \n;
+
+    two := "world";
+    print two \n\n;
+
+    const three := two;
+    var four := three;
+    print three \n;
+    print four \n\n;
+
+    four := "";
+    two := "meow";
+    print three \n four \n three \n two;
+
+}

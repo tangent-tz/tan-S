@@ -48,6 +48,9 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		else if(ch.isCharacterWrapper()) {
 			return scanCharacterSingle(ch);
 		}
+		else if(ch.isStringWrapper()) {
+			return scanString(ch);
+		}
 		else if(isEndOfInput(ch)) {
 			return NullToken.make(ch);
 		}
@@ -222,6 +225,17 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		return CharacterToken.make(firstChar, buffer.toString());
 	}
 
+	//////////////////////////////////////////////////////////////////////////////
+	// String lexical analysis
+	private Token scanString(LocatedChar firstChar) {
+		StringBuffer buffer = new StringBuffer();
+		LocatedChar c = input.next();
+		while(c.isValidStringChar()) {
+			buffer.append(c.getCharacter());
+			c = input.next();
+		}
+		return StringToken.make(firstChar, buffer.toString());
+	}
 
 
 	//////////////////////////////////////////////////////////////////////////////
