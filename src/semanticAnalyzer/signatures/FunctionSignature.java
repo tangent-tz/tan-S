@@ -91,10 +91,23 @@ public class FunctionSignature {
 	private static FunctionSignature addIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature addFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 	private static FunctionSignature multiplyIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
-	private static FunctionSignature greaterSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature greaterIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
 	private static FunctionSignature subtractFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 	private static FunctionSignature negateFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 	private static FunctionSignature multiplyFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
+	private static FunctionSignature lesserIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature equalsIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature notEqualsIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature lesserEqualIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature greaterEqualIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
+	//..
+	private static FunctionSignature greaterFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN);
+	private static FunctionSignature lesserFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN);
+	private static FunctionSignature equalsFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN);
+	private static FunctionSignature notEqualsFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN);
+	private static FunctionSignature lesserEqualFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN);
+	private static FunctionSignature greaterEqualFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN);
+
 
 
 
@@ -104,10 +117,15 @@ public class FunctionSignature {
 		Punctuator punctuator = (Punctuator)lextant;
 		
 		switch(punctuator) {
-		case ADD:		return addIntegerSignature;
-		case SUBTRACT:  return subtractIntegerSignature;
-		case MULTIPLY:	return multiplyIntegerSignature;
-		case GREATER:	return greaterSignature;
+		case ADD:			return addIntegerSignature;
+		case SUBTRACT:  	return subtractIntegerSignature;
+		case MULTIPLY:		return multiplyIntegerSignature;
+		case GREATER:		return greaterIntegerSignature;
+		case LESSER:		return lesserIntegerSignature;
+		case EQUALS:		return equalsIntegerSignature;
+		case NOTEQUALS:		return notEqualsIntegerSignature;
+		case GREATEREQUAL:	return greaterEqualIntegerSignature;
+		case LESSEREQUAL:	return lesserEqualIntegerSignature;
 
 		default:
 			return neverMatchedSignature;
@@ -118,9 +136,15 @@ public class FunctionSignature {
 		Punctuator punctuator = (Punctuator)lextant;
 
 		switch(punctuator) {
-			case ADD:		return addFloatSignature;
-			case SUBTRACT:  return subtractFloatSignature;
-			case MULTIPLY:	return multiplyFloatSignature;
+			case ADD:			return addFloatSignature;
+			case SUBTRACT:  	return subtractFloatSignature;
+			case MULTIPLY:		return multiplyFloatSignature;
+			case GREATER:		return greaterFloatSignature;
+			case LESSER:		return lesserFloatSignature;
+			case EQUALS:		return equalsFloatSignature;
+			case NOTEQUALS:		return notEqualsFloatSignature;
+			case GREATEREQUAL:	return greaterEqualFloatSignature;
+			case LESSEREQUAL:	return lesserEqualFloatSignature;
 			default:
 				return neverMatchedSignature;
 		}
