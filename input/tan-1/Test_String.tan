@@ -1,19 +1,72 @@
 main {
-    const one := "ivy";
-    var two := "hello";
-    print one \n "tanzil" \n;
-    print two \n;
+    # Test 1: Declare a const string variable with a constant string
+    print "Test 1:" \n;
+    const sone := "hello world @ ~ $";
+    print sone;
+    print \n\n;
 
-    two := "world";
-    print two \n\n;
+    #=========================================================================
 
-    const three := two;
-    var four := three;
-    print three \n;
-    print four \n\n;
+    # Test 2: Declare a var string variable with a constant string
+    print "Test 2:" \n;
+    var stwo := "1+2m/Tanzil";
+    print stwo;
+    print \n\n;
 
-    four := "";
-    two := "meow";
-    print three \n four \n three \n two;
+    #=========================================================================
+
+    # Test 3: Declare a const string variable with another string variable
+    print "Test 3:" \n;
+    const sthree := "hi\!@\n{}";
+    const sfour := sthree;
+    print sthree \n sfour;
+    print \n\n;
+
+    #=========================================================================
+
+    # Test 4: Declare a var string variable with another string variable
+    print "Test 4:" \n;
+    var sfive := "five...Guys?";
+    var ssix := sfive;
+    print sfive \n ssix;
+    print \n\n;
+
+    #=========================================================================
+
+    # Test 5: Reassignment of a string variable from a constant string
+    print "Test 5:" \n;
+    var sseven := "a";
+    print sseven \n;
+    sseven := "a12a34";
+    print sseven;
+    print \n\n;
+
+    #=========================================================================
+
+    # Test 6: Reassignment of a string variable from another string variable
+    print "Test 6:" \n;
+    var seight := "feeling sleepy";
+    print seight \n;
+    seight := "just sleep. No actually don't sleep.";
+    print seight;
+    print \n\n;
+
+    #=========================================================================
+
+    # Test 7: Initialize an empty string
+    print "Test 7:" \n;
+    const snine := "";
+    print "s1"\s"hi"\ssnine\s"end.";
+    print \n\n;
+
+    #=========================================================================
+
+    # Test 8: "\n" should NOT be interpreted as a new line
+    print "Test 8:" \n;
+    var sten := "abc\n678";
+    print sten;
+    print \n\n;
+
+    #=========================================================================
 
 }
