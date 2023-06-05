@@ -94,8 +94,10 @@ public class FunctionSignature {
 	private static FunctionSignature greaterSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
 	private static FunctionSignature subtractFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 	private static FunctionSignature negateFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
+	private static FunctionSignature multiplyFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 
-	
+
+
 	// the switch here is ugly compared to polymorphism.  This should perhaps be a method on Lextant.
 	public static FunctionSignature signatureOfInteger(Lextant lextant) {
 		assert(lextant instanceof Punctuator);	
@@ -118,6 +120,7 @@ public class FunctionSignature {
 		switch(punctuator) {
 			case ADD:		return addFloatSignature;
 			case SUBTRACT:  return subtractFloatSignature;
+			case MULTIPLY:	return multiplyFloatSignature;
 			default:
 				return neverMatchedSignature;
 		}
