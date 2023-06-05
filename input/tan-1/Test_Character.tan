@@ -91,4 +91,34 @@ main {
     # Expected output:
     # 2
     # <
+
+    #==================================================================
+
+    # Test 8: Printing character literals directly
+    print 'n' \n;
+    print %043 \n;
+    print '!' \n %052 \n 'o' \n;
+
+    # Expected output:
+    # n
+    # #
+    # !
+    # *
+    # o
+
+    #==================================================================
+
+    # Test 9: Re-assignment of char variable from another char variable
+    var cnine := 'p';
+    print cnine;
+    print \n;
+
+    var cten := %070;
+    cnine := cten;
+    print cnine;
+    print \n;
+
+    # Expected output:
+    # p
+    # 8
 }

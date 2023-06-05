@@ -23,3 +23,14 @@ w
 Test 7: Re-assignment of char variable (octal code -> printable ASCII)
 2
 <
+
+Test 8: Printing character literals directly
+n
+#
+!
+*
+o
+
+Test 9: Re-assignment of char variable from another char variable
+p
+8
