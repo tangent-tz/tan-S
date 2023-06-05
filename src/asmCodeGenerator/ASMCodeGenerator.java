@@ -29,22 +29,22 @@ public class ASMCodeGenerator {
 		super();
 		this.root = root;
 	}
-	
+
 	public ASMCodeFragment makeASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
-		
+
 		code.append( RunTime.getEnvironment() );
 		code.append( globalVariableBlockASM() );
 		code.append( programASM() );
 //		code.append( MemoryManager.codeForAfterApplication() );
-		
+
 		return code;
 	}
 	private ASMCodeFragment globalVariableBlockASM() {
 		assert root.hasScope();
 		Scope scope = root.getScope();
 		int globalBlockSize = scope.getAllocatedSize();
-		
+
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 		code.add(DLabel, RunTime.GLOBAL_MEMORY_BLOCK);
 		code.add(DataZ, globalBlockSize);
@@ -52,11 +52,11 @@ public class ASMCodeGenerator {
 	}
 	private ASMCodeFragment programASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
-		
+
 		code.add(    Label, RunTime.MAIN_PROGRAM_LABEL);
 		code.append( programCode());
 		code.add(    Halt );
-		
+
 		return code;
 	}
 	private ASMCodeFragment programCode() {
@@ -69,7 +69,7 @@ public class ASMCodeGenerator {
 	protected class CodeVisitor extends ParseNodeVisitor.Default {
 		private Map<ParseNode, ASMCodeFragment> codeMap;
 		ASMCodeFragment code;
-		
+
 		public CodeVisitor() {
 			codeMap = new HashMap<ParseNode, ASMCodeFragment>();
 		}
@@ -99,31 +99,31 @@ public class ASMCodeGenerator {
 		}
 	    public  ASMCodeFragment removeRootCode(ParseNode tree) {
 			return getAndRemoveCode(tree);
-		}		
+		}
 		ASMCodeFragment removeValueCode(ParseNode node) {
 			ASMCodeFragment frag = getAndRemoveCode(node);
 			makeFragmentValueCode(frag, node);
 			return frag;
-		}		
+		}
 		private ASMCodeFragment removeAddressCode(ParseNode node) {
 			ASMCodeFragment frag = getAndRemoveCode(node);
 			assert frag.isAddress();
 			return frag;
-		}		
+		}
 		ASMCodeFragment removeVoidCode(ParseNode node) {
 			ASMCodeFragment frag = getAndRemoveCode(node);
 			assert frag.isVoid();
 			return frag;
 		}
-		
+
 	    ////////////////////////////////////////////////////////////////////
         // convert code to value-generating code.
 		private void makeFragmentValueCode(ASMCodeFragment code, ParseNode node) {
 			assert !code.isVoid();
-			
+
 			if(code.isAddress()) {
 				turnAddressIntoValue(code, node);
-			}	
+			}
 		}
 		private void turnAddressIntoValue(ASMCodeFragment code, ParseNode node) {
 			if(node.getType() == PrimitiveType.INTEGER) {
@@ -134,21 +134,21 @@ public class ASMCodeGenerator {
 			}
 			else if(node.getType() == PrimitiveType.BOOLEAN) {
 				code.add(LoadC);
-			}	
+			}
 			else {
 				assert false : "node " + node;
 			}
 			code.markAsValue();
 		}
-		
+
 	    ////////////////////////////////////////////////////////////////////
-        // ensures all types of ParseNode in given AST have at least a visitLeave	
+        // ensures all types of ParseNode in given AST have at least a visitLeave
 		public void visitLeave(ParseNode node) {
 			assert false : "node " + node + " not handled in ASMCodeGenerator";
 		}
-		
-		
-		
+
+
+
 		///////////////////////////////////////////////////////////////////////////
 		// constructs larger than statements
 		public void visitLeave(ProgramNode node) {
@@ -171,7 +171,7 @@ public class ASMCodeGenerator {
 
 		public void visitLeave(PrintStatementNode node) {
 			newVoidCode(node);
-			new PrintStatementGenerator(code, this).generate(node);	
+			new PrintStatementGenerator(code, this).generate(node);
 		}
 		public void visit(NewlineNode node) {
 			newVoidCode(node);
@@ -183,16 +183,16 @@ public class ASMCodeGenerator {
 			code.add(PushD, RunTime.SPACE_PRINT_FORMAT);
 			code.add(Printf);
 		}
-		
+
 
 		public void visitLeave(DeclarationNode node) {
 			newVoidCode(node);
-			ASMCodeFragment lvalue = removeAddressCode(node.child(0));	
+			ASMCodeFragment lvalue = removeAddressCode(node.child(0));
 			ASMCodeFragment rvalue = removeValueCode(node.child(1));
-			
+
 			code.append(lvalue);
 			code.append(rvalue);
-			
+
 			Type type = node.getType();
 			code.add(opcodeForStore(type));
 		}
@@ -229,7 +229,7 @@ public class ASMCodeGenerator {
 		// expressions
 		public void visitLeave(OperatorNode node) {
 			Lextant operator = node.getOperator();
-			
+
 			if(operator == Punctuator.SUBTRACT) {
 				if(node.nChildren() == 1)
 					visitUnaryOperatorNode(node);
@@ -248,16 +248,16 @@ public class ASMCodeGenerator {
 
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			ASMCodeFragment arg2 = removeValueCode(node.child(1));
-			
+
 			Labeller labeller = new Labeller("compare");
-			
+
 			String startLabel = labeller.newLabel("arg1");
 			String arg2Label  = labeller.newLabel("arg2");
 			String subLabel   = labeller.newLabel("sub");
 			String trueLabel  = labeller.newLabel("true");
 			String falseLabel = labeller.newLabel("false");
 			String joinLabel  = labeller.newLabel("join");
-			
+
 			newValueCode(node);
 			code.add(Label, startLabel);
 			code.append(arg1);
@@ -265,7 +265,7 @@ public class ASMCodeGenerator {
 			code.append(arg2);
 			code.add(Label, subLabel);
 			code.add(Subtract);
-			
+
 			code.add(JumpPos, trueLabel);
 			code.add(Jump, falseLabel);
 
@@ -277,11 +277,11 @@ public class ASMCodeGenerator {
 			code.add(Jump, joinLabel);
 			code.add(Label, joinLabel);
 
-		}		
+		}
 		private void visitUnaryOperatorNode(OperatorNode node) {
 			newValueCode(node);
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
-			
+
 			code.append(arg1);
 			if(node.getType() == PrimitiveType.FLOAT) {
 				ASMOpcode opcode = opcodeFoUnaryFloatOperator(node.getOperator());
@@ -296,18 +296,39 @@ public class ASMCodeGenerator {
 			newValueCode(node);
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			ASMCodeFragment arg2 = removeValueCode(node.child(1));
-			
+
 			code.append(arg1);
 			code.append(arg2);
+
 			if(node.getType() == PrimitiveType.FLOAT) {
-				ASMOpcode opcode = opcodeForFloatOperator(node.getOperator());
-				code.add(opcode);
+				if(node.getOperator() == Punctuator.DIVIDE) {
+					Labeller labeller = new Labeller("divide");
+					code.add(Duplicate);  // Duplicate the denominator
+					code.add(JumpFZero, RunTime.FLOAT_DIVIDE_BY_ZERO_RUNTIME_ERROR);
+					code.add(Label, labeller.newLabel("notZero"));
+					ASMOpcode opcode = opcodeForFloatOperator(node.getOperator());
+					code.add(opcode);
+
+				}
+				else {
+					ASMOpcode opcode = opcodeForFloatOperator(node.getOperator());
+					code.add(opcode);
+				}
 			}
 			else {
-				ASMOpcode opcode = opcodeForIntegerOperator(node.getOperator());
-				code.add(opcode);
+				if(node.getOperator() == Punctuator.DIVIDE) {
+					Labeller labeller = new Labeller("divide");
+					code.add(Duplicate);  // Duplicate the denominator
+					code.add(JumpFalse, RunTime.INTEGER_DIVIDE_BY_ZERO_RUNTIME_ERROR);
+					code.add(Label, labeller.newLabel("notZero"));
+					ASMOpcode opcode = opcodeForIntegerOperator(node.getOperator());
+					code.add(opcode);
+				}
+				else {
+					ASMOpcode opcode = opcodeForIntegerOperator(node.getOperator());
+					code.add(opcode);
+				}
 			}
-
 		}
 		private ASMOpcode opcodeForIntegerOperator(Lextant lextant) {
 			assert(lextant instanceof Punctuator);
@@ -316,6 +337,7 @@ public class ASMCodeGenerator {
 			case SUBTRACT:		return Subtract;
 			case ADD: 	   		return Add;
 			case MULTIPLY: 		return Multiply;
+			case DIVIDE:		return Divide;
 			default:
 				assert false : "unimplemented operator in opcodeForOperator";
 			}
@@ -340,6 +362,7 @@ public class ASMCodeGenerator {
 				case ADD: 	   		return FAdd;
 				case SUBTRACT:		return FSubtract;
 				case MULTIPLY: 		return FMultiply;
+				case DIVIDE:		return FDivide;
 				default:
 					assert false : "unimplemented operator in opcodeForOperator";
 			}
@@ -365,12 +388,12 @@ public class ASMCodeGenerator {
 		public void visit(IdentifierNode node) {
 			newAddressCode(node);
 			Binding binding = node.getBinding();
-			
+
 			binding.generateAddress(code);
-		}		
+		}
 		public void visit(IntegerConstantNode node) {
 			newValueCode(node);
-			
+
 			code.add(PushI, node.getValue());
 		}
 		public void visit(FloatConstantNode node) {
