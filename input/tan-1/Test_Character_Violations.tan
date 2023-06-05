@@ -1,0 +1,41 @@
+# uncomment a specific section to test.
+# each test case below should throw error(s) as expected.
+
+main {
+    # 1. Initialize char variable with an empty char
+#    var c := '';
+
+    # Expected error: lexical error
+
+    #============================================================================================
+
+    # 2. Initialize char variable with an invalid octal code length 1
+#    var c := %1;
+
+    # Expected error: Lexical error: invalid character
+
+    #============================================================================================
+
+    # 3. Initialize char variable with an an invalid octal code length 2
+#    var c := %41;
+
+    # Expected error: Lexical error: invalid character
+
+    #============================================================================================
+
+    # 4. Initialize char variable with an invalid octal code length 3 (octal code does not match any ASCII character)
+#    var c := %128;
+
+    # Expected error: Lexical error: not a valid ASCII character
+
+    #============================================================================================
+
+    # 5. Initialize char variable with an invalid octal code length 3 (octal code does not match any ASCII character)
+#    var c := %178;
+
+    # Expected error: Lexical error: not a valid ASCII character
+
+    #============================================================================================
+
+
+}

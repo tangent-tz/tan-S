@@ -18,6 +18,7 @@ public enum Punctuator implements Lextant {
 	OPEN_BRACE("{"),
 	CLOSE_BRACE("}"),
 	HASH_SYMBOL("#"),
+	PERCENT_SIGN("%"),
 	NULL_PUNCTUATOR("");
 
 	private String lexeme;
@@ -34,8 +35,16 @@ public enum Punctuator implements Lextant {
 		return prototype;
 	}
 	
-	
 	public static Punctuator forLexeme(String lexeme) {
+		return rawForLexeme(lexeme);
+	}
+
+	public static Punctuator forLexeme(Character lexeme) {
+		String lexemeStr = lexeme.toString();
+		return rawForLexeme(lexemeStr);
+	}
+
+	private static Punctuator rawForLexeme(String lexeme) {
 		for(Punctuator punctuator: values()) {
 			if(punctuator.lexeme.equals(lexeme)) {
 				return punctuator;

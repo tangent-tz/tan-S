@@ -59,4 +59,10 @@ public class LocatedChar implements Locator {
 	public boolean isWhitespace() {
 		return Character.isWhitespace(character);
 	}
+	public boolean isCharacterWrapper() {
+		return isChar('\'');
+	}
+	public boolean isPrintableAsciiChar() {
+		return (character >= 32 && character <= 126);
+	}
 }
