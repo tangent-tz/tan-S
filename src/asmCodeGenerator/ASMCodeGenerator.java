@@ -164,16 +164,10 @@ public class ASMCodeGenerator {
 				code.append(childCode);
 			}
 		}
-		public void visitLeave(MainBlockNode node) {
-			newVoidCode(node);
-			for(ParseNode child : node.getChildren()) {
-				ASMCodeFragment childCode = removeVoidCode(child);
-				code.append(childCode);
-			}
-		}
+
 
 		///////////////////////////////////////////////////////////////////////////
-		// statements & declarations & assignments
+		// statements & declarations & assignments & blockStatements
 
 		public void visitLeave(PrintStatementNode node) {
 			newVoidCode(node);
@@ -213,6 +207,14 @@ public class ASMCodeGenerator {
 
 			Type type = node.getType();
 			code.add(opcodeForStore(type));
+		}
+
+		public void visitLeave(BlockStatementNode node) {
+			newVoidCode(node);
+			for(ParseNode child : node.getChildren()) {
+				ASMCodeFragment childCode = removeVoidCode(child);
+				code.append(childCode);
+			}
 		}
 
 		private ASMOpcode opcodeForStore(Type type) {
