@@ -1,5 +1,10 @@
 package asmCodeGenerator;
 
+import static asmCodeGenerator.codeStorage.ASMOpcode.Jump;
+import static asmCodeGenerator.codeStorage.ASMOpcode.JumpTrue;
+import static asmCodeGenerator.codeStorage.ASMOpcode.Label;
+import static asmCodeGenerator.codeStorage.ASMOpcode.Printf;
+import static asmCodeGenerator.codeStorage.ASMOpcode.PushD;
 import parseTree.ParseNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.PrintStatementNode;
