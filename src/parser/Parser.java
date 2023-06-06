@@ -199,7 +199,7 @@ public class Parser {
 
 
 	// assignmentStatement -> target := expression TERMINATOR
-	private ParseNode parseAssignmentStatement() { //todo: how to detect if this is a reassignment statement
+	private ParseNode parseAssignmentStatement() {
 		if(!startsAssignmentStatement(nowReading)) {
 			return syntaxErrorNode("assignmentStatement");
 		}
@@ -208,12 +208,11 @@ public class Parser {
 		ParseNode newInitializer = parseExpression();
 		expect(Punctuator.TERMINATOR);
 
-		Token assignmenNodeToken = Punctuator.ASSIGN.prototype();
-		return AssignmentStatementNode.withChildren(assignmenNodeToken, identifier, newInitializer);
+		Token assignmentNodeToken = Punctuator.ASSIGN.prototype();
+		return AssignmentStatementNode.withChildren(assignmentNodeToken, identifier, newInitializer);
 	}
 	private boolean startsAssignmentStatement(Token token) {
 		return startsIdentifier(token);
-		//todo: do we need to check if this identifier is an existing identifier at this step??
 	}
 
 
@@ -329,17 +328,19 @@ public class Parser {
 		return token.isLextant(Punctuator.SUBTRACT);
 	}
 	
-	// literal -> number | identifier | booleanConstant
+	// literal -> number | character | identifier | booleanConstant
 	private ParseNode parseLiteral() {
 		if(!startsLiteral(nowReading)) {
 			return syntaxErrorNode("literal");
 		}
-		
 		if(startsIntLiteral(nowReading)) {
 			return parseIntLiteral();
 		}
 		if(startsFloatLiteral(nowReading)) {
 			return parseFloatLiteral();
+		}
+		if(startsCharacterLiteral(nowReading)) {
+			return parseCharacterLiteral();
 		}
 		if(startsIdentifier(nowReading)) {
 			return parseIdentifier();
@@ -351,7 +352,7 @@ public class Parser {
 		return syntaxErrorNode("literal");
 	}
 	private boolean startsLiteral(Token token) {
-		return startsIntLiteral(token) || startsIdentifier(token) || startsBooleanLiteral(token) || startsFloatLiteral(token);
+		return startsIntLiteral(token) || startsCharacterLiteral(token) || startsIdentifier(token) || startsBooleanLiteral(token) || startsFloatLiteral(token);
 	}
 
 	// number (literal)
@@ -375,6 +376,20 @@ public class Parser {
 	private boolean startsFloatLiteral(Token token) {
 		return token instanceof NumberToken && ((NumberToken) token).getValue() instanceof Float;
 	}
+
+
+	// character (literal)
+	private ParseNode parseCharacterLiteral() {
+		if(!startsCharacterLiteral(nowReading)) {
+			return syntaxErrorNode("character");
+		}
+		readToken();
+		return new CharacterNode(previouslyRead);
+	}
+	private boolean startsCharacterLiteral(Token token) {
+		return token instanceof CharacterToken;
+	}
+
 
 	// identifier (terminal)
 	private ParseNode parseIdentifier() {
