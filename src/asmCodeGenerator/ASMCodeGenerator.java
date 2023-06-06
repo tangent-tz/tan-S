@@ -126,15 +126,21 @@ public class ASMCodeGenerator {
 			}
 		}
 		private void turnAddressIntoValue(ASMCodeFragment code, ParseNode node) {
-			if(node.getType() == PrimitiveType.INTEGER || node.getType() == ReferenceType.STRING) {
+			if(node.getType() == PrimitiveType.INTEGER) {
+				code.add(LoadI);
+			}
+			else if(node.getType() == ReferenceType.STRING) {
 				code.add(LoadI);
 			}
 			else if(node.getType() == PrimitiveType.FLOAT) {
 				code.add(LoadF);
 			}
-			else if(node.getType() == PrimitiveType.BOOLEAN || node.getType() == PrimitiveType.CHARACTER) {
+			else if(node.getType() == PrimitiveType.BOOLEAN) {
 				code.add(LoadC);
-			}	
+			}
+			else if(node.getType() == PrimitiveType.CHARACTER) {
+				code.add(LoadC);
+			}
 			else {
 				assert false : "node " + node;
 			}
@@ -391,5 +397,4 @@ public class ASMCodeGenerator {
 			code.add(PushD, strAddressLabel);
 		}
 	}
-
 }
