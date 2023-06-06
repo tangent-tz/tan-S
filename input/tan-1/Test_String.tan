@@ -68,5 +68,19 @@ main {
     print \n\n;
 
     #=========================================================================
+    # Test 9: Hash should NOT be interpreted as comment
+    print "Test 9:" \n;
+    var seleven := "abc#678";
+    print seleven;
+    print \n\n;
+
+    #=========================================================================
+    # Test 10: Percent should NOT be interpreted as octal code for character
+     print "Test 10:" \n;
+     var stwelve := "abc%678";
+     print stwelve;
+     print \n\n;
+
+     #=========================================================================
 
 }
