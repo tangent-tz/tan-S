@@ -216,13 +216,19 @@ public class ASMCodeGenerator {
 		}
 
 		private ASMOpcode opcodeForStore(Type type) {
-			if(type == PrimitiveType.INTEGER || type == ReferenceType.STRING) {
+			if(type == PrimitiveType.INTEGER) {
+				return StoreI;
+			}
+			else if(type == ReferenceType.STRING) {
 				return StoreI;
 			}
 			else if(type == PrimitiveType.FLOAT) {
 				return StoreF;
 			}
-			else if(type == PrimitiveType.BOOLEAN || type == PrimitiveType.CHARACTER) {
+			else if(type == PrimitiveType.BOOLEAN) {
+				return StoreC;
+			}
+			else if(type == PrimitiveType.CHARACTER) {
 				return StoreC;
 			}
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
