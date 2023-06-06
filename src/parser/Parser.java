@@ -329,7 +329,7 @@ public class Parser {
 		return token.isLextant(Punctuator.SUBTRACT);
 	}
 	
-	// literal -> number | character | identifier | booleanConstant
+	// literal -> number | character | identifier | booleanConstant | string
 	private ParseNode parseLiteral() {
 		if(!startsLiteral(nowReading)) {
 			return syntaxErrorNode("literal");
@@ -349,11 +349,19 @@ public class Parser {
 		if(startsBooleanLiteral(nowReading)) {
 			return parseBooleanLiteral();
 		}
+		if(startsStringLiteral(nowReading)) {
+			return parseStringLiteral();
+		}
 
 		return syntaxErrorNode("literal");
 	}
 	private boolean startsLiteral(Token token) {
-		return startsIntLiteral(token) || startsCharacterLiteral(token) || startsIdentifier(token) || startsBooleanLiteral(token) || startsFloatLiteral(token);
+		return startsIntLiteral(token) ||
+				startsCharacterLiteral(token) ||
+				startsIdentifier(token) ||
+				startsBooleanLiteral(token) ||
+				startsFloatLiteral(token) ||
+				startsStringLiteral(token);
 	}
 
 	// number (literal)
@@ -415,6 +423,20 @@ public class Parser {
 	private boolean startsBooleanLiteral(Token token) {
 		return token.isLextant(Keyword.TRUE, Keyword.FALSE);
 	}
+
+
+	// string literal
+	private ParseNode parseStringLiteral() {
+		if(!startsStringLiteral(nowReading)) {
+			return syntaxErrorNode("string constant");
+		}
+		readToken();
+		return new StringConstantNode(previouslyRead);
+	}
+	private boolean startsStringLiteral(Token token) {
+		return token instanceof StringToken;
+	}
+
 
 	private void readToken() {
 		previouslyRead = nowReading;

@@ -11,6 +11,7 @@ import lexicalAnalyzer.Punctuator;
 import parseTree.*;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
@@ -122,10 +123,13 @@ public class ASMCodeGenerator {
 			
 			if(code.isAddress()) {
 				turnAddressIntoValue(code, node);
-			}	
+			}
 		}
 		private void turnAddressIntoValue(ASMCodeFragment code, ParseNode node) {
 			if(node.getType() == PrimitiveType.INTEGER) {
+				code.add(LoadI);
+			}
+			else if(node.getType() == ReferenceType.STRING) {
 				code.add(LoadI);
 			}
 			else if(node.getType() == PrimitiveType.FLOAT) {
@@ -213,6 +217,9 @@ public class ASMCodeGenerator {
 
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
+				return StoreI;
+			}
+			else if(type == ReferenceType.STRING) {
 				return StoreI;
 			}
 			else if(type == PrimitiveType.FLOAT) {
@@ -384,6 +391,16 @@ public class ASMCodeGenerator {
 			newValueCode(node);
 			code.add(PushI, node.getValue());
 		}
-	}
+		public void visit(StringConstantNode node) {
+			newValueCode(node);
 
+			String strAddressLabel ="_string_" + StringConstantNode.getCounter() + "_";
+			code.add(DLabel, strAddressLabel);
+			code.add(DataI, 3);
+			code.add(DataI, 9);
+			code.add(DataI, node.getValue().length());
+			code.add(DataS, node.getValue());
+			code.add(PushD, strAddressLabel);
+		}
+	}
 }

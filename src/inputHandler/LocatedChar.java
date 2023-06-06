@@ -65,4 +65,13 @@ public class LocatedChar implements Locator {
 	public boolean isPrintableAsciiChar() {
 		return (character >= 32 && character <= 126);
 	}
+	public boolean isStringWrapper() {
+		return isChar('\"');
+	}
+	public boolean isNewLine() {
+		return isChar('\n');
+	}
+	public boolean isValidStringChar() {
+		return isPrintableAsciiChar() && !isStringWrapper() && !isNewLine();
+	}
 }

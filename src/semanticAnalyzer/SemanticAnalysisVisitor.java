@@ -11,6 +11,7 @@ import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
@@ -172,11 +173,16 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.setType(PrimitiveType.CHARACTER);
 	}
 	@Override
+	public void visit(StringConstantNode node) {
+		node.setType(ReferenceType.STRING);
+	}
+	@Override
 	public void visit(NewlineNode node) {
 	}
 	@Override
 	public void visit(SpaceNode node) {
 	}
+
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods
 	@Override
