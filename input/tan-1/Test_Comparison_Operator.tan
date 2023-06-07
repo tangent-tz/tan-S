@@ -288,74 +288,74 @@ main {
     # Expected output: false
 
     # Test 33: Less than comparison for booleans
-#    var abool := true;
-#    var bbool := false;
-#    var resultlessthanbool := abool < bbool;
-#    print resultlessthanbool;
-#    print \n;
+    var abool := true;
+    var bbool := false;
+    var resultlessthanbool := abool < bbool;
+    print resultlessthanbool;
+    print \n;
 
     # Expected output: false
 
     # Test 34: Less than comparison for booleans - negative case
-#    var cbool := false;
-#    var dbool := true;
-#    var resultlessthannegativebool := cbool < dbool;
-#    print resultlessthannegativebool;
-#    print \n;
+    var cbool := false;
+    var dbool := true;
+    var resultlessthannegativebool := cbool < dbool;
+    print resultlessthannegativebool;
+    print \n;
 
     # Expected output: true
 
     # Test 35: Less than or equal to comparison for booleans
-#    var ebool := true;
-#    var fbool := true;
-#    var resultlessthanorequalbool := ebool <= fbool;
-#    print resultlessthanorequalbool;
-#    print \n;
+    var ebool := true;
+    var fbool := true;
+    var resultlessthanorequalbool := ebool <= fbool;
+    print resultlessthanorequalbool;
+    print \n;
 
     # Expected output: true
 
     # Test 36: Less than or equal to comparison for booleans - negative case
-#    var gbool := false;
-#    var hbool := true;
-#    var resultlessthanorequalnegativebool := gbool <= hbool;
-#    print resultlessthanorequalnegativebool;
-#    print \n;
+    var gbool := false;
+    var hbool := true;
+    var resultlessthanorequalnegativebool := gbool <= hbool;
+    print resultlessthanorequalnegativebool;
+    print \n;
 
-    # Expected output: true
+   # Expected output: true
 
-    # Test 37: Equal to comparison for booleans
-#    var ibool := false;
-#    var jbool := false;
-#    var resultequaltobool := ibool == jbool;
-#    print resultequaltobool;
-#    print \n;
+   # Test 37: Equal to comparison for booleans
+    var ibool := false;
+    var jbool := false;
+    var resultequaltobool := ibool == jbool;
+    print resultequaltobool;
+    print \n;
 
     # Expected output: true
 
     # Test 38: Equal to comparison for booleans - negative case
-#    var kbool := true;
-#    var lbool := false;
-#    var resultequaltonegativebool := kbool == lbool;
-#    print resultequaltonegativebool;
-#    print \n;
+    var kbool := true;
+    var lbool := false;
+    var resultequaltonegativebool := kbool == lbool;
+    print resultequaltonegativebool;
+    print \n;
 
-    # Expected output: false
+   # Expected output: false
 
-    # Test 39: Not equal to comparison for booleans
-#    var mbool := true;
-#    var nbool := false;
-#    var resultnotequaltobool := mbool != nbool;
-#    print resultnotequaltobool;
-#    print \n;
+   # Test 39: Not equal to comparison for booleans
+    var mbool := true;
+    var nbool := false;
+    var resultnotequaltobool := mbool != nbool;
+    print resultnotequaltobool;
+    print \n;
 
     # Expected output: true
 
     # Test 40: Not equal to comparison for booleans - negative case
-#    var obool := false;
-#    var pbool := false;
-#    var resultnotequaltonegativebool := obool != pbool;
-#    print resultnotequaltonegativebool;
-#    print \n;
+    var obool := false;
+    var pbool := false;
+    var resultnotequaltonegativebool := obool != pbool;
+    print resultnotequaltonegativebool;
+    print \n;
 
     # Expected output: false
 

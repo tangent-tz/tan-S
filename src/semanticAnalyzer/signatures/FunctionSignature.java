@@ -112,6 +112,13 @@ public class FunctionSignature {
 	private static FunctionSignature notEqualsCharSignature = new FunctionSignature(1, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN);
 	private static FunctionSignature lesserEqualCharSignature = new FunctionSignature(1, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN);
 	private static FunctionSignature greaterEqualCharSignature = new FunctionSignature(1, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN);
+	//..
+	private static FunctionSignature greaterBooleanSignature = new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN);
+	private static FunctionSignature lesserBooleanSignature = new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN);
+	private static FunctionSignature equalsBooleanSignature = new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN);
+	private static FunctionSignature notEqualsBooleanSignature = new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN);
+	private static FunctionSignature lesserEqualBooleanSignature = new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN);
+	private static FunctionSignature greaterEqualBooleanSignature = new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN);
 
 
 
@@ -188,6 +195,21 @@ public class FunctionSignature {
 			case NOTEQUALS:		return notEqualsCharSignature;
 			case GREATEREQUAL:	return greaterEqualCharSignature;
 			case LESSEREQUAL:	return lesserEqualCharSignature;
+			default:
+				return neverMatchedSignature;
+		}
+	}
+	public static FunctionSignature signatureOfBoolean(Lextant lextant) {
+		assert(lextant instanceof Punctuator);
+		Punctuator punctuator = (Punctuator)lextant;
+
+		switch(punctuator) {
+			case GREATER:		return greaterBooleanSignature;
+			case LESSER:		return lesserBooleanSignature;
+			case EQUALS:		return equalsBooleanSignature;
+			case NOTEQUALS:		return notEqualsBooleanSignature;
+			case GREATEREQUAL:	return greaterEqualBooleanSignature;
+			case LESSEREQUAL:	return lesserEqualBooleanSignature;
 			default:
 				return neverMatchedSignature;
 		}

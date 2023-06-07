@@ -131,6 +131,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			else if(node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER){
 				signature = FunctionSignature.signatureOfChar(operator);
 			}
+			else if(node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN){
+				signature = FunctionSignature.signatureOfBoolean(operator);
+			}
 		} else {
 			if(node.child(0).getType() == PrimitiveType.INTEGER) {
 				signature = FunctionSignature.unarySignatureOfInteger(operator);
