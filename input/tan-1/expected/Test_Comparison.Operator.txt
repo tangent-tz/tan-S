@@ -1,0 +1,32 @@
+Test 1: Less than comparison for integers -> true
+Test 2: Less than comparison for integers - negative case -> false
+Test 3: Less than or equal to comparison for integers -> true
+Test 4: Less than or equal to comparison for integers - negative case -> true
+Test 5: Equal to comparison for integers -> true
+Test 6: Equal to comparison for integers - negative case -> false
+Test 7: Not equal to comparison for integers -> true
+Test 8: Not equal to comparison for integers - negative case -> false
+Test 9: Greater than comparison for integers -> true
+Test 10: Greater than comparison for integers - negative case -> false
+Test 11: Greater than or equal to comparison for integers -> false
+Test 12: Greater than or equal to comparison for integers - negative case -> false
+Test 13: Less than comparison for floats -> true
+Test 14: Less than comparison for floats - negative case -> false
+Test 15: Less than or equal to comparison for floats -> true
+Test 16: Less than or equal to comparison for floats - negative case -> true
+Test 17: Equal to comparison for floats -> true
+Test 18: Equal to comparison for floats - negative case -> false
+Test 19: Not equal to comparison for floats -> true
+Test 20: Not equal to comparison for floats - negative case -> false
+Test 21: Greater than comparison for floats -> true
+Test 22: Greater than comparison for floats - negative case -> false
+Test 23: Greater than or equal to comparison for floats -> false
+Test 24: Greater than or equal to comparison for floats - negative case -> false
+Test 25: Less than comparison for characters -> true
+Test 26: Less than comparison for characters - negative case -> false
+Test 27: Less than or equal to comparison for characters -> true
+Test 28: Less than or equal to comparison for characters - negative case -> false
+Test 29: Equal to comparison for characters -> true
+Test 30: Equal to comparison for characters - negative case -> false
+Test 31: Not equal to comparison for characters -> true
+Test 32: Not equal to comparison for characters - negative case -> false
