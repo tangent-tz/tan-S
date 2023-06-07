@@ -1,0 +1,139 @@
+main {
+    # Test 1: character comparison - equal
+ #  var charone := 'a';
+ #  var chartwo := 'a';
+ #  var resultone := charone == chartwo;
+ #  print resultone;
+ #  print \n;
+
+    # Expected output:
+    # true
+
+    # Test 2: character comparison - not equal
+#   charone := 'a';
+#   chartwo := 'b';
+#   var resulttwo := charone != chartwo;
+#   print resulttwo;
+#   print \n;
+
+    # Expected output:
+    # true
+
+    # Test 3: integer comparison - less than
+#   var intone := 10;
+#   var inttwo := 15;
+#   var resultthree := intone < inttwo;
+#   print resultthree;
+#   print \n;
+
+    # Expected output:
+    # true
+
+    # Test 4: integer comparison - greater than or equal
+#    intone := 20;
+#    inttwo := 20;
+#    var resultfour := intone >= inttwo;
+#    print resultfour;
+#    print \n;
+#
+    # Expected output:
+    # true
+
+    # Test 5: floating-point comparison - equal
+#   var floatone := 3.14;
+#   var floattwo := 3.14;
+#   var resultfive := floatone == floattwo;
+#   print resultfive;
+#   print \n;
+
+    # Expected output:
+    # true
+
+    # Test 6: floating-point comparison - not equal
+#   floatone := 3.14;
+#   floattwo := 2.71;
+#   var resultsix := floatone != floattwo;
+#   print resultsix;
+#   print \n;
+
+    # Expected output:
+    # true
+
+    # Test 7: boolean comparison - equal
+#   var boolone := true;
+#   var booltwo := true;
+#   var resultseven := boolone == booltwo;
+#   print resultseven;
+#   print \n;
+
+    # Expected output:
+    # true
+
+    # Test 8: boolean comparison - not equal
+#   boolone := true;
+#   booltwo := false;
+#   var resulteight := boolone != booltwo;
+#   print resulteight;
+#   print \n;
+
+    # Expected output:
+    # true
+
+    # Test 9: string comparison - equal
+#   var stringone := "hello";
+#   var stringtwo := "hello";
+#   var resultnine := stringone == stringtwo;
+#   print resultnine;
+#   print \n;
+
+    # Expected output:
+    # true
+
+    # Test 10: string comparison - not equal
+#   stringone := "hello";
+#   stringtwo := "world";
+#   var resultten := stringone != stringtwo;
+#   print resultten;
+#   print \n;
+
+    # Expected output:
+    # true
+
+    # Test 11: integer comparison - equals to
+    var intone := 10;
+    var inttwo := 10;
+    var resultthree := intone == inttwo;
+    print resultthree;
+    print \n;
+
+    # Expected output:
+    #
+ # Test 12: integer comparison - equals to
+    var intthree := 10;
+    var intfour := 11;
+    var resultfour := intthree == intfour;
+    print resultfour;
+    print \n;
+
+    # Expected output:
+    #
+
+    # Test 13: float comparison - equals to
+    var floatone := 10.0;
+    var floattwo := 10.0;
+    var resultfive := floatone == floattwo;
+    print resultfive;
+    print \n;
+
+    # Expected output:
+    #
+ # Test 14: float comparison - equals to
+    var floatthree := 10.1;
+    var floatfour := 10.2;
+    var resultsix := floatthree == floatfour;
+    print resultsix;
+    print \n;
+
+    # Expected output:
+    # false
+}

@@ -125,8 +125,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		if (childTypes.size() == 2) {
 			if (node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
 				signature = FunctionSignature.signatureOfInteger(operator);
-			} else {
+			} else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT){
 				signature = FunctionSignature.signatureOfFloat(operator);
+			}
+			else if(node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER){
+				signature = FunctionSignature.signatureOfChar(operator);
 			}
 		} else {
 			if(node.child(0).getType() == PrimitiveType.INTEGER) {

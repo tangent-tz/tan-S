@@ -84,8 +84,6 @@ public class FunctionSignature {
 	///////////////////////////////////////////////////////////////////
 	// Signatures for tan-0 operators
 	// this section will probably disappear in tan-1 (in favor of FunctionSignatures)
-	
-	private static FunctionSignature addSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature subtractIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature negateIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature addIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
@@ -107,6 +105,13 @@ public class FunctionSignature {
 	private static FunctionSignature notEqualsFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN);
 	private static FunctionSignature lesserEqualFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN);
 	private static FunctionSignature greaterEqualFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN);
+	//..
+	private static FunctionSignature greaterCharSignature = new FunctionSignature(1, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature lesserCharSignature = new FunctionSignature(1, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature equalsCharSignature = new FunctionSignature(1, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature notEqualsCharSignature = new FunctionSignature(1, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature lesserEqualCharSignature = new FunctionSignature(1, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature greaterEqualCharSignature = new FunctionSignature(1, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN);
 
 
 
@@ -172,5 +177,19 @@ public class FunctionSignature {
 				return neverMatchedSignature;
 		}
 	}
+	public static FunctionSignature signatureOfChar(Lextant lextant) {
+		assert(lextant instanceof Punctuator);
+		Punctuator punctuator = (Punctuator)lextant;
 
+		switch(punctuator) {
+			case GREATER:		return greaterCharSignature;
+			case LESSER:		return lesserCharSignature;
+			case EQUALS:		return equalsCharSignature;
+			case NOTEQUALS:		return notEqualsCharSignature;
+			case GREATEREQUAL:	return greaterEqualCharSignature;
+			case LESSEREQUAL:	return lesserEqualCharSignature;
+			default:
+				return neverMatchedSignature;
+		}
+	}
 }
