@@ -4,7 +4,6 @@ import inputHandler.TextLocation;
 import tokens.LextantToken;
 import tokens.Token;
 
-
 public enum Punctuator implements Lextant {
 	ADD("+"), 
 	SUBTRACT("-"),

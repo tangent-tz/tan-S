@@ -1,0 +1,29 @@
+Test 1:
+hello world @ ~ $
+
+Test 2:
+1+2m/Tanzil
+
+Test 3:
+hi\!@\n{}
+hi\!@\n{}
+
+Test 4:
+five...Guys?
+five...Guys?
+
+Test 5:
+a
+a12a34
+
+Test 6:
+feeling sleepy
+just sleep. No actually don't sleep.
+
+Test 7:
+s1 hi  end.
+
+Test 8:
+abc\n678
+
+
