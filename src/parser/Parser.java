@@ -43,7 +43,7 @@ public class Parser {
 		ParseNode program = new ProgramNode(nowReading);
 		
 		expect(Keyword.MAIN);
-		ParseNode mainBlock = parseMainBlock();
+		ParseNode mainBlock = parseBlockStatement();
 		program.appendChild(mainBlock);
 		
 		if(!(nowReading instanceof NullToken)) {
@@ -55,35 +55,13 @@ public class Parser {
 	private boolean startsProgram(Token token) {
 		return token.isLextant(Keyword.MAIN);
 	}
-	
-	
-	///////////////////////////////////////////////////////////
-	// mainBlock
-	
-	// mainBlock -> { statement* }
-	private ParseNode parseMainBlock() {
-		if(!startsMainBlock(nowReading)) {
-			return syntaxErrorNode("mainBlock");
-		}
-		ParseNode mainBlock = new MainBlockNode(nowReading);
-		expect(Punctuator.OPEN_BRACE);
-		
-		while(startsStatement(nowReading)) {
-			ParseNode statement = parseStatement();
-			mainBlock.appendChild(statement);
-		}
-		expect(Punctuator.CLOSE_BRACE);
-		return mainBlock;
-	}
-	private boolean startsMainBlock(Token token) {
-		return token.isLextant(Punctuator.OPEN_BRACE);
-	}
-	
+
+
 	
 	///////////////////////////////////////////////////////////
 	// statements
 	
-	// statement-> declaration | assignmentStatement | printStmt
+	// statement-> declaration | assignmentStatement | printStmt | blockStatement
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {
 			return syntaxErrorNode("statement");
@@ -97,12 +75,16 @@ public class Parser {
 		if(startsPrintStatement(nowReading)) {
 			return parsePrintStatement();
 		}
+		if(startsBlockStatement(nowReading)) {
+			return parseBlockStatement();
+		}
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
 		return startsPrintStatement(token) ||
 			   	startsDeclaration(token) ||
-				startsAssignmentStatement(token);
+				startsAssignmentStatement(token) ||
+				startsBlockStatement(token);
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
@@ -199,7 +181,7 @@ public class Parser {
 
 
 	// assignmentStatement -> target := expression TERMINATOR
-	private ParseNode parseAssignmentStatement() { //todo: how to detect if this is a reassignment statement
+	private ParseNode parseAssignmentStatement() {
 		if(!startsAssignmentStatement(nowReading)) {
 			return syntaxErrorNode("assignmentStatement");
 		}
@@ -208,17 +190,35 @@ public class Parser {
 		ParseNode newInitializer = parseExpression();
 		expect(Punctuator.TERMINATOR);
 
-		Token assignmenNodeToken = Punctuator.ASSIGN.prototype();
-		return AssignmentStatementNode.withChildren(assignmenNodeToken, identifier, newInitializer);
+		Token assignmentNodeToken = Punctuator.ASSIGN.prototype();
+		return AssignmentStatementNode.withChildren(assignmentNodeToken, identifier, newInitializer);
 	}
 	private boolean startsAssignmentStatement(Token token) {
 		return startsIdentifier(token);
-		//todo: do we need to check if this identifier is an existing identifier at this step??
+	}
+
+
+	// block statement -> { statement* }
+	private ParseNode parseBlockStatement() {
+		if(!startsBlockStatement(nowReading)) {
+			return syntaxErrorNode("blockStatement");
+		}
+		ParseNode codeBlock = new BlockStatementNode(nowReading);
+		expect(Punctuator.OPEN_BRACE);
+
+		while(startsStatement(nowReading)) {
+			ParseNode statement = parseStatement();
+			codeBlock.appendChild(statement);
+		}
+		expect(Punctuator.CLOSE_BRACE);
+		return codeBlock;
+	}
+	private boolean startsBlockStatement(Token token) {
+		return token.isLextant(Punctuator.OPEN_BRACE);
 	}
 
 
 
-	
 	///////////////////////////////////////////////////////////
 	// expressions
 	// expr                     -> comparisonExpression
@@ -331,17 +331,19 @@ public class Parser {
 		return token.isLextant(Punctuator.SUBTRACT);
 	}
 	
-	// literal -> number | identifier | booleanConstant
+	// literal -> number | character | identifier | booleanConstant | string
 	private ParseNode parseLiteral() {
 		if(!startsLiteral(nowReading)) {
 			return syntaxErrorNode("literal");
 		}
-		
 		if(startsIntLiteral(nowReading)) {
 			return parseIntLiteral();
 		}
 		if(startsFloatLiteral(nowReading)) {
 			return parseFloatLiteral();
+		}
+		if(startsCharacterLiteral(nowReading)) {
+			return parseCharacterLiteral();
 		}
 		if(startsIdentifier(nowReading)) {
 			return parseIdentifier();
@@ -349,11 +351,19 @@ public class Parser {
 		if(startsBooleanLiteral(nowReading)) {
 			return parseBooleanLiteral();
 		}
+		if(startsStringLiteral(nowReading)) {
+			return parseStringLiteral();
+		}
 
 		return syntaxErrorNode("literal");
 	}
 	private boolean startsLiteral(Token token) {
-		return startsIntLiteral(token) || startsIdentifier(token) || startsBooleanLiteral(token) || startsFloatLiteral(token);
+		return startsIntLiteral(token) ||
+				startsCharacterLiteral(token) ||
+				startsIdentifier(token) ||
+				startsBooleanLiteral(token) ||
+				startsFloatLiteral(token) ||
+				startsStringLiteral(token);
 	}
 
 	// number (literal)
@@ -378,6 +388,20 @@ public class Parser {
 		return token instanceof NumberToken && ((NumberToken) token).getValue() instanceof Float;
 	}
 
+
+	// character (literal)
+	private ParseNode parseCharacterLiteral() {
+		if(!startsCharacterLiteral(nowReading)) {
+			return syntaxErrorNode("character");
+		}
+		readToken();
+		return new CharacterNode(previouslyRead);
+	}
+	private boolean startsCharacterLiteral(Token token) {
+		return token instanceof CharacterToken;
+	}
+
+
 	// identifier (terminal)
 	private ParseNode parseIdentifier() {
 		if(!startsIdentifier(nowReading)) {
@@ -401,6 +425,20 @@ public class Parser {
 	private boolean startsBooleanLiteral(Token token) {
 		return token.isLextant(Keyword.TRUE, Keyword.FALSE);
 	}
+
+
+	// string literal
+	private ParseNode parseStringLiteral() {
+		if(!startsStringLiteral(nowReading)) {
+			return syntaxErrorNode("string constant");
+		}
+		readToken();
+		return new StringConstantNode(previouslyRead);
+	}
+	private boolean startsStringLiteral(Token token) {
+		return token instanceof StringToken;
+	}
+
 
 	private void readToken() {
 		previouslyRead = nowReading;

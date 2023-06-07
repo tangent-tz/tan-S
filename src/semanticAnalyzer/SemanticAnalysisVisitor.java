@@ -11,6 +11,7 @@ import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
@@ -32,10 +33,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitLeave(ProgramNode node) {
 		leaveScope(node);
 	}
-	public void visitEnter(MainBlockNode node) {
-	}
-	public void visitLeave(MainBlockNode node) {
-	}
 	
 	
 	///////////////////////////////////////////////////////////////////////////
@@ -43,22 +40,28 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private void enterProgramScope(ParseNode node) {
 		Scope scope = Scope.createProgramScope();
 		node.setScope(scope);
-	}	
-	@SuppressWarnings("unused")
+	}
 	private void enterSubscope(ParseNode node) {
 		Scope baseScope = node.getLocalScope();
 		Scope scope = baseScope.createSubscope();
 		node.setScope(scope);
-	}		
+	}
 	private void leaveScope(ParseNode node) {
 		node.getScope().leave();
 	}
+	private void leaveSubScope(ParseNode node) {
+		leaveScope(node);
+	}
 	
 	///////////////////////////////////////////////////////////////////////////
-	// statements and declarations and assignments
+	// statements: declarations, assignmentStatement, blockStatement
+
+	// printStatement
 	@Override
 	public void visitLeave(PrintStatementNode node) {
 	}
+
+	// declaration statement
 	@Override
 	public void visitLeave(DeclarationNode node) {
 		if(node.child(0) instanceof ErrorNode) {
@@ -77,6 +80,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		addBinding(identifier, declarationType, constancy);
 	}
 
+	// assignmentStatement
 	public void visitLeave(AssignmentStatementNode node) {
 		if(node.child(0) instanceof ErrorNode) {
 			node.setType(PrimitiveType.ERROR);
@@ -98,8 +102,20 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			return;
 		}
 		node.setType(identifierType);
-		//TODO: see if missing anything for this function
 	}
+
+	// blockStatement
+	@Override
+	public void visitEnter(BlockStatementNode node) {
+		enterSubscope(node);
+	}
+
+	@Override
+	public void visitLeave(BlockStatementNode node) {
+		leaveSubScope(node);
+	}
+
+
 
 	///////////////////////////////////////////////////////////////////////////
 	// expressions
@@ -168,17 +184,25 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.setType(PrimitiveType.FLOAT);
 	}
 	@Override
+	public void visit(CharacterNode node) {
+		node.setType(PrimitiveType.CHARACTER);
+	}
+	@Override
+	public void visit(StringConstantNode node) {
+		node.setType(ReferenceType.STRING);
+	}
+	@Override
 	public void visit(NewlineNode node) {
 	}
 	@Override
 	public void visit(SpaceNode node) {
 	}
+
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods
 	@Override
 	public void visit(IdentifierNode node) {
-		//TODO: need to do something in this function???
-		if(!isBeingDeclared(node)) {		
+		if(!isBeingDeclared(node)) {
 			Binding binding = node.findVariableBinding();
 			
 			node.setType(binding.getType());

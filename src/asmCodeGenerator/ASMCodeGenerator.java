@@ -11,6 +11,7 @@ import lexicalAnalyzer.Punctuator;
 import parseTree.*;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
@@ -74,7 +75,6 @@ public class ASMCodeGenerator {
 			codeMap = new HashMap<ParseNode, ASMCodeFragment>();
 		}
 
-
 		////////////////////////////////////////////////////////////////////
         // Make the field "code" refer to a new fragment of different sorts.
 		private void newAddressCode(ParseNode node) {
@@ -129,10 +129,16 @@ public class ASMCodeGenerator {
 			if(node.getType() == PrimitiveType.INTEGER) {
 				code.add(LoadI);
 			}
+			else if(node.getType() == ReferenceType.STRING) {
+				code.add(LoadI);
+			}
 			else if(node.getType() == PrimitiveType.FLOAT) {
 				code.add(LoadF);
 			}
 			else if(node.getType() == PrimitiveType.BOOLEAN) {
+				code.add(LoadC);
+			}
+			else if(node.getType() == PrimitiveType.CHARACTER) {
 				code.add(LoadC);
 			}
 			else {
@@ -158,16 +164,10 @@ public class ASMCodeGenerator {
 				code.append(childCode);
 			}
 		}
-		public void visitLeave(MainBlockNode node) {
-			newVoidCode(node);
-			for(ParseNode child : node.getChildren()) {
-				ASMCodeFragment childCode = removeVoidCode(child);
-				code.append(childCode);
-			}
-		}
+
 
 		///////////////////////////////////////////////////////////////////////////
-		// statements & declarations & assignments
+		// statements & declarations & assignments & blockStatements
 
 		public void visitLeave(PrintStatementNode node) {
 			newVoidCode(node);
@@ -209,15 +209,28 @@ public class ASMCodeGenerator {
 			code.add(opcodeForStore(type));
 		}
 
+		public void visitLeave(BlockStatementNode node) {
+			newVoidCode(node);
+			for(ParseNode child : node.getChildren()) {
+				ASMCodeFragment childCode = removeVoidCode(child);
+				code.append(childCode);
+			}
+		}
+
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
+				return StoreI;
+			}
+			else if(type == ReferenceType.STRING) {
 				return StoreI;
 			}
 			else if(type == PrimitiveType.FLOAT) {
 				return StoreF;
 			}
-			else
-			if(type == PrimitiveType.BOOLEAN) {
+			else if(type == PrimitiveType.BOOLEAN) {
+				return StoreC;
+			}
+			else if(type == PrimitiveType.CHARACTER) {
 				return StoreC;
 			}
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
@@ -398,9 +411,22 @@ public class ASMCodeGenerator {
 		}
 		public void visit(FloatConstantNode node) {
 			newValueCode(node);
-
 			code.add(PushF, node.getValue());
 		}
-	}
+		public void visit(CharacterNode node) {
+			newValueCode(node);
+			code.add(PushI, node.getValue());
+		}
+		public void visit(StringConstantNode node) {
+			newValueCode(node);
 
+			String strAddressLabel ="_string_" + StringConstantNode.getCounter() + "_";
+			code.add(DLabel, strAddressLabel);
+			code.add(DataI, 3);
+			code.add(DataI, 9);
+			code.add(DataI, node.getValue().length());
+			code.add(DataS, node.getValue());
+			code.add(PushD, strAddressLabel);
+		}
+	}
 }
