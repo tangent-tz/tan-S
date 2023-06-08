@@ -260,15 +260,15 @@ public class ASMCodeGenerator {
 				else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT) {
 					visitComparisonEqualFloatOperatorNode(node, operator);
 				}
+				else if(node.child(0).getType() == ReferenceType.STRING && node.child(1).getType() == ReferenceType.STRING) {
+					visitComparisonEqualStringOperatorNode(node, operator);
+				}
 			}
 			else if(operator == Punctuator.GREATER) {
 				if(node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
 					visitComparisonGreaterIntegerOperatorNode(node, operator);
 				}
 				else if(node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER) {
-					visitComparisonGreaterIntegerOperatorNode(node, operator);
-				}
-				else if(node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN) {
 					visitComparisonGreaterIntegerOperatorNode(node, operator);
 				}
 				else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT) {
@@ -280,9 +280,6 @@ public class ASMCodeGenerator {
 					visitComparisonLesserIntegerOperatorNode(node, operator);
 				}
 				else if(node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER) {
-					visitComparisonLesserIntegerOperatorNode(node, operator);
-				}
-				else if(node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN) {
 					visitComparisonLesserIntegerOperatorNode(node, operator);
 				}
 				else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT) {
@@ -302,15 +299,15 @@ public class ASMCodeGenerator {
 				else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT) {
 					visitComparisonNotEqualFloatOperatorNode(node, operator);
 				}
+				else if(node.child(0).getType() == ReferenceType.STRING && node.child(1).getType() == ReferenceType.STRING) {
+					visitComparisonNotEqualStringOperatorNode(node, operator);
+				}
 			}
 			else if(operator == Punctuator.GREATEREQUAL) {
 				if(node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
 					visitComparisonGreatEqualIntegerOperatorNode(node, operator);
 				}
 				else if(node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER) {
-					visitComparisonGreatEqualIntegerOperatorNode(node, operator);
-				}
-				else if(node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN) {
 					visitComparisonGreatEqualIntegerOperatorNode(node, operator);
 				}
 				else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT) {
@@ -322,9 +319,6 @@ public class ASMCodeGenerator {
 					visitComparisonLessEqualIntegerOperatorNode(node, operator);
 				}
 				else if(node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER) {
-					visitComparisonLessEqualIntegerOperatorNode(node, operator);
-				}
-				else if(node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN) {
 					visitComparisonLessEqualIntegerOperatorNode(node, operator);
 				}
 				else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT) {
@@ -751,6 +745,75 @@ public class ASMCodeGenerator {
 			code.add(PushI, 0);
 			code.add(Jump, joinLabel);
 			code.add(Label, joinLabel);
+		}
+		private void visitComparisonEqualStringOperatorNode(OperatorNode node,
+															 Lextant operator) {
+
+			ASMCodeFragment arg1 = removeValueCode(node.child(0));
+			ASMCodeFragment arg2 = removeValueCode(node.child(1));
+
+			Labeller labeller = new Labeller("compare");
+
+			String startLabel = labeller.newLabel("arg1");
+			String arg2Label  = labeller.newLabel("arg2");
+			String subLabel   = labeller.newLabel("sub");
+			String trueLabel  = labeller.newLabel("true");
+			String falseLabel = labeller.newLabel("false");
+			String joinLabel  = labeller.newLabel("join");
+
+			newValueCode(node);
+			code.add(Label, startLabel);
+			code.append(arg1);
+			code.add(Label, arg2Label);
+			code.append(arg2);
+			code.add(Label, subLabel);
+			code.add(Subtract);
+
+			code.add(JumpFalse, trueLabel);
+			code.add(Jump,falseLabel);
+
+			code.add(Label, trueLabel);
+			code.add(PushI, 1);
+			code.add(Jump, joinLabel);
+			code.add(Label, falseLabel);
+			code.add(PushI, 0);
+			code.add(Jump, joinLabel);
+			code.add(Label, joinLabel);
+		}
+		private void visitComparisonNotEqualStringOperatorNode(OperatorNode node,
+																Lextant operator) {
+
+			ASMCodeFragment arg1 = removeValueCode(node.child(0));
+			ASMCodeFragment arg2 = removeValueCode(node.child(1));
+
+			Labeller labeller = new Labeller("compare");
+
+			String startLabel = labeller.newLabel("arg1");
+			String arg2Label  = labeller.newLabel("arg2");
+			String subLabel   = labeller.newLabel("sub");
+			String trueLabel  = labeller.newLabel("true");
+			String falseLabel = labeller.newLabel("false");
+			String joinLabel  = labeller.newLabel("join");
+
+			newValueCode(node);
+			code.add(Label, startLabel);
+			code.append(arg1);
+			code.add(Label, arg2Label);
+			code.append(arg2);
+			code.add(Label, subLabel);
+			code.add(Subtract);
+
+			code.add(JumpFalse, falseLabel);
+			code.add(Jump, trueLabel);
+
+			code.add(Label, trueLabel);
+			code.add(PushI, 1);
+			code.add(Jump, joinLabel);
+			code.add(Label, falseLabel);
+			code.add(PushI, 0);
+			code.add(Jump, joinLabel);
+			code.add(Label, joinLabel);
+
 		}
 		private void visitUnaryOperatorNode(OperatorNode node) {
 			newValueCode(node);

@@ -125,7 +125,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		if (childTypes.size() == 2) {
 			if (node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
 				signature = FunctionSignature.signatureOfInteger(operator);
-			} else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT){
+			}
+			else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT){
 				signature = FunctionSignature.signatureOfFloat(operator);
 			}
 			else if(node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER){
@@ -133,6 +134,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			}
 			else if(node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN){
 				signature = FunctionSignature.signatureOfBoolean(operator);
+			}
+			else if(node.child(0).getType() == ReferenceType.STRING && node.child(1).getType() == ReferenceType.STRING){
+				signature = FunctionSignature.signatureOfString(operator);
 			}
 		} else {
 			if(node.child(0).getType() == PrimitiveType.INTEGER) {
