@@ -1,0 +1,5 @@
+main
+{
+    const floatscience := 1.23e-4;
+    print floatscience;
+}
