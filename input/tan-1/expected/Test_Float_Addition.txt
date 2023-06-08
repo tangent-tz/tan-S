@@ -1,5 +1,5 @@
-4.25
--4.75
-3.25
-10.0
-1888888.87
+Basic addition: 4.25
+Addition with negative numbers: -4.75
+Addition with mixed positive and negative numbers: 3.25
+Addition with zero: 10.0
+Addition with large numbers: 1888888.87
