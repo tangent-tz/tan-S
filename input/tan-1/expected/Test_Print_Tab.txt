@@ -1,0 +1,14 @@
+	|ident1
+		|indent2
+			|indent3
+				|indent4
+					|indent5
+						|indent6
+							|indent7
+								|indent8
+									|indent9
+										|indent10
+hi	tanzil	w	133	-14.560000	true	false
+this is a new line
+12.200000
+r this is l	true		false
