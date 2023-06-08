@@ -1,5 +1,16 @@
 main
 {
     const floatscience := 1.23e-4;
-    print floatscience;
+    print floatscience \n;
+
+    const floatsciencea := 1.23e+4;
+     print floatsciencea \n;
+
+    const floatscienceb := 1.23e4;
+    print floatscienceb \n;
+
+    print 1.23e4 +5.0 \n;
+
+    print 1.23e-4 +5.0 \n;
+
 }
