@@ -1,0 +1,64 @@
+Declare a 'var' variable with a simple integer:
+123
+
+Declare a 'var' variable with a float:
+45.678
+
+Re-assignment of 'var' variable to a new integer value:
+56
+
+Re-assignment of 'var' variable to a new float value:
+3546.00055
+
+Re-assignment of 'var' variable to a 'const' integer value:
+99
+
+Re-assignment of 'var' variable to a 'const' float value:
+1.245
+
+Re-assignment of 'var' variable to another 'var' integer variable:
+1
+
+Re-assignment of 'var' variable to another 'var' float variable:
+1.234
+
+Re-assignment of 'var' variable to an expression with literals (integer):
+6
+
+Re-assignment of 'var' variable to an expression with literals (float):
+6.653
+
+Re-assignment of 'var' variable to an expression with variables (integer):
+1000327
+
+Re-assignment of 'var' variable to an expression with variables (float):
+14402.159
+
+Re-assignment of 'var' variable to an expression that references itself (integer):
+1000514
+
+Re-assignment of 'var' variable to an expression that references itself (float):
+9014424.849
+
+Declaring and using a const variable (integer):
+10
+
+Declaring and using a var variable (integer):
+5
+
+Changing the value of a var variable (integer):
+8
+
+Using a const variable in an expression (integer):
+5
+
+Re-declaring a var variable in an inner scope (integer):
+20
+10
+
+Declaring const and var variables with different types (string and integer):
+Hello
+10
+
+Using const and var variables in a complex expression (integer):
+8

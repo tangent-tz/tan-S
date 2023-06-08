@@ -9,13 +9,15 @@ public interface ParseNodeVisitor {
 	void visitEnter(OperatorNode node);
 	void visitLeave(OperatorNode node);
 	
-	void visitEnter(MainBlockNode node);
-	void visitLeave(MainBlockNode node);
+	void visitEnter(BlockStatementNode node);
+	void visitLeave(BlockStatementNode node);
 
 	void visitEnter(DeclarationNode node);
 	void visitLeave(DeclarationNode node);
 
-	
+	void visitEnter(AssignmentStatementNode node);
+	void visitLeave(AssignmentStatementNode node);
+
 	void visitEnter(ParseNode node);
 	void visitLeave(ParseNode node);
 	
@@ -31,8 +33,9 @@ public interface ParseNodeVisitor {
 	void visit(ErrorNode node);
 	void visit(IdentifierNode node);
 	void visit(IntegerConstantNode node);
-
 	void visit(FloatConstantNode node);
+	void visit(CharacterNode node);
+	void visit(StringConstantNode node);
 	void visit(NewlineNode node);
 	void visit(SpaceNode node);
 
@@ -61,11 +64,17 @@ public interface ParseNodeVisitor {
 		}
 		public void visitLeave(DeclarationNode node) {
 			defaultVisitLeave(node);
-		}					
-		public void visitEnter(MainBlockNode node) {
+		}
+		public void visitEnter(AssignmentStatementNode node) {
 			defaultVisitEnter(node);
 		}
-		public void visitLeave(MainBlockNode node) {
+		public void visitLeave(AssignmentStatementNode node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(BlockStatementNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(BlockStatementNode node) {
 			defaultVisitLeave(node);
 		}				
 		public void visitEnter(ParseNode node) {
@@ -98,14 +107,20 @@ public interface ParseNodeVisitor {
 			defaultVisitForLeaf(node);
 		}
 		public void visit(IntegerConstantNode node) {
-		defaultVisitForLeaf(node);
-	}
+			defaultVisitForLeaf(node);
+		}
 		public void visit(FloatConstantNode node) {
+			defaultVisitForLeaf(node);
+		}
+		public void visit(CharacterNode node) {
+			defaultVisitForLeaf(node);
+		}
+		public void visit(StringConstantNode node) {
 			defaultVisitForLeaf(node);
 		}
 		public void visit(NewlineNode node) {
 			defaultVisitForLeaf(node);
-		}	
+		}
 		public void visit(SpaceNode node) {
 			defaultVisitForLeaf(node);
 		}

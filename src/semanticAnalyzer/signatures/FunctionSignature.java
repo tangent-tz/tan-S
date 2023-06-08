@@ -86,24 +86,70 @@ public class FunctionSignature {
 	// this section will probably disappear in tan-1 (in favor of FunctionSignatures)
 	
 	private static FunctionSignature addSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
-	private static FunctionSignature subtractSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
-	private static FunctionSignature multiplySignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
+	private static FunctionSignature subtractIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
+	private static FunctionSignature negateIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
+	private static FunctionSignature addIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
+	private static FunctionSignature addFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
+	private static FunctionSignature multiplyIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature greaterSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
+	private static FunctionSignature subtractFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
+	private static FunctionSignature negateFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
+	private static FunctionSignature divisionFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
+	private static FunctionSignature divisionIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
+	private static FunctionSignature multiplyFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
+
 
 	
 	// the switch here is ugly compared to polymorphism.  This should perhaps be a method on Lextant.
-	public static FunctionSignature signatureOf(Lextant lextant) {
+	public static FunctionSignature signatureOfInteger(Lextant lextant) {
 		assert(lextant instanceof Punctuator);	
 		Punctuator punctuator = (Punctuator)lextant;
 		
 		switch(punctuator) {
-		case ADD:		return addSignature;
-		case SUBTRACT:  return subtractSignature;
-		case MULTIPLY:	return multiplySignature;
+		case ADD:		return addIntegerSignature;
+		case SUBTRACT:  return subtractIntegerSignature;
+		case MULTIPLY:	return multiplyIntegerSignature;
+		case DIVIDE:	return divisionIntegerSignature;
 		case GREATER:	return greaterSignature;
 
 		default:
 			return neverMatchedSignature;
+		}
+	}
+	public static FunctionSignature signatureOfFloat(Lextant lextant) {
+		assert(lextant instanceof Punctuator);
+		Punctuator punctuator = (Punctuator)lextant;
+
+		switch(punctuator) {
+			case ADD:		return addFloatSignature;
+			case SUBTRACT:  return subtractFloatSignature;
+			case DIVIDE:	return divisionFloatSignature;
+			case MULTIPLY:	return multiplyFloatSignature;
+			default:
+				return neverMatchedSignature;
+		}
+	}
+	public static FunctionSignature unarySignatureOfInteger(Lextant lextant) {
+		assert(lextant instanceof Punctuator);
+		Punctuator punctuator = (Punctuator)lextant;
+
+		switch(punctuator) {
+			case SUBTRACT:  return negateIntegerSignature;
+
+			default:
+				return neverMatchedSignature;
+		}
+	}
+	public static FunctionSignature unarySignatureOfFloat(Lextant lextant) {
+		assert (lextant instanceof Punctuator);
+		Punctuator punctuator = (Punctuator) lextant;
+
+		switch (punctuator) {
+			case SUBTRACT:
+				return negateFloatSignature;
+
+			default:
+				return neverMatchedSignature;
 		}
 	}
 

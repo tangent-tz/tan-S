@@ -1,0 +1,32 @@
+main {
+    const x := 10;
+    const y := 5;
+
+    # Negation of a positive integer
+    const negx := -10;
+    print negx;  # Output: -10
+    print \n;
+
+    # Negation of a negative integer
+ #   const negy := -(-5);
+ #   print negy;   Output: 5
+ #   print \n;
+
+    # Negation of zero
+    const zero := 0;
+    const negzero := -0;
+    print negzero;  # Output: 0
+    print \n;
+
+    # Negation of a large positive integer
+    const largepos := 999999;
+    const neglargepos := -999999;
+    print neglargepos;  # Output: -999999
+    print \n;
+
+    # Negation of a large negative integer
+ #   const largeneg := -888888;
+ #   const neglargeneg := -(-888888);
+ #   print neglargeneg;   Output: 888888
+ #   print \n;
+}

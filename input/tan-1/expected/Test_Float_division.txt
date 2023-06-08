@@ -1,0 +1,19 @@
+Division by zero error
+
+3.75
+
+3.5
+
+-4.0
+
+-6.25
+
+Division by zero error
+
+3.75
+
+3.5
+
+-4.0
+
+-6.25
