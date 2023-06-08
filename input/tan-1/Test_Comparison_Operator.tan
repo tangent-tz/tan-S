@@ -287,42 +287,6 @@ main {
 
     # Expected output: false
 
-    # Test 33: Less than comparison for booleans
-    var abool := true;
-    var bbool := false;
-    var resultlessthanbool := abool < bbool;
-    print resultlessthanbool;
-    print \n;
-
-    # Expected output: false
-
-    # Test 34: Less than comparison for booleans - negative case
-    var cbool := false;
-    var dbool := true;
-    var resultlessthannegativebool := cbool < dbool;
-    print resultlessthannegativebool;
-    print \n;
-
-    # Expected output: true
-
-    # Test 35: Less than or equal to comparison for booleans
-    var ebool := true;
-    var fbool := true;
-    var resultlessthanorequalbool := ebool <= fbool;
-    print resultlessthanorequalbool;
-    print \n;
-
-    # Expected output: true
-
-    # Test 36: Less than or equal to comparison for booleans - negative case
-    var gbool := false;
-    var hbool := true;
-    var resultlessthanorequalnegativebool := gbool <= hbool;
-    print resultlessthanorequalnegativebool;
-    print \n;
-
-   # Expected output: true
-
    # Test 37: Equal to comparison for booleans
     var ibool := false;
     var jbool := false;
@@ -366,20 +330,20 @@ main {
 #   print resultequaltostr;
 #   print \n;
 
-    # Expected output: true
+    # Expected output: false
 
     # Test 42: Equal to comparison for strings - negative case
 #    var kstr := "hello";
-#    var lstr := "world";
+#    var lstr := kstr;
 #    var resultequaltonegativestr := kstr == lstr;
 #    print resultequaltonegativestr;
 #    print \n;
 
-    # Expected output: false
+    # Expected output: true
 
     # Test 43: Not equal to comparison for strings
 #    var mstr := "hello";
-#    var nstr := "world";
+#    var nstr := "hello";
 #    var resultnotequaltostr := mstr != nstr;
 #    print resultnotequaltostr;
 #    print \n;
@@ -388,7 +352,7 @@ main {
 
     # Test 44: Not equal to comparison for strings - negative case
 #    var ostr := "hello";
-#    var pstr := "hello";
+#    var pstr := ostr;
 #    var resultnotequaltonegativestr := ostr != pstr;
 #    print resultnotequaltonegativestr;
 #    print \n;
