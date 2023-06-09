@@ -71,10 +71,13 @@ def expected_file_orchestrator():
 def check_two_list(compilerOutput, expectedOutput):
     total = len(expectedOutput)
     counter = 0
+    fail = []
     for i in range(total):
         if compilerOutput[i] == expectedOutput[i]:
             counter += 1
-    return counter, total
+        else:
+            fail.append(f"{compilerOutput[i]} | {expectedOutput[i]}")
+    return counter, total, fail
 
 
 def ticks(dt):
@@ -84,9 +87,14 @@ def ticks(dt):
 def assertions(tanFiles, compilerOutput, expectedOutput):
     temp = ''
     for i in range(len(tanFiles)):
-        common, total = check_two_list(compilerOutput[i], expectedOutput[i])
-        temp = temp + f'{tanFiles[i]}: {common}/{total} \n'
-    with open(f"{datetime.datetime.now().year}-{datetime.datetime.now().month}-{datetime.datetime.now().day}_{datetime.datetime.now().hour}-{datetime.datetime.now().minute}-{datetime.datetime.now().second}.txt",
+        common, total, fail = check_two_list(compilerOutput[i], expectedOutput[i])
+        temp = temp + f'{tanFiles[i]}: {common}/{total}'
+        if (len(fail)) > 0:
+            temp = temp + f' <<<------------->>> {fail}\n'
+        else:
+            temp = temp + '\n'
+    with open(
+            f"{datetime.datetime.now().year}-{datetime.datetime.now().month}-{datetime.datetime.now().day}_{datetime.datetime.now().hour}-{datetime.datetime.now().minute}-{datetime.datetime.now().second}.txt",
             'w') as file:
         for line in temp:
             file.write(line)
