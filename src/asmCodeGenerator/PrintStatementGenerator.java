@@ -9,6 +9,7 @@ import parseTree.ParseNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.SpaceNode;
+import parseTree.nodeTypes.TabNode;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
@@ -32,7 +33,7 @@ public class PrintStatementGenerator {
 
 	public void generate(PrintStatementNode node) {
 		for(ParseNode child : node.getChildren()) {
-			if(child instanceof NewlineNode || child instanceof SpaceNode) {
+			if(child instanceof NewlineNode || child instanceof SpaceNode || child instanceof TabNode) {
 				ASMCodeFragment childCode = visitor.removeVoidCode(child);
 				code.append(childCode);
 			}

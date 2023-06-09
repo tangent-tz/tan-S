@@ -1,0 +1,8 @@
+# Starting an identifier with a digit should throw error(s)
+
+main {
+    var 978time = 88.65;
+    print 978time;
+
+    # Expected error: syntax error: (Test_Identifier_NamingConventions_Violation_Digit.tan line 4, character 8) expecting identifier
+}

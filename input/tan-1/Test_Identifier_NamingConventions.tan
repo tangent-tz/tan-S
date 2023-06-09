@@ -1,0 +1,53 @@
+main {
+    # Test 1: Identifiers with more than 1 characters
+    print "Test 1: Identifiers with more than 1 characters" \n;
+
+    const jA_@1998 := 1;
+    const A9 := 2.6847;
+    const _someVar_45@ := "hello";
+    const @var@4 := %064;
+    const cHicken_@_7pm := true;
+    const camelCase := 'i';
+    const _falseBool := false;
+
+    print jA_@1998 \n;
+    print A9 \n;
+    print _someVar_45@ \n;
+    print @var@4 \n;
+    print cHicken_@_7pm \n;
+    print camelCase \n;
+    print _falseBool \n;
+    print \n;
+
+    #==============================================================
+
+    # Test 2: Identifiers with just a single character
+    print "Test 2: Identifiers with just a single character" \n;
+
+    var o := 'o';
+    var P := "program";
+    var _ := 12.34 + 43.46 - 0.43;
+    var @ := true;
+
+    print o \n;
+    print P \n;
+    print _ \n;
+    print @ \n;
+    print \n;
+
+    #==============================================================
+
+    # Test 3: Re-assignment of var variables
+    print "Test 3: Re-assignment of var variables" \n;
+
+    o := 'y';
+    P := "new P";
+    _ := -1.333;
+    @ := false;
+
+    print o \n;
+    print P \n;
+    print _ \n;
+    print @ \n;
+
+}
