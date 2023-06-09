@@ -27,5 +27,5 @@ main {
     var k := 'r';
     var l := "this is l";
     var m := true;
-    print i \ j \n k \s l \t m \t\t false;
+    print i \ j \n k \s l \t m \t\t false\n;
 }
