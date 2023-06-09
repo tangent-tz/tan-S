@@ -1,0 +1,31 @@
+main {
+    # Test 1: Basic tab works
+    print \t "|ident1" \n;
+    print \t\t "|indent2" \n;
+    print \t\t\t "|indent3" \n;
+    print \t\t\t\t "|indent4" \n;
+    print \t\t\t\t\t "|indent5" \n;
+    print \t\t\t\t\t\t "|indent6" \n;
+    print \t\t\t\t\t\t\t "|indent7" \n;
+    print \t\t\t\t\t\t\t\t "|indent8" \n;
+    print \t\t\t\t\t\t\t\t\t "|indent9" \n;
+    print \t\t\t\t\t\t\t\t\t\t "|indent10" \n;
+
+    # Test 2: Tabbing in between literals and expressions.
+    print "hi" \t
+        "tanzil" \t
+        %167 \t
+        123+10 \t
+        -1.456*10.0 \t
+        true \t
+        false \n
+        "this is a new line" \n;
+
+    # Test 3: Tabbing in between variables
+    var i := 1;
+    var j := 2.2;
+    var k := 'r';
+    var l := "this is l";
+    var m := true;
+    print i \ j \n k \s l \t m \t\t false\n;
+}

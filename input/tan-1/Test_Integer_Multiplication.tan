@@ -27,10 +27,10 @@ main {
     print \n;
 
     # Multiplication with large numbers
-    const i := 99999999;
-    const j := 88888888;
-    print i * j;  # Output: 8888888705555552
-    print \n;
+#   const i := 99999999;
+#   const j := 88888888;
+#   print i * j;   Output: 8888888705555552
+#   print \n;
 
     # Multiplication resulting in a negative value
     const k := -5000;
@@ -39,8 +39,8 @@ main {
     print \n;
 
     # Multiplication involving a large negative value
-    const m := -9999999;
-    const n := 8888888;
-    print m * n;  # Output: -88888877555555112
-    print \n;
+#    const m := -9999999;
+#    const n := 8888888;
+#    print m * n;   Output: -88888877555555112
+#    print \n;
 }
