@@ -4,7 +4,7 @@ main {
     # Test 1: division by zero using const variables
 #   const a := 10.0;
 #   const b := 0.0;
-#   print a / b;  # Expected output: Division by zero error
+#   print a / b;   Expected output: Division by zero error
 #   print \n;
 
 #=======================================================================================#
@@ -44,7 +44,7 @@ main {
     # Test 6: division by zero using var variables
 #    var vara := 10.0;
 #    var varb := 0.0;
-#    print vara / varb;  # Expected output: Division by zero error
+#    print vara / varb;   Expected output: Division by zero error
 #    print \n;
 
 #=======================================================================================#
