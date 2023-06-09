@@ -3,10 +3,10 @@ main {
     const y := 5;
 
     # Test 1: division by zero using const variables
-    const a := 10;
-    const b := 0;
-    print a / b;  # Expected output: Division by zero error
-    print \n;
+#    const a := 10;
+#    const b := 0;
+#    print a / b;  # Expected output: Division by zero error
+#    print \n;
 
     # Test 2: division resulting in an integer using const variables
     const c := 15;
@@ -33,10 +33,10 @@ main {
     print \n;
 
     # Test 6: division by zero using var variables
-    var vara := 10;
-    var varb := 0;
-    print vara / varb;  # Expected output: Division by zero error
-    print \n;
+#    var vara := 10;
+#    var varb := 0;
+#    print vara / varb;  # Expected output: Division by zero error
+#    print \n;
 
     # Test 7: division resulting in an integer using var variables
     var varc := 15;

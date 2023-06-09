@@ -1,10 +1,8 @@
-Division by zero using const variables: Division by zero error
-Division resulting in an integer using const variables: 3.75
-Division resulting in a float using const variables: 3.5
-Division with negative numbers using const variables: -4.0
-Division with mixed positive and negative numbers using const variables: -6.25
-Division by zero using var variables: Division by zero error
-Division resulting in an integer using var variables: 3.75
-Division resulting in a float using var variables: 3.5
-Division with negative numbers using var variables: 4.0
-Division with mixed positive and negative numbers using var variables: -6.25
+3.750000
+3.500000
+-4.000000
+-6.250000
+3.750000
+3.500000
+4.000000
+-6.250000

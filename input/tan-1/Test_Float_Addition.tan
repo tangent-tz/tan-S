@@ -10,20 +10,20 @@ main {
 #=======================================================================================#
 
     # Addition with negative numbers
-#    const floatthree := -3.25;
-#    const floatfour := -1.5;
-#    const resulttwo := floatthree + floatfour;
-#    print resulttwo;   Output: -4.75
-#    print \n;
+   const floatthree := -3.25;
+   const floatfour := -1.5;
+   const resulttwo := floatthree + floatfour;
+   print resulttwo;   #Output: -4.75
+   print \n;
 
 #=======================================================================================#
 
     # Addition with mixed positive and negative numbers
-#    const floatfive := 5.5;
-#    const floatsix := -2.25;
-#    const resultthree := floatfive + floatsix;
-#    print resultthree;   Output: 3.25
-#    print \n;
+    const floatfive := 5.5;
+    const floatsix := -2.25;
+    const resultthree := floatfive + floatsix;
+    print resultthree;   #Output: 3.25
+    print \n;
 
 #=======================================================================================#
 
