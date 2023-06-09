@@ -125,7 +125,7 @@ public class Parser {
 			} while(startsPrintSeparator(nowReading));
 		}
 		return parent;
-	}	
+	}
 	private boolean startsPrintExpressionList(Token token) {
 		return startsExpression(token) || startsPrintSeparator(token) || token.isLextant(Punctuator.TERMINATOR);
 	}
@@ -145,10 +145,15 @@ public class Parser {
 			readToken();
 			ParseNode child = new NewlineNode(previouslyRead);
 			parent.appendChild(child);
-		}		
+		}
 		else if(nowReading.isLextant(Punctuator.PRINT_SPACE)) {
 			readToken();
 			ParseNode child = new SpaceNode(previouslyRead);
+			parent.appendChild(child);
+		}
+		else if(nowReading.isLextant(Punctuator.PRINT_TAB)) {
+			readToken();
+			ParseNode child = new TabNode(previouslyRead);
 			parent.appendChild(child);
 		}
 		else if(nowReading.isLextant(Punctuator.PRINT_SEPARATOR)) {
@@ -156,9 +161,9 @@ public class Parser {
 		} 
 	}
 	private boolean startsPrintSeparator(Token token) {
-		return token.isLextant(Punctuator.PRINT_SEPARATOR, Punctuator.PRINT_SPACE, Punctuator.PRINT_NEWLINE);
+		return token.isLextant(Punctuator.PRINT_SEPARATOR, Punctuator.PRINT_SPACE, Punctuator.PRINT_NEWLINE, Punctuator.PRINT_TAB);
 	}
-	
+
 	
 	// declaration -> CONST identifier := expression TERMINATOR
 	private ParseNode parseDeclaration() {
