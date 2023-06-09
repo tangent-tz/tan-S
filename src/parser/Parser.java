@@ -307,7 +307,7 @@ public class Parser {
 		return startsAtomicExpression(token);
 	}
 	
-	// atomicExpression         -> unaryExpression | literal
+	// atomicExpression         -> unaryExpression | literal | parentheses-wrapped-expression
 	private ParseNode parseAtomicExpression() {
 		if(!startsAtomicExpression(nowReading)) {
 			return syntaxErrorNode("atomic expression");
@@ -315,10 +315,13 @@ public class Parser {
 		if(startsUnaryExpression(nowReading)) {
 			return parseUnaryExpression();
 		}
+		if(startsParenthesesWrappedExpression(nowReading)) {
+			return parseParenthesesWrappedExpression();
+		}
 		return parseLiteral();
 	}
 	private boolean startsAtomicExpression(Token token) {
-		return startsLiteral(token) || startsUnaryExpression(token);
+		return startsLiteral(token) || startsUnaryExpression(token) || startsParenthesesWrappedExpression(token);
 	}
 
 	// unaryExpression			-> UNARYOP atomicExpression
@@ -335,6 +338,22 @@ public class Parser {
 	private boolean startsUnaryExpression(Token token) {
 		return token.isLextant(Punctuator.SUBTRACT);
 	}
+
+
+	//parentheses wrapped expression 	-> ( expression )
+	private ParseNode parseParenthesesWrappedExpression() {
+		if(!startsParenthesesWrappedExpression(nowReading)) {
+			return syntaxErrorNode("parentheses-wrapped expression");
+		}
+		expect(Punctuator.OPEN_PARENTHESIS);
+		ParseNode result = parseExpression();
+		expect(Punctuator.CLOSE_PARENTHESIS);
+		return result;
+	}
+	private boolean startsParenthesesWrappedExpression(Token token) {
+		return token.isLextant(Punctuator.OPEN_PARENTHESIS);
+	}
+
 	
 	// literal -> number | character | identifier | booleanConstant | string
 	private ParseNode parseLiteral() {
