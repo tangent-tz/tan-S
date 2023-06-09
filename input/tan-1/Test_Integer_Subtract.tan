@@ -31,11 +31,13 @@ main {
     print \n;
 
 #     Subtraction with expressions
-#    const expr1 := (x + y) - 3;
-#    print expr1;   Output: 12
+    const exprone := (x + y) - 3;
+    print exprone;   #Output: 12
+    print \n;
 
-#    const expr2 := (c - d) - (x - y);
-#    print expr2;   Output: 20
+    const exprtwo := (c - d) - (x - y);
+    print exprtwo;   #Output: 12
+    print \n;
 
     # Subtraction with zero result
     const zeroresult := x - x;
@@ -48,8 +50,9 @@ main {
     print \n;
 
     # Subtraction with both operands being negative
-#    const bothnegative := -10 - (-3);
-#    print bothnegative;   Output: -7
+    const bothnegative := -10 - (-3);
+    print bothnegative;   #Output: -7
+    print \n;
 
     # Subtraction resulting in a negative value
     const negativeresult := 5 - 10;
@@ -62,10 +65,12 @@ main {
     print \n;
 
     # Subtraction involving expressions and constants
-#    const result := (x * y) - (x + y);
-#    print result;   Output: 35
+    const result := (x * y) - (x + y);
+    print result;   #Output: 35
+    print \n;
 
     # Subtraction involving parentheses and multiple operations
-#    const multiOps := (x - y) - (x + y) + (x * y);
-#    print multiOps;   Output: 15
+    const multiops := (x - y) - (x + y) + (x * y);
+    print multiops;   #Output: 40
+    print \n;
 }
