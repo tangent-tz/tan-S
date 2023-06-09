@@ -1,7 +1,5 @@
-Basic multiplication                                    : 20000
-Multiplication with negative numbers                    : 21000000
-Multiplication with mixed positive and negative numbers : -300000
-Multiplication with zero                                : 0
-Multiplication with large numbers                       : 8888888705555552
-Multiplication resulting in a negative value            : 50000000
-Multiplication involving a large negative value         : -88888877555555112
+20000
+21000000
+-300000
+0
+50000000
