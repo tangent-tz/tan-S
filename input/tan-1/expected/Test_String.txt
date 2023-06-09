@@ -12,5 +12,3 @@ s1 hi  end.
 abc\n678
 abc#678
 abc%678
-
-
