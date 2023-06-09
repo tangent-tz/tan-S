@@ -1,0 +1,8 @@
+main {
+    const x := 4 * (2 + (-3 * ((2 + 7) * 6)));
+    print x;
+
+    # Expected output: -640
+}
+
+
