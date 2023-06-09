@@ -158,26 +158,26 @@ main {
      # 5
 
      # Test 19: Re-declaring a var variable in an inner scope (integer):
-#     var outervalue := 10;
-#     {
-#         var outervalue := 20;
-#         print outervalue;
-#         print \n;
-#     }
-#     print outervalue;
-#     print \n;
+     var outervalue := 10;
+     {
+         var outervalue := 20;
+         print outervalue;
+         print \n;
+     }
+     print outervalue;
+     print \n;
 
      # Expected output:
      # 20
      # 10
 
      # Test 20: Declaring const and var variables with different types (string and integer):
-#     const conststring := "Hello";
-#     var varinteger := 10;
-#     print conststring;
-#     print \n;
-#     print varinteger;
-#     print \n;
+     const conststring := "Hello";
+     var varinteger := 10;
+     print conststring;
+     print \n;
+     print varinteger;
+     print \n;
 
      # Expected output:
      # Hello

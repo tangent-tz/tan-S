@@ -33,18 +33,17 @@ main {
     print \n;
 
     # Addition with expressions
-#    const expone := (x + y) + 3;
-#    print expone;   Output: 18
-#    print \n;
-
-#    const exptwo := (x + y) + (x + y);
-#    print exptwo;   Output: 30
-#    print \n;
+    const expone := (x + y) + 3;
+    print expone;   #Output: 18
+    print \n;
+    const exptwo := (x + y) + (x + y);
+    print exptwo;   #Output: 30
+    print \n;
 
     # Addition with zero result
-#    const zeroresult := x + (-x);
-#    print zeroresult;   Output: 0
-#    print \n;
+    const zeroresult := x + (-x);
+    print zeroresult;   #Output: 0
+    print \n;
 
     # Addition with one operand being zero
     const zerooperand := 0 + y;
@@ -52,14 +51,14 @@ main {
     print \n;
 
     # Addition with both operands being negative
-#    const bothnegative := -10 + (-3);
-#    print bothnegative;   Output: -13
-#    print \n;
+    const bothnegative := -10 + (-3);
+    print bothnegative;   #Output: -13
+    print \n;
 
     # Addition resulting in a negative value
- #   const negativeresult := -5 + (-10);
- #   print negativeresult;   Output: -15
-    #   print \n;
+    const negativeresult := -5 + (-10);
+    print negativeresult;   #Output: -15
+    print \n;
 
     # Addition involving a large negative value
     const largenegative := -999999 + 888888;
@@ -67,12 +66,12 @@ main {
     print \n;
 
     # Addition involving expressions and constants
- #   const result := (x * y) + (x + y);
- #   print result;   Output: 70
-    #   print \n;
+    const result := (x * y) + (x + y);
+    print result;   #Output: 65
+    print \n;
 
     # Addition involving parentheses and multiple operations
-#    const multiops := (x + y) + (x - y) + (x * y);
- #   print multiops;   Output: 40
-    #   print \n;
+    const multiops := (x + y) + (x - y) + (x * y);
+    print multiops;   #Output: 70
+    print \n;
 }

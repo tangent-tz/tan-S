@@ -5,5 +5,5 @@
 main {
     var i := 2 * (3 * (4 - 9);
 
-    # Expected output: syntax error: (Test_ParenthesesWrapppedExpression_Violation.tan line 6, character 29) expecting [CLOSE_PARENTHESIS]
+    # Expected error: syntax error: (Test_ParenthesesWrapppedExpression_Violation.tan line 6, character 29) expecting [CLOSE_PARENTHESIS]
 }
