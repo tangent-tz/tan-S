@@ -1,0 +1,10 @@
+main {
+    # Integer can only be cast to: Boolean, Character, Integer, Floating
+    var v := 100;
+
+    var a := <bool>(v);
+    var b := <char>(v);
+    var c := <string>(v);
+    var d := <int>(v);
+    var e := <float>(v);
+}
