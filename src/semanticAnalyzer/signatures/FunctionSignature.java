@@ -131,13 +131,10 @@ public class FunctionSignature {
 		Punctuator punctuator = (Punctuator)lextant;
 		
 		switch(punctuator) {
-		case ADD:		return addIntegerSignature;
-		case SUBTRACT:  return subtractIntegerSignature;
-		case MULTIPLY:	return multiplyIntegerSignature;
-		case DIVIDE:	return divisionIntegerSignature;
 		case ADD:			return addIntegerSignature;
 		case SUBTRACT:  	return subtractIntegerSignature;
 		case MULTIPLY:		return multiplyIntegerSignature;
+		case DIVIDE:		return divisionIntegerSignature;
 		case GREATER:		return greaterIntegerSignature;
 		case LESSER:		return lesserIntegerSignature;
 		case EQUALS:		return equalsIntegerSignature;
@@ -154,12 +151,9 @@ public class FunctionSignature {
 		Punctuator punctuator = (Punctuator)lextant;
 
 		switch(punctuator) {
-			case ADD:		return addFloatSignature;
-			case SUBTRACT:  return subtractFloatSignature;
-			case DIVIDE:	return divisionFloatSignature;
-			case MULTIPLY:	return multiplyFloatSignature;
 			case ADD:			return addFloatSignature;
 			case SUBTRACT:  	return subtractFloatSignature;
+			case DIVIDE:		return divisionFloatSignature;
 			case MULTIPLY:		return multiplyFloatSignature;
 			case GREATER:		return greaterFloatSignature;
 			case LESSER:		return lesserFloatSignature;
