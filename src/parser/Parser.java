@@ -43,7 +43,7 @@ public class Parser {
 		ParseNode program = new ProgramNode(nowReading);
 		
 		expect(Keyword.MAIN);
-		ParseNode mainBlock = parseMainBlock();
+		ParseNode mainBlock = parseBlockStatement();
 		program.appendChild(mainBlock);
 		
 		if(!(nowReading instanceof NullToken)) {
@@ -55,35 +55,13 @@ public class Parser {
 	private boolean startsProgram(Token token) {
 		return token.isLextant(Keyword.MAIN);
 	}
-	
-	
-	///////////////////////////////////////////////////////////
-	// mainBlock
-	
-	// mainBlock -> { statement* }
-	private ParseNode parseMainBlock() {
-		if(!startsMainBlock(nowReading)) {
-			return syntaxErrorNode("mainBlock");
-		}
-		ParseNode mainBlock = new MainBlockNode(nowReading);
-		expect(Punctuator.OPEN_BRACE);
-		
-		while(startsStatement(nowReading)) {
-			ParseNode statement = parseStatement();
-			mainBlock.appendChild(statement);
-		}
-		expect(Punctuator.CLOSE_BRACE);
-		return mainBlock;
-	}
-	private boolean startsMainBlock(Token token) {
-		return token.isLextant(Punctuator.OPEN_BRACE);
-	}
-	
+
+
 	
 	///////////////////////////////////////////////////////////
 	// statements
 	
-	// statement-> declaration | assignmentStatement | printStmt
+	// statement-> declaration | assignmentStatement | printStmt | blockStatement
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {
 			return syntaxErrorNode("statement");
@@ -97,12 +75,16 @@ public class Parser {
 		if(startsPrintStatement(nowReading)) {
 			return parsePrintStatement();
 		}
+		if(startsBlockStatement(nowReading)) {
+			return parseBlockStatement();
+		}
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
 		return startsPrintStatement(token) ||
 			   	startsDeclaration(token) ||
-				startsAssignmentStatement(token);
+				startsAssignmentStatement(token) ||
+				startsBlockStatement(token);
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
@@ -216,8 +198,27 @@ public class Parser {
 	}
 
 
+	// block statement -> { statement* }
+	private ParseNode parseBlockStatement() {
+		if(!startsBlockStatement(nowReading)) {
+			return syntaxErrorNode("blockStatement");
+		}
+		ParseNode codeBlock = new BlockStatementNode(nowReading);
+		expect(Punctuator.OPEN_BRACE);
 
-	
+		while(startsStatement(nowReading)) {
+			ParseNode statement = parseStatement();
+			codeBlock.appendChild(statement);
+		}
+		expect(Punctuator.CLOSE_BRACE);
+		return codeBlock;
+	}
+	private boolean startsBlockStatement(Token token) {
+		return token.isLextant(Punctuator.OPEN_BRACE);
+	}
+
+
+
 	///////////////////////////////////////////////////////////
 	// expressions
 	// expr                     -> comparisonExpression
@@ -286,7 +287,7 @@ public class Parser {
 		}
 		
 		ParseNode left = parseAtomicExpression();
-		while(nowReading.isLextant(Punctuator.MULTIPLY)) {
+		while(nowReading.isLextant(Punctuator.MULTIPLY) || nowReading.isLextant(Punctuator.DIVIDE)) {
 			Token multiplicativeToken = nowReading;
 			readToken();
 			ParseNode right = parseAtomicExpression();
@@ -295,6 +296,7 @@ public class Parser {
 		}
 		return left;
 	}
+
 	private boolean startsMultiplicativeExpression(Token token) {
 		return startsAtomicExpression(token);
 	}

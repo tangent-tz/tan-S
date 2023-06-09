@@ -1,0 +1,81 @@
+main {
+#=======================================================================================#
+
+    # Test 1: division by zero using const variables
+#   const a := 10.0;
+#   const b := 0.0;
+#   print a / b;   Expected output: Division by zero error
+#   print \n;
+
+#=======================================================================================#
+
+    # Test 2: division resulting in an integer using const variables
+    const c := 15.0;
+    const d := 4.0;
+    print c / d;  # Expected output: 3.75
+    print \n;
+
+#=======================================================================================#
+
+    # Test 3: division resulting in a float using const variables
+    const e := 7.0;
+    const f := 2.0;
+    print e / f;  # Expected output: 3.5
+    print \n;
+
+#=======================================================================================#
+
+    # Test 4: division with negative numbers using const variables
+    const g := -20.0;
+    const h := 5.0;
+    print g / h;  # Expected output: -4.0
+    print \n;
+
+#=======================================================================================#
+
+    # Test 5: division with mixed positive and negative numbers using const variables
+    const i := 25.0;
+    const j := -4.0;
+    print i / j;  # Expected output: -6.25
+    print \n;
+
+#=======================================================================================#
+
+    # Test 6: division by zero using var variables
+#    var vara := 10.0;
+#    var varb := 0.0;
+#    print vara / varb;   Expected output: Division by zero error
+#    print \n;
+
+#=======================================================================================#
+
+    # Test 7: division resulting in an integer using var variables
+    var varc := 15.0;
+    var vard := 4.0;
+    print varc / vard;  # Expected output: 3.75
+    print \n;
+
+#=======================================================================================#
+
+    # Test 8: division resulting in a float using var variables
+    var vare := 7.0;
+    var varf := 2.0;
+    print vare / varf;  # Expected output: 3.5
+    print \n;
+
+#=======================================================================================#
+
+    # Test 9: division with negative numbers using var variables
+    var varg := -20.0;
+    var varh := 5.0;
+    print varg / varh;  # Expected output: -4.0
+    print \n;
+
+#=======================================================================================#
+
+    # Test 10: division with mixed positive and negative numbers using var variables
+    var vari := 25.0;
+    var varj := -4.0;
+    print vari / varj;  # Expected output: -6.25
+    print \n;
+}

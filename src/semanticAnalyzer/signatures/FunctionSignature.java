@@ -93,6 +93,8 @@ public class FunctionSignature {
 	private static FunctionSignature greaterIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
 	private static FunctionSignature subtractFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 	private static FunctionSignature negateFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
+	private static FunctionSignature divisionFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
+	private static FunctionSignature divisionIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature multiplyFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 	private static FunctionSignature lesserIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
 	private static FunctionSignature equalsIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
@@ -129,6 +131,10 @@ public class FunctionSignature {
 		Punctuator punctuator = (Punctuator)lextant;
 		
 		switch(punctuator) {
+		case ADD:		return addIntegerSignature;
+		case SUBTRACT:  return subtractIntegerSignature;
+		case MULTIPLY:	return multiplyIntegerSignature;
+		case DIVIDE:	return divisionIntegerSignature;
 		case ADD:			return addIntegerSignature;
 		case SUBTRACT:  	return subtractIntegerSignature;
 		case MULTIPLY:		return multiplyIntegerSignature;
@@ -148,6 +154,10 @@ public class FunctionSignature {
 		Punctuator punctuator = (Punctuator)lextant;
 
 		switch(punctuator) {
+			case ADD:		return addFloatSignature;
+			case SUBTRACT:  return subtractFloatSignature;
+			case DIVIDE:	return divisionFloatSignature;
+			case MULTIPLY:	return multiplyFloatSignature;
 			case ADD:			return addFloatSignature;
 			case SUBTRACT:  	return subtractFloatSignature;
 			case MULTIPLY:		return multiplyFloatSignature;
