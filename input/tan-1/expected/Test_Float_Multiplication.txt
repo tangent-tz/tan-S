@@ -1,7 +1,7 @@
-Multiplying two positive floating-point numbers                                         : 7.85
-Multiplying a positive floating-point number with a negative floating-point number      : -7.85
-Multiplying a negative floating-point number with two negative floating-point number    : 7.85
-Multiplying a floating-point number by zero                                             : 0.0
-Multiplying floating-point numbers with different decimal precision                     : 8.5397
-Test the associativity of the multiplication operation                                  : 24.0
-Test for any possible edge cases or corner cases                                        : 0.0
+7.850000
+-7.850000
+7.850000
+0.000000
+8.539700
+24.000000
+0.000000
