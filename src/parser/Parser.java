@@ -373,7 +373,7 @@ public class Parser {
 
 		ParseNode expressionNode = parseParenthesesWrappedExpression();
 		TypeIndicatorNode typeNode = new TypeIndicatorNode(targetTypeToken);
-		Token tokenForCasting = Punctuator.NULL_PUNCTUATOR.prototype();
+		Token tokenForCasting = Punctuator.CAST.prototype();
 
 		return OperatorNode.withChildren(tokenForCasting, typeNode, expressionNode);
 	}

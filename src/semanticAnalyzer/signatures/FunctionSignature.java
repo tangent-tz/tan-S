@@ -225,4 +225,13 @@ public class FunctionSignature {
 				return neverMatchedSignature;
 		}
 	}
+
+	//TYPE CASTING SIGNATURES
+	public static FunctionSignature signatureOfCastingBoolean(Lextant lextant) {
+		assert(lextant instanceof Punctuator);
+		Punctuator punctuator = (Punctuator)lextant;
+
+
+
+	}
 }
