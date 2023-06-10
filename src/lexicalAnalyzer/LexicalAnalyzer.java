@@ -81,23 +81,65 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		return NumberToken.make(firstChar, buffer.toString(), isFloat);
 	}
 	private boolean appendSubsequentDigits(StringBuffer buffer) {
-		LocatedChar c = input.next();
 		boolean isFloatTriggered = false;
-		while(c.isDigit() || c.getCharacter() == '.') {
-			if(isFloatTriggered && c.getCharacter() == '.') {
-				lexicalError(c);
-			}
-			if (c.getCharacter() == '.') {
-				isFloatTriggered = true;
-			}
+		LocatedChar c = input.next();
+		while(c.isDigit()) {
 			buffer.append(c.getCharacter());
 			c = input.next();
 		}
+		if(c.getCharacter() != '.') {
+			input.pushback(c);
+			return isFloatTriggered;
+		}
+
+		isFloatTriggered = true;
+		buffer.append(c.getCharacter());
+		c = input.next();
+		if(!c.isDigit()) {
+			lexicalError(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+		while(c.isDigit()) {
+			buffer.append(c.getCharacter());
+			c = input.next();
+		}
+
+		if(c.getCharacter() != 'e' && c.getCharacter() != 'E') {
+			input.pushback(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+
+		if (c.getCharacter() != '+' && c.getCharacter() != '-') {
+			lexicalError(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+
+		if(!c.isDigit()) {
+			lexicalError(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+		while(c.isDigit()) {
+			buffer.append(c.getCharacter());
+			c = input.next();
+		}
+
 		input.pushback(c);
 		return isFloatTriggered;
 	}
-	
-	
+
+
 	//////////////////////////////////////////////////////////////////////////////
 	// Identifier and keyword lexical analysis	
 
