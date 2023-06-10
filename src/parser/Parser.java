@@ -375,7 +375,7 @@ public class Parser {
 		TypeIndicatorNode typeNode = new TypeIndicatorNode(targetTypeToken);
 		Token tokenForCasting = Punctuator.NULL_PUNCTUATOR.prototype();
 
-		return TypeCastingNode.withChildren(tokenForCasting, typeNode, expressionNode);
+		return OperatorNode.withChildren(tokenForCasting, typeNode, expressionNode);
 	}
 	private boolean startsTypeCastingExpression(Token token) {
 		return token.isLextant(Punctuator.LESSER);
