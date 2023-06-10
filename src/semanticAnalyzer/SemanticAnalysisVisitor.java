@@ -160,7 +160,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 				signature = FunctionSignature.unarySignatureOfFloat(operator);
 			}
 		}
-
+		if(signature == null && childTypes.size() == 2) {
+			typeCheckError(node, childTypes);
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
 		if(signature.accepts(childTypes)) {
 			node.setType(signature.resultType());
 		}
