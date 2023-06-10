@@ -81,43 +81,65 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		return NumberToken.make(firstChar, buffer.toString(), isFloat);
 	}
 	private boolean appendSubsequentDigits(StringBuffer buffer) {
-		LocatedChar c = input.next();
 		boolean isFloatTriggered = false;
-		boolean scientificNotationTriggered = false;
-		boolean signTriggered = false;
-		boolean expectSign = false;
-		while(c.isDigit() || c.getCharacter() == '.' || c.getCharacter() == 'e' || c.getCharacter() == 'E' || (c.getCharacter() == '+' && scientificNotationTriggered) || (c.getCharacter() == '-' && scientificNotationTriggered)) {
-			if(expectSign && (c.getCharacter() == '+' || c.getCharacter() == '-' || c.isDigit())) {
-				expectSign = false;
-			}
-			else if(expectSign) {
-				lexicalError(c);
-			}
-			if((isFloatTriggered && c.getCharacter() == '.') || (scientificNotationTriggered && (c.getCharacter() == 'e' || c.getCharacter() == 'E')) || (signTriggered && (c.getCharacter() == '+' || c.getCharacter() == '-'))) {
-				lexicalError(c);
-			}
-			if (c.getCharacter() == '.') {
-				isFloatTriggered = true;
-			}
-			if(c.getCharacter() == '-' || c.getCharacter() == '+') {
-				signTriggered = true;
-			}
-
-			if (c.getCharacter() == 'e' || c.getCharacter() == 'E') {
-				scientificNotationTriggered = true;
-				expectSign = true;
-			}
+		LocatedChar c = input.next();
+		while(c.isDigit()) {
 			buffer.append(c.getCharacter());
 			c = input.next();
 		}
-		input.pushback(c);
-		if (expectSign || (buffer.length() > 0 && (buffer.charAt(buffer.length()-1) == '.'))) {
-			lexicalError(c);
+		if(c.getCharacter() != '.') {
+			input.pushback(c);
+			return isFloatTriggered;
 		}
+
+		isFloatTriggered = true;
+		buffer.append(c.getCharacter());
+		c = input.next();
+		if(!c.isDigit()) {
+			lexicalError(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+		while(c.isDigit()) {
+			buffer.append(c.getCharacter());
+			c = input.next();
+		}
+
+		if(c.getCharacter() != 'e' && c.getCharacter() != 'E') {
+			input.pushback(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+
+		if (c.getCharacter() != '+' && c.getCharacter() != '-') {
+			lexicalError(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+
+		if(!c.isDigit()) {
+			lexicalError(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+		while(c.isDigit()) {
+			buffer.append(c.getCharacter());
+			c = input.next();
+		}
+
+		input.pushback(c);
 		return isFloatTriggered;
 	}
-	
-	
+
+
 	//////////////////////////////////////////////////////////////////////////////
 	// Identifier and keyword lexical analysis	
 

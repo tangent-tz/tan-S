@@ -4,13 +4,14 @@ main
     print floatscience \n;
 
     const floatsciencea := 1.23e+4;
-     print floatsciencea \n;
+    print floatsciencea \n;
 
-    const floatscienceb := 1.23e4;
+    const floatscienceb := 1.23e+4;
     print floatscienceb \n;
 
-    print 1.23e4 +5.0 \n;
+    print 1.23e+4 \n 3 \n;
 
-    print 1.23e-4 +5.0 \n;
+    print 1.23e-4 \n 5.023+(-10.00) \n;
 
+    print 2.2e+3 \n;
 }
