@@ -235,6 +235,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	@Override
 	public void visit(TabNode node) {
 	}
+	@Override
+	public void visit(TypeIndicatorNode node) {
+		node.setType(node.getValue());
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods
