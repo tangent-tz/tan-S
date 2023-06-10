@@ -8,13 +8,10 @@ import tokens.Token;
 public class TypeCastingNode extends ParseNode {
     public TypeCastingNode(Token token) {
         super(token);
-        assert(Keyword.isATypeKeyword(token.getLexeme()));
     }
-
     public TypeCastingNode(ParseNode node) {
         super(node);
     }
-
 
     ////////////////////////////////////////////////////////////
     // attributes
@@ -23,9 +20,10 @@ public class TypeCastingNode extends ParseNode {
     ////////////////////////////////////////////////////////////
     // convenience factory
 
-    public static TypeCastingNode withChild(Token token, ParseNode expressionNode) {
+    public static TypeCastingNode withChildren(Token token, ParseNode typeIndicator, ParseNode expression) {
         TypeCastingNode node = new TypeCastingNode(token);
-        node.appendChild(expressionNode);
+        node.appendChild(typeIndicator);
+        node.appendChild(expression);
         return node;
     }
 

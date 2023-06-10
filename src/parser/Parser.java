@@ -372,7 +372,10 @@ public class Parser {
 		expect(Punctuator.GREATER);
 
 		ParseNode expressionNode = parseParenthesesWrappedExpression();
-		return TypeCastingNode.withChild(targetTypeToken, expressionNode);
+		TypeIndicatorNode typeNode = new TypeIndicatorNode(targetTypeToken);
+		Token tokenForCasting = Punctuator.NULL_PUNCTUATOR.prototype();
+
+		return TypeCastingNode.withChildren(tokenForCasting, typeNode, expressionNode);
 	}
 	private boolean startsTypeCastingExpression(Token token) {
 		return token.isLextant(Punctuator.LESSER);

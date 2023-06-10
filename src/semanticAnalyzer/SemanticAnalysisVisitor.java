@@ -175,6 +175,26 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 
 
+	//type casting
+	@Override
+	public void visitLeave(TypeCastingNode node) {
+		if(node.child(0) instanceof ErrorNode) {
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
+
+		TypeIndicatorNode typeNode = (TypeIndicatorNode) node.child(0);
+		ParseNode expression = node.child(1);
+
+		Type targetType = typeNode.getValue();
+		Type sourceType = expression.getType();
+
+
+
+
+	}
+
+
 
 
 
