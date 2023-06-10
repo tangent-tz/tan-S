@@ -86,12 +86,14 @@ public class FunctionSignature {
 	// Signatures for tan-0 operators
 	// this section will probably disappear in tan-1 (in favor of FunctionSignatures)
 	private static FunctionSignature subtractIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
+	private static FunctionSignature nopIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature negateIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature addIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature addFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 	private static FunctionSignature multiplyIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
 	private static FunctionSignature greaterIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
 	private static FunctionSignature subtractFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
+	private static FunctionSignature nopFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 	private static FunctionSignature negateFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 	private static FunctionSignature divisionFloatSignature = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
 	private static FunctionSignature divisionIntegerSignature = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
@@ -170,6 +172,7 @@ public class FunctionSignature {
 		Punctuator punctuator = (Punctuator)lextant;
 
 		switch(punctuator) {
+			case ADD: 		return nopIntegerSignature;
 			case SUBTRACT:  return negateIntegerSignature;
 
 			default:
@@ -181,8 +184,8 @@ public class FunctionSignature {
 		Punctuator punctuator = (Punctuator) lextant;
 
 		switch (punctuator) {
-			case SUBTRACT:
-				return negateFloatSignature;
+			case ADD: 		return nopFloatSignature;
+			case SUBTRACT:	return negateFloatSignature;
 
 			default:
 				return neverMatchedSignature;
