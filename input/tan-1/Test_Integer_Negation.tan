@@ -29,4 +29,9 @@ main {
     const neglargeneg := -(-888888);
     print neglargeneg;   # Output: 888888
     print \n;
+
+    # Non-negation (aka. unary plus)
+    const i1 := -4 * (+3) + (-3 / +15);
+    print i1 \n;
+
 }

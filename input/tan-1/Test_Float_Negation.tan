@@ -29,4 +29,8 @@ main {
     const neglargeneg := -largeneg;
     print neglargeneg;  # Output: 8888.88
     print \n;
+
+    # Non-negation (aka. unary plus)
+    const f1 := -4.0 * (+3.0) + (-30.0 / +15.0);
+    print f1 \n;
 }

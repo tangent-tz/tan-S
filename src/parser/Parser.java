@@ -342,7 +342,7 @@ public class Parser {
 		return OperatorNode.withChildren(operatorToken, child);
 	}
 	private boolean startsUnaryExpression(Token token) {
-		return token.isLextant(Punctuator.SUBTRACT);
+		return token.isLextant(Punctuator.SUBTRACT) || token.isLextant(Punctuator.ADD);
 	}
 
 

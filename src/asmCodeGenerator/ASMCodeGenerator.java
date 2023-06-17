@@ -250,7 +250,7 @@ public class ASMCodeGenerator {
 		public void visitLeave(OperatorNode node) {
 			Lextant operator = node.getOperator();
 
-			if(operator == Punctuator.SUBTRACT) {
+			if(operator == Punctuator.SUBTRACT || operator == Punctuator.ADD) {
 				if(node.nChildren() == 1)
 					visitUnaryOperatorNode(node);
 				else
@@ -918,6 +918,7 @@ public class ASMCodeGenerator {
 			assert(lextant instanceof Punctuator);
 			Punctuator punctuator = (Punctuator)lextant;
 			switch(punctuator) {
+				case ADD:			return Nop;
 				case SUBTRACT:		return Negate;			// (unary subtract only)
 				default:
 					assert false : "unimplemented operator in opcodeForOperator";
@@ -942,6 +943,7 @@ public class ASMCodeGenerator {
 			assert(lextant instanceof Punctuator);
 			Punctuator punctuator = (Punctuator)lextant;
 			switch(punctuator) {
+				case ADD:			return Nop;
 				case SUBTRACT:		return FNegate;			// (unary subtract only)
 				default:
 					assert false : "unimplemented operator in opcodeForOperator";
