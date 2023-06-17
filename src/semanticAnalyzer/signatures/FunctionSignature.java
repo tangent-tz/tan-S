@@ -136,19 +136,6 @@ public class FunctionSignature {
 	//..
 	private static FunctionSignature equalsStringSignature = new FunctionSignature(1, ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN);
 	private static FunctionSignature notEqualsStringSignature = new FunctionSignature(1, ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN);
-	//..
-	private static FunctionSignature castSignatureBooleanToBoolean = new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN);
-	private static FunctionSignature castSignatureCharacterToBoolean = new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN);
-	private static FunctionSignature castSignatureCharacterToCharacter = new FunctionSignature(1, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER);
-	private static FunctionSignature castSignatureCharacterToInteger = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER);
-	private static FunctionSignature castSignatureStringToString = new FunctionSignature(1, ReferenceType.STRING, ReferenceType.STRING, ReferenceType.STRING);
-	private static FunctionSignature castSignatureIntegerToBoolean = new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN);
-	private static FunctionSignature castSignatureIntegerToCharacter = new FunctionSignature(1, PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.CHARACTER);
-	private static FunctionSignature castSignatureIntegerToInteger = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER);
-	private static FunctionSignature castSignatureIntegerToFloat = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT);
-	private static FunctionSignature castSignatureFloatToInteger = new FunctionSignature(1, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.INTEGER);
-	private static FunctionSignature castSignatureFloatToFloat = new FunctionSignature(1, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT);
-;
 
 
 	// the switch here is ugly compared to polymorphism.  This should perhaps be a method on Lextant.
@@ -251,26 +238,5 @@ public class FunctionSignature {
 				return neverMatchedSignature;
 		}
 	}
-
-	public static FunctionSignature signatureOfCast(Type target, Type source) {
-		String sourceToTarget = source.infoString() + "To" + target.infoString();
-		switch(sourceToTarget) {
-			case BOOLEANtoBOOLEAN:		return castSignatureBooleanToBoolean;
-			case CHARACTERtoBOOLEAN: 	return castSignatureCharacterToBoolean;
-			case CHARACTERtoCHARACTER:	return castSignatureCharacterToCharacter;
-			case CHARACTERtoINTEGER:	return castSignatureCharacterToInteger;
-			case STRINGtoSTRING:		return castSignatureStringToString;
-			case INTEGERtoBOOLEAN:		return castSignatureIntegerToBoolean;
-			case INTEGERtoCHARACTER:	return castSignatureIntegerToCharacter;
-			case INTEGERtoINTEGER:		return castSignatureIntegerToInteger;
-			case INTEGERtoFLOAT:		return castSignatureIntegerToFloat;
-			case FLOATtoINTEGER:		return castSignatureFloatToInteger;
-			case FLOATtoFLOAT:			return castSignatureFloatToFloat;
-			default:
-				return neverMatchedSignature;
-		}
-	}
-
-
 }
 

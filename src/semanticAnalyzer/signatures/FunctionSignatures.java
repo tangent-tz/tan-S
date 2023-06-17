@@ -5,6 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import asmCodeGenerator.codeStorage.ASMOpcode;
+import asmCodeGenerator.operators.*;
+import lexicalAnalyzer.Punctuator;
+import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 
 
@@ -90,6 +95,21 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		// I will not use an ASMOpcode for the whichVariant.  In these cases I typically use
 		// a small object with one method (the "Command" design pattern) that generates the
 		// required code.
+
+		new FunctionSignatures(Punctuator.CAST,
+			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
+			new FunctionSignature(new CharToBoolCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER),
+			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER),
+			new FunctionSignature(ASMOpcode.Nop, ReferenceType.STRING, ReferenceType.STRING, ReferenceType.STRING),
+			new FunctionSignature(new IntToBoolCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+			new FunctionSignature(new IntToCharCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.CHARACTER),
+			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
+			new FunctionSignature(ASMOpcode.ConvertF, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+			new FunctionSignature(ASMOpcode.ConvertI, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.INTEGER),
+			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT)
+		);
+
 
 	}
 

@@ -12,6 +12,7 @@ import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
+import semanticAnalyzer.signatures.FunctionSignatures;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
@@ -142,7 +143,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 		if (childTypes.size() == 2) {
 			if(operatorAsPunctuator == Punctuator.CAST) {
-				signature = FunctionSignature.signatureOfCast(childTypes.get(0), childTypes.get(1));
+				signature = FunctionSignatures.signature(operatorAsPunctuator, childTypes);
 			}
 			else if (node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
 				signature = FunctionSignature.signatureOfInteger(operator);
