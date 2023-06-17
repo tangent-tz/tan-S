@@ -18,7 +18,7 @@ public class TypeIndicatorNode extends ParseNode {
     }
 
     ////////////////////////////////////////////////////////////
-    //atrributes
+    //attributes
 
     public Type getValue() {
         switch(token.getLexeme()) {

@@ -1,5 +1,6 @@
 package tokens;
 
+import inputHandler.TextLocation;
 import lexicalAnalyzer.Lextant;
 import inputHandler.Locator;
 
@@ -11,10 +12,16 @@ public final class LextantToken extends TokenImp {
 		super(locator, lexeme);
 		this.lextant = lextant;
 	}
+
+	private LextantToken(TextLocation location, String lexeme, Lextant lextant) {
+		super(location, lexeme);
+		this.lextant = lextant;
+	}
 	
 	public Lextant getLextant() {
 		return lextant;
 	}
+
 	public boolean isLextant(Lextant ...lextants) {
 		for(Lextant lextant: lextants) {
 			if(this.lextant == lextant)
@@ -29,5 +36,9 @@ public final class LextantToken extends TokenImp {
 	
 	public static LextantToken make(Locator locator, String lexeme, Lextant lextant) {
 		return new LextantToken(locator, lexeme, lextant);
+	}
+
+	public static LextantToken make(TextLocation location, String lexeme, Lextant lextant) {
+		return new LextantToken(location, lexeme, lextant);
 	}
 }

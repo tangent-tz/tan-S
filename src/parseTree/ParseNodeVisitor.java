@@ -27,8 +27,6 @@ public interface ParseNodeVisitor {
 	void visitEnter(ProgramNode node);
 	void visitLeave(ProgramNode node);
 
-	void visitEnter(TypeCastingNode node);
-	void visitLeave(TypeCastingNode node);
 
 
 	// leaf nodes: visitLeaf only
@@ -98,12 +96,6 @@ public interface ParseNodeVisitor {
 			defaultVisitEnter(node);
 		}
 		public void visitLeave(ProgramNode node) {
-			defaultVisitLeave(node);
-		}
-		public void visitEnter(TypeCastingNode node) {
-			defaultVisitEnter(node);
-		}
-		public void visitLeave(TypeCastingNode node) {
 			defaultVisitLeave(node);
 		}
 

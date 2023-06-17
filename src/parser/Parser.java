@@ -366,6 +366,8 @@ public class Parser {
 		if(!startsTypeCastingExpression(nowReading)) {
 			return syntaxErrorNode("type casting expression");
 		}
+
+		LextantToken tokenForCasting = LextantToken.make(nowReading.getLocation(), Punctuator.CAST.getLexeme(), Punctuator.CAST);
 		expect(Punctuator.LESSER);
 		Token targetTypeToken = nowReading;
 		expect(Keyword.BOOL, Keyword.CHAR, Keyword.STRING, Keyword.INT, Keyword.FLOAT);
@@ -373,7 +375,6 @@ public class Parser {
 
 		ParseNode expressionNode = parseParenthesesWrappedExpression();
 		TypeIndicatorNode typeNode = new TypeIndicatorNode(targetTypeToken);
-		Token tokenForCasting = Punctuator.CAST.prototype();
 
 		return OperatorNode.withChildren(tokenForCasting, typeNode, expressionNode);
 	}

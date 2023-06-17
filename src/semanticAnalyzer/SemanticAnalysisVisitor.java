@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
+import lexicalAnalyzer.Punctuator;
 import logging.TanLogger;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
@@ -136,10 +137,14 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 		
 		Lextant operator = operatorFor(node);
+		Punctuator operatorAsPunctuator = Punctuator.forLexeme(operator.getLexeme());
 		FunctionSignature signature = null;
 
 		if (childTypes.size() == 2) {
-			if (node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
+			if(operatorAsPunctuator == Punctuator.CAST) {
+				signature = FunctionSignature.signatureOfCast(childTypes.get(0), childTypes.get(1));
+			}
+			else if (node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
 				signature = FunctionSignature.signatureOfInteger(operator);
 			}
 			else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT){
@@ -176,42 +181,42 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 
 
-	//type casting
-	@Override
-	public void visitLeave(TypeCastingNode node) {
-		if(node.child(0) instanceof ErrorNode) {
-			node.setType(PrimitiveType.ERROR);
-			return;
-		}
-
-		assert node.nChildren() == 2;
-		ParseNode left  = node.child(0);
-		ParseNode right = node.child(1);
-
-		List<Type> childTypes = Arrays.asList(left.getType(), right.getType());
-
-		TypeIndicatorNode typeNode = (TypeIndicatorNode) node.child(0);
-		ParseNode expression = node.child(1);
-
-		Type targetType = typeNode.getValue();
-		Type sourceType = expression.getType();
-
-		Lextant operator = operatorFor(node);
-		FunctionSignature signature = null;
-
-		if(right.getType() == PrimitiveType.BOOLEAN) {
-			signature = FunctionSignature.signatureOfCastingBoolean();
-		}
-		else if(right.getType() == PrimitiveType.CHARACTER) {
-			signature = FunctionSignature.signatureOfCastingCharacter(operator);
-		}
-
-
-	}
-	private Lextant operatorFor(TypeCastingNode node) {
-		LextantToken token = (LextantToken) node.getToken();
-		return token.getLextant();
-	}
+//	//type casting
+//	@Override
+//	public void visitLeave(TypeCastingNode node) {
+////		if(node.child(0) instanceof ErrorNode) {
+////			node.setType(PrimitiveType.ERROR);
+////			return;
+////		}
+////
+////		assert node.nChildren() == 2;
+////		ParseNode left  = node.child(0);
+////		ParseNode right = node.child(1);
+////
+////		List<Type> childTypes = Arrays.asList(left.getType(), right.getType());
+////
+////		TypeIndicatorNode typeNode = (TypeIndicatorNode) node.child(0);
+////		ParseNode expression = node.child(1);
+////
+////		Type targetType = typeNode.getValue();
+////		Type sourceType = expression.getType();
+////
+////		Lextant operator = operatorFor(node);
+////		FunctionSignature signature = null;
+////
+////		if(right.getType() == PrimitiveType.BOOLEAN) {
+////			signature = FunctionSignature.signatureOfCastingBoolean();
+////		}
+////		else if(right.getType() == PrimitiveType.CHARACTER) {
+////			signature = FunctionSignature.signatureOfCastingCharacter(operator);
+////		}
+//
+//
+//	}
+//	private Lextant operatorFor(TypeCastingNode node) {
+//		LextantToken token = (LextantToken) node.getToken();
+//		return token.getLextant();
+//	}
 
 
 
@@ -286,7 +291,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
 		Token token = node.getToken();
-		
+		if (token.isLextant(Punctuator.CAST)) {
+			logError("casting from " + operandTypes.get(1) + " to " + operandTypes.get(0) + " is not allowed, at " + token.getLocation());
+			return;
+		}
+
 		logError("operator " + token.getLexeme() + " not defined for types " 
 				 + operandTypes  + " at " + token.getLocation());	
 	}
