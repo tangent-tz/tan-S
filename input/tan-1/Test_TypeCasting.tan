@@ -1,0 +1,99 @@
+main {
+    # 1. boolean -> boolean
+    var x1 := <bool>(true);
+    print x1;
+    print \n;
+
+    var x2 := <bool>(false);
+    print x2;
+    print \n\n;
+
+
+    # 2. character -> boolean
+    var x3 := <bool>('a');
+    print x3;
+    print \n;
+
+    var y1 := <bool>(%133);
+    print y1;
+    print \n;
+
+    var y2 := <bool>(%000);
+    print y2;
+    print \n\n;
+
+
+    # 3. character -> character
+    var x4 := <char>('T');
+    print x4;
+    print \n\n;
+
+
+    # 4. character -> integer
+    var x5 := <int>('!');
+    print x5;
+    print \n\n;
+
+    # 5. string -> string
+    var x6 := <string>("hello");
+    print x6;
+    print \n\n;
+
+
+    # 6. integer -> boolean
+    var x7 := <bool>(1010);
+    print x7;
+    print \n;
+
+    var x8 := <bool>(0);
+    print x8;
+    print \n;
+
+    var y3 := <bool>(-1);
+    print y3;
+    print \n;
+
+    var y4 := <bool>(1);
+    print y4;
+    print \n\n;
+
+
+    # 7. integer -> character
+    var x9 := <char>(126);
+    print x9;
+    print \n;
+
+    var x10 := <char>(161);
+    print x10;
+    print \n\n;
+
+
+    # 8. integer -> integer
+    var x11 := <int>(1123);
+    print x11;
+    print \n\n;
+
+
+    # 9. integer -> float
+    var x12 := <float>(56);
+    print x12;
+    print \n\n;
+
+
+    # 10. float -> integer
+    var x13 := <int>(34.68);
+    print x13;
+    print \n;
+
+    var y5 := <int>(-12.435);
+    print y5;
+    print \n\n;
+
+
+    # 11. float -> float
+    var x14 := <float>(12.45);
+    print x14;
+    print \n;
+
+
+}
