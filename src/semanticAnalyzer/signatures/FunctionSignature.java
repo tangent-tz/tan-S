@@ -15,22 +15,6 @@ public class FunctionSignature {
 	private Type[] paramTypes;
 	Object whichVariant;
 
-
-	//static strings for casting purpose:
-	private static final String BOOLEANtoBOOLEAN = "BooleanToBoolean";
-	private static final String CHARACTERtoBOOLEAN = "CharacterToBoolean";
-	private static final String CHARACTERtoCHARACTER = "CharacterToCharacter";
-	private static final String CHARACTERtoINTEGER = "CharacterToInteger";
-	private static final String STRINGtoSTRING = "StringToString";
-	private static final String INTEGERtoBOOLEAN = "IntegerToBoolean";
-	private static final String INTEGERtoCHARACTER = "IntegerToCharacter";
-	private static final String INTEGERtoINTEGER = "IntegerToInteger";
-	private static final String INTEGERtoFLOAT = "IntegerToFloat";
-	private static final String FLOATtoINTEGER = "FloatToInteger";
-	private static final String FLOATtoFLOAT = "FloatToFloat";
-
-	
-	
 	///////////////////////////////////////////////////////////////
 	// construction
 	
