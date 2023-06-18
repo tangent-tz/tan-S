@@ -5,6 +5,7 @@ import java.util.Arrays;
 import logging.TanLogger;
 import parseTree.*;
 import parseTree.nodeTypes.*;
+import semanticAnalyzer.types.Type;
 import symbolTable.SymbolTable;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
@@ -317,10 +318,16 @@ public class Parser {
 		if(startsParenthesesWrappedExpression(nowReading)) {
 			return parseParenthesesWrappedExpression();
 		}
+		if(startsTypeCastingExpression(nowReading)) {
+			return parseTypeCastingExpression();
+		}
 		return parseLiteral();
 	}
 	private boolean startsAtomicExpression(Token token) {
-		return startsLiteral(token) || startsUnaryExpression(token) || startsParenthesesWrappedExpression(token);
+		return startsLiteral(token) ||
+				startsUnaryExpression(token) ||
+				startsParenthesesWrappedExpression(token) ||
+				startsTypeCastingExpression(token);
 	}
 
 	// unaryExpression			-> UNARYOP atomicExpression
@@ -335,7 +342,7 @@ public class Parser {
 		return OperatorNode.withChildren(operatorToken, child);
 	}
 	private boolean startsUnaryExpression(Token token) {
-		return token.isLextant(Punctuator.SUBTRACT);
+		return token.isLextant(Punctuator.SUBTRACT) || token.isLextant(Punctuator.ADD);
 	}
 
 
@@ -353,6 +360,27 @@ public class Parser {
 		return token.isLextant(Punctuator.OPEN_PARENTHESIS);
 	}
 
+
+	// type casting expression -> 	<type>(expression)
+	private ParseNode parseTypeCastingExpression() {
+		if(!startsTypeCastingExpression(nowReading)) {
+			return syntaxErrorNode("type casting expression");
+		}
+
+		LextantToken tokenForCasting = LextantToken.make(nowReading.getLocation(), Punctuator.CAST.getLexeme(), Punctuator.CAST);
+		expect(Punctuator.LESSER);
+		Token targetTypeToken = nowReading;
+		expect(Keyword.BOOL, Keyword.CHAR, Keyword.STRING, Keyword.INT, Keyword.FLOAT);
+		expect(Punctuator.GREATER);
+
+		ParseNode expressionNode = parseParenthesesWrappedExpression();
+		TypeIndicatorNode typeNode = new TypeIndicatorNode(targetTypeToken);
+
+		return OperatorNode.withChildren(tokenForCasting, typeNode, expressionNode);
+	}
+	private boolean startsTypeCastingExpression(Token token) {
+		return token.isLextant(Punctuator.LESSER);
+	}
 	
 	// literal -> number | character | identifier | booleanConstant | string
 	private ParseNode parseLiteral() {
