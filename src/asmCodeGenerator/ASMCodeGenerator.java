@@ -1,15 +1,17 @@
 package asmCodeGenerator;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
+import asmCodeGenerator.operators.SimpleCodeGenerator;
 import asmCodeGenerator.runtime.RunTime;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
 import parseTree.*;
 import parseTree.nodeTypes.*;
+import semanticAnalyzer.signatures.FunctionSignature;
+import semanticAnalyzer.signatures.FunctionSignatures;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
@@ -331,6 +333,9 @@ public class ASMCodeGenerator {
 				else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT) {
 					visitComparisonLessEqualFloatOperatorNode(node, operator);
 				}
+			}
+			else if(operator == Punctuator.CAST) {
+				visitCastingOperatorNode(node);
 			}
 			else {
 				visitNormalBinaryOperatorNode(node);
@@ -836,6 +841,26 @@ public class ASMCodeGenerator {
 				code.add(opcode);
 			}
 		}
+
+		private void visitCastingOperatorNode(OperatorNode node) {
+			newValueCode(node);
+			ASMCodeFragment source = removeValueCode(node.child(1));
+			code.append(source);
+
+			generateCastingCodeFragment(node);
+		}
+		private void generateCastingCodeFragment(OperatorNode node) {
+			FunctionSignature castingSignature = FunctionSignatures.signature(Punctuator.CAST, Arrays.asList(node.child(0).getType(), node.child(1).getType()));
+			Object castingVariant = castingSignature.getVariant();
+
+			if(castingVariant instanceof ASMOpcode) {
+				code.add((ASMOpcode) castingVariant);
+				return;
+			}
+
+			((SimpleCodeGenerator)castingVariant).generate(code);
+		}
+
 		private void visitNormalBinaryOperatorNode(OperatorNode node) {
 			newValueCode(node);
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
@@ -874,6 +899,7 @@ public class ASMCodeGenerator {
 				}
 			}
 		}
+
 		private ASMOpcode opcodeForIntegerOperator(Lextant lextant) {
 			assert(lextant instanceof Punctuator);
 			Punctuator punctuator = (Punctuator)lextant;
@@ -960,6 +986,8 @@ public class ASMCodeGenerator {
 			code.add(DataI, node.getValue().length());
 			code.add(DataS, node.getValue());
 			code.add(PushD, strAddressLabel);
+		}
+		public void visit(TypeIndicatorNode node) {
 		}
 	}
 }

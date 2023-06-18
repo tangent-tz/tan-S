@@ -14,6 +14,12 @@ public abstract class TokenImp implements Token {
 		this.lexeme = lexeme;
 	}
 
+	protected TokenImp(TextLocation location, String lexeme) {
+		super();
+		this.location = location;
+		this.lexeme = lexeme;
+	}
+
 	@Override
 	public String getLexeme() {
 		return lexeme;

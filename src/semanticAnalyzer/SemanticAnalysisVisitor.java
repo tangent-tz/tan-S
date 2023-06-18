@@ -2,14 +2,17 @@ package semanticAnalyzer;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
+import lexicalAnalyzer.Punctuator;
 import logging.TanLogger;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
+import semanticAnalyzer.signatures.FunctionSignatures;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
@@ -135,10 +138,14 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 		
 		Lextant operator = operatorFor(node);
+		Punctuator operatorAsPunctuator = Punctuator.forLexeme(operator.getLexeme());
 		FunctionSignature signature = null;
 
 		if (childTypes.size() == 2) {
-			if (node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
+			if(operatorAsPunctuator == Punctuator.CAST) {
+				signature = FunctionSignatures.signature(operatorAsPunctuator, childTypes);
+			}
+			else if (node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
 				signature = FunctionSignature.signatureOfInteger(operator);
 			}
 			else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT){
@@ -214,6 +221,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	@Override
 	public void visit(TabNode node) {
 	}
+	@Override
+	public void visit(TypeIndicatorNode node) {
+		node.setType(node.getValue());
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods
@@ -242,7 +253,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
 		Token token = node.getToken();
-		
+		if (token.isLextant(Punctuator.CAST)) {
+			logError("casting from " + operandTypes.get(1) + " to " + operandTypes.get(0) + " is not allowed, at " + token.getLocation());
+			return;
+		}
+
 		logError("operator " + token.getLexeme() + " not defined for types " 
 				 + operandTypes  + " at " + token.getLocation());	
 	}
