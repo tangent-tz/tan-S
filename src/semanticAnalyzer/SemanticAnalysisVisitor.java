@@ -186,49 +186,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 
 
-//	//type casting
-//	@Override
-//	public void visitLeave(TypeCastingNode node) {
-////		if(node.child(0) instanceof ErrorNode) {
-////			node.setType(PrimitiveType.ERROR);
-////			return;
-////		}
-////
-////		assert node.nChildren() == 2;
-////		ParseNode left  = node.child(0);
-////		ParseNode right = node.child(1);
-////
-////		List<Type> childTypes = Arrays.asList(left.getType(), right.getType());
-////
-////		TypeIndicatorNode typeNode = (TypeIndicatorNode) node.child(0);
-////		ParseNode expression = node.child(1);
-////
-////		Type targetType = typeNode.getValue();
-////		Type sourceType = expression.getType();
-////
-////		Lextant operator = operatorFor(node);
-////		FunctionSignature signature = null;
-////
-////		if(right.getType() == PrimitiveType.BOOLEAN) {
-////			signature = FunctionSignature.signatureOfCastingBoolean();
-////		}
-////		else if(right.getType() == PrimitiveType.CHARACTER) {
-////			signature = FunctionSignature.signatureOfCastingCharacter(operator);
-////		}
-//
-//
-//	}
-//	private Lextant operatorFor(TypeCastingNode node) {
-//		LextantToken token = (LextantToken) node.getToken();
-//		return token.getLextant();
-//	}
-
-
-
-
-
-
-
 	///////////////////////////////////////////////////////////////////////////
 	// simple leaf nodes
 	@Override
