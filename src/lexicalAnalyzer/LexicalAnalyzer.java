@@ -7,11 +7,7 @@ import inputHandler.InputHandler;
 import inputHandler.LocatedChar;
 import inputHandler.LocatedCharStream;
 import inputHandler.PushbackCharStream;
-import tokens.IdentifierToken;
-import tokens.LextantToken;
-import tokens.NullToken;
-import tokens.NumberToken;
-import tokens.Token;
+import tokens.*;
 
 import static lexicalAnalyzer.PunctuatorScanningAids.*;
 
@@ -36,15 +32,24 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		if(ch.isDigit()) {
 			return scanNumber(ch);
 		}
-		else if(ch.isLowerCase()) {
+		else if(ch.isIdentifierStarter()) {
 			return scanIdentifier(ch);
 		}
 		else if(isPunctuatorStart(ch)) {
-			if (Punctuator.forLexeme("" + ch.getCharacter()) == Punctuator.HASH_SYMBOL) {
+			Punctuator p = Punctuator.forLexeme(ch.getCharacter());
+			if (p == Punctuator.HASH_SYMBOL) {
 				scanComment();
 				return findNextToken();
+			} else if (p == Punctuator.PERCENT_SIGN) {
+				return scanCharacterOct(ch);
 			}
 			return PunctuatorScanner.scan(ch, input);
+		}
+		else if(ch.isCharacterWrapper()) {
+			return scanCharacterSingle(ch);
+		}
+		else if(ch.isStringWrapper()) {
+			return scanString(ch);
 		}
 		else if(isEndOfInput(ch)) {
 			return NullToken.make(ch);
@@ -76,30 +81,72 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		return NumberToken.make(firstChar, buffer.toString(), isFloat);
 	}
 	private boolean appendSubsequentDigits(StringBuffer buffer) {
-		LocatedChar c = input.next();
 		boolean isFloatTriggered = false;
-		while(c.isDigit() || c.getCharacter() == '.') {
-			if(isFloatTriggered && c.getCharacter() == '.') {
-				lexicalError(c);
-			}
-			if (c.getCharacter() == '.') {
-				isFloatTriggered = true;
-			}
+		LocatedChar c = input.next();
+		while(c.isDigit()) {
 			buffer.append(c.getCharacter());
 			c = input.next();
 		}
+		if(c.getCharacter() != '.') {
+			input.pushback(c);
+			return isFloatTriggered;
+		}
+
+		isFloatTriggered = true;
+		buffer.append(c.getCharacter());
+		c = input.next();
+		if(!c.isDigit()) {
+			lexicalError(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+		while(c.isDigit()) {
+			buffer.append(c.getCharacter());
+			c = input.next();
+		}
+
+		if(c.getCharacter() != 'e' && c.getCharacter() != 'E') {
+			input.pushback(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+
+		if (c.getCharacter() != '+' && c.getCharacter() != '-') {
+			lexicalError(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+
+		if(!c.isDigit()) {
+			lexicalError(c);
+			return isFloatTriggered;
+		}
+
+		buffer.append(c.getCharacter());
+		c = input.next();
+		while(c.isDigit()) {
+			buffer.append(c.getCharacter());
+			c = input.next();
+		}
+
 		input.pushback(c);
 		return isFloatTriggered;
 	}
-	
-	
+
+
 	//////////////////////////////////////////////////////////////////////////////
 	// Identifier and keyword lexical analysis	
 
 	private Token scanIdentifier(LocatedChar firstChar) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(firstChar.getCharacter());
-		appendSubsequentLowercase(buffer);
+		appendSubsequentIdentifierCharacters(buffer);
 
 		String lexeme = buffer.toString();
 		if(Keyword.isAKeyword(lexeme)) {
@@ -109,9 +156,9 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 			return IdentifierToken.make(firstChar, lexeme);
 		}
 	}
-	private void appendSubsequentLowercase(StringBuffer buffer) {
+	private void appendSubsequentIdentifierCharacters(StringBuffer buffer) {
 		LocatedChar c = input.next();
-		while(c.isLowerCase()) {
+		while (c.isIdentifierSubsequent()) {
 			buffer.append(c.getCharacter());
 			c = input.next();
 		}
@@ -132,6 +179,8 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 			return LextantToken.make(ch, "*", Punctuator.MULTIPLY);
 		case '+':
 			return LextantToken.make(ch, "+", Punctuator.ADD);
+		case '-':
+			return LextantToken.make(ch, "-", Punctuator.SUBTRACT);
 		case '>':
 			return LextantToken.make(ch, ">", Punctuator.GREATER);
 		case ':':
@@ -174,6 +223,60 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		while (!(c.getCharacter() == '#' || c.getCharacter() == '\n')) {
 			c = input.next();
 		}
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	// Character lexical analysis
+
+	private Token scanCharacterSingle(LocatedChar firstChar) {
+		StringBuffer buffer = new StringBuffer();
+		LocatedChar c = input.next();
+		if (c.isPrintableAsciiChar()) {
+			buffer.append(c.getCharacter());
+		} else {
+			lexicalError(c);
+			return NullToken.make(c);
+		}
+
+		c = input.next();
+		if (!c.isCharacterWrapper()) {
+			lexicalError(c);
+			return NullToken.make(c);
+		}
+
+		return CharacterToken.make(firstChar, buffer.toString());
+	}
+
+	private Token scanCharacterOct(LocatedChar firstChar) {
+		StringBuffer buffer = new StringBuffer();
+		LocatedChar c = input.next();
+		int octCount = 0;
+		int octMax = 3;
+		while(octCount < octMax) {
+			if(c.isDigit()) {
+				buffer.append(c.getCharacter());
+				octCount++;
+				c = input.next();
+			} else {
+				lexicalError(c);
+				return NullToken.make(firstChar);
+			}
+		}
+		input.pushback(c);
+		return CharacterToken.make(firstChar, buffer.toString());
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	// String lexical analysis
+	private Token scanString(LocatedChar firstChar) {
+		StringBuffer buffer = new StringBuffer();
+		LocatedChar c = input.next();
+		while(c.isValidStringChar()) {
+			buffer.append(c.getCharacter());
+			c = input.next();
+		}
+		return StringToken.make(firstChar, buffer.toString());
 	}
 
 

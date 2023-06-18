@@ -49,14 +49,36 @@ public class LocatedChar implements Locator {
 	
 	//////////////////////////////////////////////////////////////////////////////
 	// delegates
-	
-	public boolean isLowerCase() {
-		return Character.isLowerCase(character) || (character == '_');
-	}
+
 	public boolean isDigit() {
 		return Character.isDigit(character);
 	}
 	public boolean isWhitespace() {
 		return Character.isWhitespace(character);
 	}
+	public boolean isCharacterWrapper() {
+		return isChar('\'');
+	}
+	public boolean isPrintableAsciiChar() {
+		return (character >= 32 && character <= 126);
+	}
+	public boolean isStringWrapper() {
+		return isChar('\"');
+	}
+	public boolean isNewLine() {
+		return isChar('\n');
+	}
+	public boolean isValidStringChar() {
+		return isPrintableAsciiChar() && !isStringWrapper() && !isNewLine();
+	}
+	public boolean isIdentifierStarter() {
+		return Character.isLowerCase(character) ||
+				Character.isUpperCase(character) ||
+				character == '_' ||
+				character == '@';
+	}
+	public boolean isIdentifierSubsequent() {
+		return isIdentifierStarter() || isDigit();
+	}
+
 }

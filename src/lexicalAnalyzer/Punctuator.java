@@ -4,20 +4,31 @@ import inputHandler.TextLocation;
 import tokens.LextantToken;
 import tokens.Token;
 
-
 public enum Punctuator implements Lextant {
 	ADD("+"), 
 	SUBTRACT("-"),
 	MULTIPLY("*"),
+	DIVIDE("/"),
 	GREATER(">"),
+	LESSER("<"),
+	EQUALS("=="),
+	NOTEQUALS("!="),
+	GREATEREQUAL(">="),
+	LESSEREQUAL("<="),
 	ASSIGN(":="),
 	PRINT_SEPARATOR("\\"),
 	PRINT_SPACE("\\s"),
 	PRINT_NEWLINE("\\n"),
+	PRINT_TAB("\\t"),
 	TERMINATOR(";"), 
 	OPEN_BRACE("{"),
 	CLOSE_BRACE("}"),
+	OPEN_PARENTHESIS("("),
+	CLOSE_PARENTHESIS(")"),
+	OPEN_BRACKETS("["),
+	CLOSE_BRACKETS("]"),
 	HASH_SYMBOL("#"),
+	PERCENT_SIGN("%"),
 	NULL_PUNCTUATOR("");
 
 	private String lexeme;
@@ -34,8 +45,16 @@ public enum Punctuator implements Lextant {
 		return prototype;
 	}
 	
-	
 	public static Punctuator forLexeme(String lexeme) {
+		return rawForLexeme(lexeme);
+	}
+
+	public static Punctuator forLexeme(Character lexeme) {
+		String lexemeStr = lexeme.toString();
+		return rawForLexeme(lexemeStr);
+	}
+
+	private static Punctuator rawForLexeme(String lexeme) {
 		for(Punctuator punctuator: values()) {
 			if(punctuator.lexeme.equals(lexeme)) {
 				return punctuator;

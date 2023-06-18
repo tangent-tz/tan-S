@@ -3,6 +3,7 @@ package semanticAnalyzer;
 import java.util.Arrays;
 import java.util.List;
 
+import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
 import logging.TanLogger;
 import parseTree.ParseNode;
@@ -10,6 +11,7 @@ import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
@@ -31,10 +33,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitLeave(ProgramNode node) {
 		leaveScope(node);
 	}
-	public void visitEnter(MainBlockNode node) {
-	}
-	public void visitLeave(MainBlockNode node) {
-	}
 	
 	
 	///////////////////////////////////////////////////////////////////////////
@@ -42,22 +40,28 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private void enterProgramScope(ParseNode node) {
 		Scope scope = Scope.createProgramScope();
 		node.setScope(scope);
-	}	
-	@SuppressWarnings("unused")
+	}
 	private void enterSubscope(ParseNode node) {
 		Scope baseScope = node.getLocalScope();
 		Scope scope = baseScope.createSubscope();
 		node.setScope(scope);
-	}		
+	}
 	private void leaveScope(ParseNode node) {
 		node.getScope().leave();
 	}
+	private void leaveSubScope(ParseNode node) {
+		leaveScope(node);
+	}
 	
 	///////////////////////////////////////////////////////////////////////////
-	// statements and declarations
+	// statements: declarations, assignmentStatement, blockStatement
+
+	// printStatement
 	@Override
 	public void visitLeave(PrintStatementNode node) {
 	}
+
+	// declaration statement
 	@Override
 	public void visitLeave(DeclarationNode node) {
 		if(node.child(0) instanceof ErrorNode) {
@@ -70,10 +74,48 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 		Type declarationType = initializer.getType();
 		node.setType(declarationType);
-		
+
 		identifier.setType(declarationType);
-		addBinding(identifier, declarationType);
+		Binding.Constancy constancy = (node.getToken().isLextant(Keyword.CONST))? Binding.Constancy.IS_CONSTANT : Binding.Constancy.IS_VARIABLE;
+		addBinding(identifier, declarationType, constancy);
 	}
+
+	// assignmentStatement
+	public void visitLeave(AssignmentStatementNode node) {
+		if(node.child(0) instanceof ErrorNode) {
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
+
+		IdentifierNode identifier = (IdentifierNode) node.child(0);
+		ParseNode expression = node.child(1);
+
+		Type identifierType = identifier.getType();
+		Type expressionType = expression.getType();
+
+		if(!(expressionType.equals(identifierType))) {
+			logError("types do not match in AssignmentStatement");
+			return;
+		}
+		if(identifier.getBinding().isConstant()) {
+			logError("re-assignment to a const identifier, previously declared at location: " + identifier.getBinding().getLocation());
+			return;
+		}
+		node.setType(identifierType);
+	}
+
+	// blockStatement
+	@Override
+	public void visitEnter(BlockStatementNode node) {
+		enterSubscope(node);
+	}
+
+	@Override
+	public void visitLeave(BlockStatementNode node) {
+		leaveSubScope(node);
+	}
+
+
 
 	///////////////////////////////////////////////////////////////////////////
 	// expressions
@@ -93,8 +135,36 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 		
 		Lextant operator = operatorFor(node);
-		FunctionSignature signature = FunctionSignature.signatureOf(operator);
-		
+		FunctionSignature signature = null;
+
+		if (childTypes.size() == 2) {
+			if (node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
+				signature = FunctionSignature.signatureOfInteger(operator);
+			}
+			else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT){
+				signature = FunctionSignature.signatureOfFloat(operator);
+			}
+			else if(node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER){
+				signature = FunctionSignature.signatureOfChar(operator);
+			}
+			else if(node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN){
+				signature = FunctionSignature.signatureOfBoolean(operator);
+			}
+			else if(node.child(0).getType() == ReferenceType.STRING && node.child(1).getType() == ReferenceType.STRING){
+				signature = FunctionSignature.signatureOfString(operator);
+			}
+		} else {
+			if(node.child(0).getType() == PrimitiveType.INTEGER) {
+				signature = FunctionSignature.unarySignatureOfInteger(operator);
+			} else {
+				signature = FunctionSignature.unarySignatureOfFloat(operator);
+			}
+		}
+		if(signature == null && childTypes.size() == 2) {
+			typeCheckError(node, childTypes);
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
 		if(signature.accepts(childTypes)) {
 			node.setType(signature.resultType());
 		}
@@ -128,16 +198,28 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.setType(PrimitiveType.FLOAT);
 	}
 	@Override
+	public void visit(CharacterNode node) {
+		node.setType(PrimitiveType.CHARACTER);
+	}
+	@Override
+	public void visit(StringConstantNode node) {
+		node.setType(ReferenceType.STRING);
+	}
+	@Override
 	public void visit(NewlineNode node) {
 	}
 	@Override
 	public void visit(SpaceNode node) {
 	}
+	@Override
+	public void visit(TabNode node) {
+	}
+
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods
 	@Override
 	public void visit(IdentifierNode node) {
-		if(!isBeingDeclared(node)) {		
+		if(!isBeingDeclared(node)) {
 			Binding binding = node.findVariableBinding();
 			
 			node.setType(binding.getType());
@@ -149,9 +231,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		ParseNode parent = node.getParent();
 		return (parent instanceof DeclarationNode) && (node == parent.child(0));
 	}
-	private void addBinding(IdentifierNode identifierNode, Type type) {
+	private void addBinding(IdentifierNode identifierNode, Type type, Binding.Constancy constancy) {
 		Scope scope = identifierNode.getLocalScope();
-		Binding binding = scope.createBinding(identifierNode, type);
+		Binding binding = scope.createBinding(identifierNode, type, constancy);
 		identifierNode.setBinding(binding);
 	}
 	
