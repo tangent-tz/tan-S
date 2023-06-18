@@ -1,5 +1,6 @@
-Negation of a positive float        : -10.5
-Negation of a negative float        : 5.25
-Negation of zero                    : -0.0
-Negation of a large positive float  : -9999.99
-Negation of a large negative float  : 8888.88
+-10.500000
+5.250000
+-0.000000
+-9999.990234
+8888.879883
+-14.000000

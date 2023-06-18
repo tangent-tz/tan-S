@@ -140,8 +140,18 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		if (childTypes.size() == 2) {
 			if (node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
 				signature = FunctionSignature.signatureOfInteger(operator);
-			} else {
+			}
+			else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT){
 				signature = FunctionSignature.signatureOfFloat(operator);
+			}
+			else if(node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER){
+				signature = FunctionSignature.signatureOfChar(operator);
+			}
+			else if(node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN){
+				signature = FunctionSignature.signatureOfBoolean(operator);
+			}
+			else if(node.child(0).getType() == ReferenceType.STRING && node.child(1).getType() == ReferenceType.STRING){
+				signature = FunctionSignature.signatureOfString(operator);
 			}
 		} else {
 			if(node.child(0).getType() == PrimitiveType.INTEGER) {
@@ -150,7 +160,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 				signature = FunctionSignature.unarySignatureOfFloat(operator);
 			}
 		}
-
+		if(signature == null && childTypes.size() == 2) {
+			typeCheckError(node, childTypes);
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
 		if(signature.accepts(childTypes)) {
 			node.setType(signature.resultType());
 		}
@@ -196,6 +210,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 	@Override
 	public void visit(SpaceNode node) {
+	}
+	@Override
+	public void visit(TabNode node) {
 	}
 
 	///////////////////////////////////////////////////////////////////////////

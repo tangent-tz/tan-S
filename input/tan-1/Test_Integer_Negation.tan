@@ -8,9 +8,9 @@ main {
     print \n;
 
     # Negation of a negative integer
- #   const negy := -(-5);
- #   print negy;   Output: 5
- #   print \n;
+    const negy := -(-5);
+    print negy;  # Output: 5
+    print \n;
 
     # Negation of zero
     const zero := 0;
@@ -25,8 +25,13 @@ main {
     print \n;
 
     # Negation of a large negative integer
- #   const largeneg := -888888;
- #   const neglargeneg := -(-888888);
- #   print neglargeneg;   Output: 888888
- #   print \n;
+    const largeneg := -888888;
+    const neglargeneg := -(-888888);
+    print neglargeneg;   # Output: 888888
+    print \n;
+
+    # Non-negation (aka. unary plus)
+    const i1 := -4 * (+3) + (-3 / +15);
+    print i1 \n;
+
 }
