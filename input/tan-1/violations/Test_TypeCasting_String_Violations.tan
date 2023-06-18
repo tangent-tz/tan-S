@@ -1,0 +1,10 @@
+main {
+    # String can only be cast to: String
+    var v := "hello";
+
+    var a := <bool>(v);
+    var b := <char>(v);
+    var c := <string>(v);
+    var d := <int>(v);
+    var e := <float>(v);
+}
