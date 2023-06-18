@@ -95,5 +95,11 @@ main {
     print x14;
     print \n;
 
+    #todo: ask TA
+    var a := 5;
+    var b := 6.0;
+    b := <float>(a);
+    print b;
+
 
 }
