@@ -1,0 +1,49 @@
+The PunctuatorScanningAids class in our code provides utility methods for scanning punctuators in a string of input. Here's a brief summary of what each part does:
+
+Class variables:
+
+punctuatorStartingCharacters is a Set that holds all the unique starting characters of each Punctuator's lexeme. A lexeme is the sequence of characters in the source program that matches the pattern for a token and is identified by the lexical analyzer as an instance of that token.
+punctuatorsHavingPrefix is a Map that, for each possible prefix of a Punctuator's lexeme, maps to a Set of all Punctuators that have that prefix.
+emptyPunctuatorSet is a constant, empty Set of Punctuators that's returned as a default when no matching punctuators are found for a prefix.
+Public static methods:
+
+isPunctuatorStartingCharacter(Character c): Checks whether a given character can start a Punctuator lexeme.
+punctuatorSetForPrefix(String prefix): Returns a Set of all Punctuators whose lexeme starts with the given prefix. If no such Punctuators exist, it returns an empty Set.
+Static initialization block: This is run when the class is first loaded and initializes punctuatorStartingCharacters and punctuatorsHavingPrefix.
+
+Private static methods:
+
+makeStartingCharacters(): Initializes punctuatorStartingCharacters with the first character of each Punctuator's lexeme.
+makePunctuatorsHavingPrefix(): Initializes punctuatorsHavingPrefix by adding all possible prefixes of each Punctuator's lexeme.
+addAllPrefixesToMap(Punctuator punctuator): Adds all possible prefixes of a Punctuator's lexeme to punctuatorsHavingPrefix.
+addPrefixToMap(String prefix, Punctuator punctuator): Adds a prefix to punctuatorsHavingPrefix along with the Punctuator whose lexeme has that prefix.
+mutablePunctuatorSetForPrefix(String prefix): Returns the Set of Punctuators for a given prefix, creating a new Set if necessary.
+makeAllMapEntriesconstutable(): Converts all values in punctuatorsHavingPrefix to unmodifiable sets.
+replaceValueWithconstutableValue(Entry<String, Set<Punctuator>> entry): Replaces a value in punctuatorsHavingPrefix with an unmodifiable version.
+allNonemptyPrefixes(String string): Returns all possible non-empty prefixes of a string.
+This class essentially provides an optimized way of checking if a character can start a punctuator lexeme and of finding all punctuators that have a given prefix. By storing these in Sets and Maps, we can perform these operations in constant time. The use of unmodifiable collections helps ensure immutability and thread-safety.
+
+#Example
+
+Sure, let's suppose that you have three punctuators defined in your Punctuator enum: PLUS("+"), MINUS("-"), and ASSIGNMENT("="). Here is how the PunctuatorScanningAids class will be initialized and how its methods can be used:
+
+Initialization: During initialization, makeStartingCharacters() will add '+', '-', '=' to punctuatorStartingCharacters. makePunctuatorsHavingPrefix() will then add mappings to punctuatorsHavingPrefix for each punctuator and each of its prefixes. In this case, since all punctuators are single-character, the map will have the following entries:
+
+"+": {PLUS}
+"-": {MINUS}
+"=": {ASSIGNMENT}
+isPunctuatorStartingCharacter(Character c): This method can be used to quickly check if a character can start a punctuator lexeme. For example, isPunctuatorStartingCharacter('+') will return true, while isPunctuatorStartingCharacter('a') will return false.
+
+punctuatorSetForPrefix(String prefix): This method can be used to get all punctuators that have a given prefix. For example, punctuatorSetForPrefix("+") will return a set containing PLUS, punctuatorSetForPrefix("-") will return a set containing MINUS, and punctuatorSetForPrefix("=") will return a set containing ASSIGNMENT. punctuatorSetForPrefix("a") will return an empty set, since no punctuator starts with 'a'.
+
+# Use Case
+
+Note that the actual usage of these methods would depend on the specifics of your Punctuator enum and the lexemes you are trying to scan.
+
+Let's imagine we have some characters in the PushbackCharStream input, which might be a string from source code.
+
+Now, in the context of the PunctuatorScanner class, suppose you've encountered a character and you want to know if this character can start a punctuator. For example, you get a '+' from the stream, you can use PunctuatorScanningAids.isPunctuatorStartingCharacter('+') to check if this character can start a punctuator. The method will return true if the character can indeed start a punctuator, false otherwise.
+
+Next, you'll want to find out what kind of punctuator this character can potentially form. You use PunctuatorScanningAids.punctuatorSetForPrefix("+") to get a set of punctuators that this prefix could correspond to. This set will include all the punctuator lexemes that can start with '+'.
+
+Remember, the PunctuatorScanningAids class is essentially used to help the lexical analyzer to find punctuators in the input more efficiently. It precomputes all the possible starting characters and all the possible prefixes for each punctuator, allowing you to quickly check whether a character can start a punctuator and what punctuators a given prefix can form.

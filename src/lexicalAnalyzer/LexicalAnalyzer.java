@@ -93,6 +93,10 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		}
 
 		isFloatTriggered = true;
+		return appendFloatingSequence(buffer, isFloatTriggered,  c);
+	}
+
+	private boolean appendFloatingSequence(StringBuffer buffer, boolean isFloatTriggered, LocatedChar c){
 		buffer.append(c.getCharacter());
 		c = input.next();
 		if(!c.isDigit()) {
@@ -138,7 +142,6 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		input.pushback(c);
 		return isFloatTriggered;
 	}
-
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Identifier and keyword lexical analysis	
