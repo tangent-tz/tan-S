@@ -26,4 +26,8 @@ public enum PrimitiveType implements Type {
 	public String infoString() {
 		return infoString;
 	}
+
+	public Type concreteType() {
+		return this; //because enums are just singletons
+	}
 }

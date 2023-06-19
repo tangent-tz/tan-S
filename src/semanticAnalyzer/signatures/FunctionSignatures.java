@@ -1,5 +1,6 @@
 package semanticAnalyzer.signatures;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import lexicalAnalyzer.Punctuator;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
+import semanticAnalyzer.types.TypeVariable;
 
 
 public class FunctionSignatures extends ArrayList<FunctionSignature> {
@@ -109,6 +111,11 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 			new FunctionSignature(ASMOpcode.ConvertI, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.INTEGER),
 			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT)
 		);
+
+
+		TypeVariable T = new TypeVariable("T");
+		new FunctionSignatures(Punctuator.INDEXING,
+				new FunctionSignature(new Array(T), PrimitiveType.INTEGER, T));
 
 
 	}

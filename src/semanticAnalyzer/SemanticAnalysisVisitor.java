@@ -141,6 +141,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Punctuator operatorAsPunctuator = Punctuator.forLexeme(operator.getLexeme());
 		FunctionSignature signature = null;
 
+
+
+
 		if (childTypes.size() == 2) {
 			if(operatorAsPunctuator == Punctuator.CAST) {
 				signature = FunctionSignatures.signature(operatorAsPunctuator, childTypes);
@@ -173,7 +176,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			return;
 		}
 		if(signature.accepts(childTypes)) {
-			node.setType(signature.resultType());
+			node.setType(signature.resultType().concreteType());
+			node.setSignature(signature);
 		}
 		else {
 			typeCheckError(node, childTypes);
