@@ -139,7 +139,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 		Lextant operator = operatorFor(node);
 		Punctuator operatorAsPunctuator = Punctuator.forLexeme(operator.getLexeme());
-		FunctionSignature signature = null;
+		FunctionSignature signature = FunctionSignatures.signaturesOf()
 
 
 

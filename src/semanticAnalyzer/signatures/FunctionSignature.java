@@ -1,5 +1,6 @@
 package semanticAnalyzer.signatures;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import semanticAnalyzer.types.PrimitiveType;
@@ -7,6 +8,7 @@ import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
+import semanticAnalyzer.types.TypeVariable;
 
 //immutable
 public class FunctionSignature {
@@ -34,6 +36,14 @@ public class FunctionSignature {
 		for(int i=0; i<types.length-1; i++) {
 			paramTypes[i] = types[i];
 		}
+	}
+
+	public List<Type> typeVariableSettings() {
+		List<Type> results = new ArrayList<Type>();
+		for(TypeVariable typeVariable : typeVariables) {
+			results.add(typeVariable.concreteType());
+		}
+		return results;
 	}
 	
 	
