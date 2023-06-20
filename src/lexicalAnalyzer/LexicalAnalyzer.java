@@ -76,12 +76,11 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private Token scanNumber(LocatedChar firstChar) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(firstChar.getCharacter());
-		boolean isFloat = appendSubsequentDigits(buffer);
-		
+		boolean isFloat = appendWholeNumbers(buffer);
+		if (isFloat) appendFloatingSequence(buffer);
 		return NumberToken.make(firstChar, buffer.toString(), isFloat);
 	}
-	private boolean appendSubsequentDigits(StringBuffer buffer) {
-		boolean isFloatTriggered = false;
+	private boolean appendWholeNumbers(StringBuffer buffer) {
 		LocatedChar c = input.next();
 		while(c.isDigit()) {
 			buffer.append(c.getCharacter());
@@ -89,58 +88,23 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		}
 		if(c.getCharacter() != '.') {
 			input.pushback(c);
-			return isFloatTriggered;
+			return false;
 		}
-
-		isFloatTriggered = true;
-		return appendFloatingSequence(buffer, isFloatTriggered,  c);
+		else{
+			buffer.append(c.getCharacter());
+			return true;
+		}
 	}
 
-	private boolean appendFloatingSequence(StringBuffer buffer, boolean isFloatTriggered, LocatedChar c){
-		buffer.append(c.getCharacter());
-		c = input.next();
-		if(!c.isDigit()) {
-			lexicalError(c);
-			return isFloatTriggered;
-		}
-
-		buffer.append(c.getCharacter());
-		c = input.next();
-		while(c.isDigit()) {
+	private void appendFloatingSequence(StringBuffer buffer){
+		LocatedChar c = input.next();
+		boolean eFlag = false;
+		while(c.isDigit() || c.getCharacter() == 'e' || c.getCharacter() == 'E' || (c.getCharacter() == '+' && eFlag) || (c.getCharacter() == '-' && eFlag)) {
 			buffer.append(c.getCharacter());
+			if(c.getCharacter() == 'e' || c.getCharacter() == 'E') eFlag = true;
 			c = input.next();
 		}
-
-		if(c.getCharacter() != 'e' && c.getCharacter() != 'E') {
-			input.pushback(c);
-			return isFloatTriggered;
-		}
-
-		buffer.append(c.getCharacter());
-		c = input.next();
-
-		if (c.getCharacter() != '+' && c.getCharacter() != '-') {
-			lexicalError(c);
-			return isFloatTriggered;
-		}
-
-		buffer.append(c.getCharacter());
-		c = input.next();
-
-		if(!c.isDigit()) {
-			lexicalError(c);
-			return isFloatTriggered;
-		}
-
-		buffer.append(c.getCharacter());
-		c = input.next();
-		while(c.isDigit()) {
-			buffer.append(c.getCharacter());
-			c = input.next();
-		}
-
 		input.pushback(c);
-		return isFloatTriggered;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
