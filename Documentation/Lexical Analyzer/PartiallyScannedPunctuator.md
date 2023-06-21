@@ -1,0 +1,51 @@
+The `PartiallyScannedPunctuator` class represents a part of a punctuator (like parentheses, brackets, braces, operators etc.) that has been scanned from the input so far. It extends `LocatedCharString`, which is essentially a sequence of characters read from the input, each with its own location in the source code.
+
+This class has several methods:
+
+- The `isPunctuator` method checks if the currently scanned characters form a valid punctuator as defined by the `Punctuator` enum.
+
+- The `asPunctuator` method attempts to convert the currently scanned characters into a `Punctuator` enum. If the current string doesn't represent a valid punctuator, it returns `Punctuator.NULL_PUNCTUATOR`.
+
+- The `asToken` method converts the currently scanned characters into a `Token`. If no characters have been scanned so far (i.e., the `PartiallyScannedPunctuator` is empty), it returns a `NullToken`. Otherwise, it asserts that the scanned string is a valid punctuator and then returns a `LextantToken` representing that punctuator.
+
+This class is likely used by a scanner to handle the complexity of scanning punctuators, which can consist of multiple characters and can form part of other punctuators (e.g., `=` is a punctuator, but so is `==`). 
+
+The scanner would gradually add characters to a `PartiallyScannedPunctuator` and regularly check if it forms a valid punctuator. This enables the scanner to correctly tokenize input like `==` as a single `==` token, rather than two separate `=` tokens.
+
+
+Consider a scenario where we have a `PunctuatorScanner` that uses `PartiallyScannedPunctuator` to help tokenize a string.
+
+Let's take the string "a == b" for our scenario. Here '==' is a punctuator that we are interested in tokenizing correctly.
+
+Here's a rough overview of how the process might look:
+
+1. **Initialization**: A `PunctuatorScanner` starts to scan the string and when it encounters the first '=', it initializes a `PartiallyScannedPunctuator` with this character.
+
+```java
+LocatedChar firstChar = new LocatedChar('=');
+PartiallyScannedPunctuator scannedPunctuator = new PartiallyScannedPunctuator(firstChar);
+```
+
+2. **Adding Characters**: As the scanner reads the next character (which is also an '='), it adds it to the `PartiallyScannedPunctuator`.
+
+```java
+LocatedChar secondChar = new LocatedChar('=');
+scannedPunctuator.append(secondChar);
+```
+
+3. **Checking Punctuator Validity**: At each step, it would use `isPunctuator()` to check if the scanned characters form a valid punctuator. When only the first '=' was scanned, `isPunctuator()` would have returned true (since '=' is a valid punctuator), but the scanner kept going because the next character could potentially form a larger punctuator.
+
+```java
+if (scannedPunctuator.isPunctuator()) {
+    // ...
+}
+```
+
+4. **Conversion to Token**: Once it encounters a character that can't form a larger punctuator (in this case, the whitespace after the second '='), it calls `asToken()` to convert the scanned characters into a token. This method would return a `LextantToken` with lexeme '==' and punctuator '==', which could then be used by the parser for further processing.
+
+```java
+Token token = scannedPunctuator.asToken();
+// token would be a LextantToken with lexeme '==' and punctuator '=='
+```
+
+In this way, `PartiallyScannedPunctuator` helps in recognizing and tokenizing multi-character punctuators correctly.
