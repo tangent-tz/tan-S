@@ -3,6 +3,7 @@ package parseTree.nodeTypes;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import lexicalAnalyzer.Lextant;
+import semanticAnalyzer.signatures.PromotedSignature;
 import tokens.LextantToken;
 import tokens.Token;
 
@@ -25,6 +26,10 @@ public class OperatorNode extends ParseNode {
 	}
 	public LextantToken lextantToken() {
 		return (LextantToken)token;
+	}
+
+	public PromotedSignature getSignature() {
+		return ...;
 	}
 	
 	////////////////////////////////////////////////////////////

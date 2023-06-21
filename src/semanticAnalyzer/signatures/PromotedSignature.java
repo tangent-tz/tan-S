@@ -19,7 +19,7 @@ public class PromotedSignature {
 
     }
 
-    static List<PromotedSignature> promotedSignatures(FunctionSignatures signatures, List<Type> types) {
+    public static List<PromotedSignature> promotedSignatures(FunctionSignatures signatures, List<Type> types) {
         List<PromotedSignature> result = new ArrayList<PromotedSignature>();
         for(FunctionSignature signature : signatures) {
             result.addAll(findAll(signature, types));
@@ -69,4 +69,23 @@ public class PromotedSignature {
         return result;
     } //use this to do bucket sort, each bucket should only have 1 item, if have more then error.
 
+    public Type resultType() {
+        setTypeVariables();
+        return signature.resultType().concreteType();
+    }
+    private void setTypeVariables() {
+        signature.setTypeVariables();
+    }
+
+    public boolean accepts(List<Type>) {
+
+    }
+
+    public Object getVariant() {
+
+    }
+
+    public Object promotion(int i) {
+        return promotions.get(i);
+    }
 }

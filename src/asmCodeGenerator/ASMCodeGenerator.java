@@ -12,6 +12,7 @@ import parseTree.*;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
+import semanticAnalyzer.signatures.PromotedSignature;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
@@ -249,6 +250,20 @@ public class ASMCodeGenerator {
 		// expressions
 		public void visitLeave(OperatorNode node) {
 			Lextant operator = node.getOperator();
+			PromotedSignature signature = node.getSignature();
+			Object variant = signature.getVariant();
+
+
+
+			//////////////////////////////////
+			int i=0;
+			for(ParseNode child : node.getChildren()) {
+				code.append(removeValueCode(child));
+				code.append(signature.promotion(i).codeFor());
+				i++;
+			}
+
+			///////////////////////////////
 
 			if(operator == Punctuator.SUBTRACT || operator == Punctuator.ADD) {
 				if(node.nChildren() == 1)

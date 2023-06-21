@@ -45,7 +45,14 @@ public class FunctionSignature {
 		}
 		return results;
 	}
-	
+
+	public void setTypeVariables(List<Type> typeVariableSettings) {
+		int i=0;
+		for(TypeVariable typeVariable : typeVariables) {
+			typeVariable.setConstraint(typeVariableSettings.get(i));
+			i = i+1;
+		}
+	}
 	
 	///////////////////////////////////////////////////////////////
 	// accessors

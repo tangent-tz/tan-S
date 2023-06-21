@@ -1,5 +1,6 @@
 package semanticAnalyzer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -13,6 +14,7 @@ import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
+import semanticAnalyzer.signatures.PromotedSignature;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
@@ -139,7 +141,29 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 		Lextant operator = operatorFor(node);
 		Punctuator operatorAsPunctuator = Punctuator.forLexeme(operator.getLexeme());
-		FunctionSignature signature = FunctionSignatures.signaturesOf()
+		FunctionSignatures signatures = FunctionSignatures.signaturesOf(operator);
+		List<PromotedSignature> promotedSignatures = PromotedSignature.promotedSignatures(signatures, childTypes);
+		List<List<PromotedSignature>> byNumPromotions = new ArrayList<>();
+
+		int MAX_NUM_PROMOTIONS = 2;
+		for(int i=0; i<= MAX_NUM_PROMOTIONS; i++) {
+			byNumPromotions.add(new ArrayList<PromotedSignature>());
+		}
+
+		for(PromotedSignature promotedSignature: promotedSignatures) {
+			byNumPromotions.get(promotedSignature.numPromotions()).add(promotedSignature);
+		}
+
+		PromotedSignature signature = selectPromotedSignature(byNumPromotions);
+
+
+
+		/////////////////////////////////////////////
+
+
+
+
+
 
 
 
@@ -187,6 +211,24 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private Lextant operatorFor(OperatorNode node) {
 		LextantToken token = (LextantToken) node.getToken();
 		return token.getLextant();
+	}
+
+	private PromotedSignature selectPromotedSignature(List<List<PromotedSignature>> byNumPromotions) {
+		for(int i=0; i < MAX_NUM_PROMOTIONS; i++) {
+			switch(byNumPromotions.get(i).size()) {
+				case 0:
+					break;
+				case 1: 	return byNumPromotions.get(i).get(0);
+
+				default:
+				case 2: 	multipleInterpretationError();
+							return PromotedSignature.nullInstance();
+					break;
+			}
+
+		}
+		typeCheckError();
+		return PromotedSignature.nullInstance();
 	}
 
 
@@ -268,5 +310,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private void logError(String message) {
 		TanLogger log = TanLogger.getLogger("compiler.semanticAnalyzer");
 		log.severe(message);
+	}
+
+	private void multipleInterpretationError() {
+		logError("Multiple interpretation of operator possible");
 	}
 }
