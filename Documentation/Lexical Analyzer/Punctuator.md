@@ -1,4 +1,4 @@
-The `Punctuator` enum represents the various punctuators or operators that can be recognized in the language your compiler is designed to parse.
+The `Punctuator` enum represents the various punctuators or operators that can be recognized in the language the compiler is designed to parse.
 
 Each enum constant represents a specific punctuator in the language, such as `ADD` for '+', `SUBTRACT` for '-', `MULTIPLY` for '*', `DIVIDE` for '/', `EQUALS` for '==', `NOTEQUALS` for '!=', and so on.
 
@@ -14,13 +14,13 @@ The enum provides methods to:
 - `prototype()`: Return the prototype token for a given punctuator.
 - `forLexeme()`: Find the punctuator that corresponds to a given lexeme. If no matching punctuator is found, it returns `NULL_PUNCTUATOR`. This method is overloaded to accept both `String` and `Character` inputs.
 
-For example, if your compiler is currently processing the character '+', you can use the `Punctuator.forLexeme('+')` method to find the corresponding `Punctuator` (which would be `Punctuator.ADD`). You could then use the `Punctuator.prototype()` method to create a new `LextantToken` representing an addition operation at the current location in the text.
+For example, if the compiler is currently processing the character '+', we can use the `Punctuator.forLexeme('+')` method to find the corresponding `Punctuator` (which would be `Punctuator.ADD`). we could then use the `Punctuator.prototype()` method to create a new `LextantToken` representing an addition operation at the current location in the text.
 
 The commented out code at the end of the enum indicates an alternate, more efficient way to implement the `forLexeme()` method using a hashtable. This can be faster because it allows for constant-time lookup of punctuators by lexeme, rather than the linear-time search implemented by the `rawForLexeme()` method. However, this optimization might come at the cost of readability and simplicity.
 
 EXAMPLE:
 
-Let's consider the following source code that your compiler is analyzing:
+Let's consider the following source code that the compiler is analyzing:
 
 ```
 let a = 2;
@@ -28,7 +28,7 @@ let b = 3;
 let sum = a + b;
 ```
 
-As your compiler scans the code, it converts the source code into a stream of tokens. A token represents a component of the source code that is meaningful in the context of the programming language syntax, like identifiers, operators, brackets, etc.
+As the compiler scans the code, it converts the source code into a stream of tokens. A token represents a component of the source code that is meaningful in the context of the programming language syntax, like identifiers, operators, brackets, etc.
 
 Now, let's focus on the third line `let sum = a + b;`.
 
@@ -42,11 +42,11 @@ As the compiler scans this line, it reads the characters one-by-one, recognizing
 - `b` identifier
 - `;` statement terminator
 
-Now, when the scanner in your compiler encounters the `+` character, it needs to create a token representing this operator. This is where the `Punctuator` enum and `PartiallyScannedPunctuator` class come into play.
+Now, when the scanner in the compiler encounters the `+` character, it needs to create a token representing this operator. This is where the `Punctuator` enum and `PartiallyScannedPunctuator` class come into play.
 
 Here's how it happens in a simplified way:
 
-1. Your scanner reads a character from the source code. Let's say it's a `+`.
+1. The scanner reads a character from the source code. Let's say it's a `+`.
 2. It checks if this character can start a punctuator using `PunctuatorScanningAids.isPunctuatorStartingCharacter('+')`.
 3. If it's true, it calls `PunctuatorScanner.scan()` function, passing the `+` character and the input stream.
 4. Inside `PunctuatorScanner`, a `PartiallyScannedPunctuator` object is created. This object holds the `+` character.
