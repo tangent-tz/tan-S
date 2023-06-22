@@ -8,7 +8,6 @@ import inputHandler.LocatedChar;
 import inputHandler.LocatedCharStream;
 import inputHandler.PushbackCharStream;
 import tokens.*;
-
 import static lexicalAnalyzer.PunctuatorScanningAids.*;
 
 public class LexicalAnalyzer extends ScannerImp implements Scanner {
@@ -78,6 +77,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		buffer.append(firstChar.getCharacter());
 		boolean isFloat = appendWholeNumbers(buffer);
 		if (isFloat) appendFloatingSequence(buffer);
+		boolean validNumber = validFloat(buffer.toString());
 		return NumberToken.make(firstChar, buffer.toString(), isFloat);
 	}
 	private boolean appendWholeNumbers(StringBuffer buffer) {
@@ -99,12 +99,19 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private void appendFloatingSequence(StringBuffer buffer){
 		LocatedChar c = input.next();
 		boolean eFlag = false;
-		while(c.isDigit() || c.getCharacter() == LexicalMacros.E_NOTATION_UPPER || c.getCharacter() == LexicalMacros.E_NOTATION_LOWER || (c.getCharacter() == LexicalMacros.ADD && eFlag) || (c.getCharacter() == LexicalMacros.SUBTRACT && eFlag)) {
+		boolean signFlag =false;
+		while(c.isDigit() || c.getCharacter() == LexicalMacros.E_NOTATION_UPPER || c.getCharacter() == LexicalMacros.E_NOTATION_LOWER || (c.getCharacter() == LexicalMacros.ADD && eFlag && !signFlag) || (c.getCharacter() == LexicalMacros.SUBTRACT && eFlag && !signFlag)) {
 			buffer.append(c.getCharacter());
 			if(c.getCharacter() == LexicalMacros.E_NOTATION_LOWER || c.getCharacter() == LexicalMacros.E_NOTATION_UPPER) eFlag = true;
+			if(c.getCharacter() == LexicalMacros.ADD || c.getCharacter() == LexicalMacros.SUBTRACT) signFlag = true;
 			c = input.next();
 		}
 		input.pushback(c);
+	}
+
+	private boolean validFloat(String floatString){
+		String regex = "^[0-9]+(.[0-9]+)?(e[+-][0-9]+)?$";
+		return floatString.matches(regex);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
