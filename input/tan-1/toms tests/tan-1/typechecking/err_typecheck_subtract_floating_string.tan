@@ -1,0 +1,4 @@
+main {
+    const result := 9.7 - "-KeUR0";
+    print result \n;
+}

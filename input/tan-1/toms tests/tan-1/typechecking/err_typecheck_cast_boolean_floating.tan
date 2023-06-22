@@ -1,0 +1,4 @@
+main {
+    const result := <float>(true);
+    print result \n;
+}

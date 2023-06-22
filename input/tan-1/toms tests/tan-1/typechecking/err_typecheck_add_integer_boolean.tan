@@ -1,0 +1,4 @@
+main {
+    const result := 89 + true;
+    print result \n;
+}

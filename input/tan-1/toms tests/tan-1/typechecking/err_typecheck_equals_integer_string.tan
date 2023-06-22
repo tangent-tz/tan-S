@@ -1,0 +1,4 @@
+main {
+    const result := 34 == "1:&'1";
+    print result \n;
+}

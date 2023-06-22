@@ -1,0 +1,6 @@
+main {
+    const result := <char>(49);
+    var knownType := 'V';
+    knownType := result;
+    print result \n;
+}

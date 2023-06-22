@@ -1,0 +1,5 @@
+main {
+    var result := 6.9;
+    result := 69;
+    print result \n;
+}

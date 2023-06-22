@@ -1,0 +1,6 @@
+main {
+    const result := 1.8 * 2.0;
+    var knownType := 2.9;
+    knownType := result;
+    print result \n;
+}

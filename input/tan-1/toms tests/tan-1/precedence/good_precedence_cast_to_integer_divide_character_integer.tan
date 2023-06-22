@@ -1,0 +1,43 @@
+main {
+
+  print <int>('g') / 3 \n;
+  print <int>('F') / 77 \n;
+  print <int>('5') / 16 \n;
+  print <int>('@') / 4 \n;
+  print <int>('M') / 66 \n;
+  print <int>('3') / 52 \n;
+  print <int>('t') / 90 \n;
+  print <int>(')') / 55 \n;
+  print <int>('@') / 53 \n;
+  print <int>('!') / 98 \n;
+  print <int>('b') / 16 \n;
+  print <int>('8') / 80 \n;
+
+  print 20 / <int>('u') \n;
+  print 35 / <int>('+') \n;
+  print 46 / <int>('8') \n;
+  print 20 / <int>('i') \n;
+  print 47 / <int>('&') \n;
+  print 2 / <int>('O') \n;
+  print 93 / <int>('C') \n;
+  print 87 / <int>('}') \n;
+  print 4 / <int>('8') \n;
+  print 65 / <int>('8') \n;
+  print 2 / <int>('.') \n;
+  print 23 / <int>('r') \n;
+
+  print <int>('g') / <int>(' ') \n;
+  print <int>('(') / <int>('2') \n;
+  print <int>('k') / <int>('/') \n;
+  print <int>('Q') / <int>('w') \n;
+  print <int>('Y') / <int>('l') \n;
+  print <int>('E') / <int>('x') \n;
+  print <int>('P') / <int>('X') \n;
+  print <int>('c') / <int>('f') \n;
+  print <int>('A') / <int>('M') \n;
+  print <int>(')') / <int>('L') \n;
+  print <int>('i') / <int>('7') \n;
+  print <int>('*') / <int>('o') \n;
+
+}
+

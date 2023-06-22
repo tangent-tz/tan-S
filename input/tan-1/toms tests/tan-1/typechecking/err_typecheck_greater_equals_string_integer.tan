@@ -1,0 +1,4 @@
+main {
+    const result := "]lYR" >= 29;
+    print result \n;
+}

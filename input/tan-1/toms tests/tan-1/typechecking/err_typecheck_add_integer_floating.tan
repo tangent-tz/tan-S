@@ -1,0 +1,4 @@
+main {
+    const result := 99 + 5.9;
+    print result \n;
+}
