@@ -1,0 +1,4 @@
+main {
+    const result := false / 'y';
+    print result \n;
+}

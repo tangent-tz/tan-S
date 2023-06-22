@@ -1,0 +1,4 @@
+main {
+    const result := 18 - ' ';
+    print result \n;
+}

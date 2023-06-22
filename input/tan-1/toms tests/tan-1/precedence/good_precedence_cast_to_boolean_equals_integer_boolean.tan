@@ -1,0 +1,43 @@
+main {
+
+  print <bool>(39) == true \n;
+  print <bool>(9) == false \n;
+  print <bool>(98) == false \n;
+  print <bool>(94) == true \n;
+  print <bool>(1) == false \n;
+  print <bool>(27) == false \n;
+  print <bool>(7) == true \n;
+  print <bool>(70) == true \n;
+  print <bool>(40) == true \n;
+  print <bool>(25) == false \n;
+  print <bool>(94) == true \n;
+  print <bool>(40) == false \n;
+
+  print false == <bool>(17) \n;
+  print false == <bool>(75) \n;
+  print false == <bool>(55) \n;
+  print true == <bool>(19) \n;
+  print true == <bool>(41) \n;
+  print true == <bool>(82) \n;
+  print true == <bool>(83) \n;
+  print true == <bool>(78) \n;
+  print false == <bool>(64) \n;
+  print false == <bool>(97) \n;
+  print true == <bool>(50) \n;
+  print false == <bool>(64) \n;
+
+  print <bool>(56) == <bool>(61) \n;
+  print <bool>(69) == <bool>(41) \n;
+  print <bool>(75) == <bool>(79) \n;
+  print <bool>(35) == <bool>(62) \n;
+  print <bool>(39) == <bool>(88) \n;
+  print <bool>(24) == <bool>(66) \n;
+  print <bool>(71) == <bool>(83) \n;
+  print <bool>(39) == <bool>(81) \n;
+  print <bool>(85) == <bool>(45) \n;
+  print <bool>(62) == <bool>(48) \n;
+  print <bool>(54) == <bool>(40) \n;
+  print <bool>(44) == <bool>(59) \n;
+
+}
+

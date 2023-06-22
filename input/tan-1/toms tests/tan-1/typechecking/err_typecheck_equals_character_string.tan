@@ -1,0 +1,4 @@
+main {
+    const result := 'd' == "I-";
+    print result \n;
+}

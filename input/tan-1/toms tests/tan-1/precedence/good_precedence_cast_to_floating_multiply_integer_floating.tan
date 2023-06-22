@@ -1,0 +1,43 @@
+main {
+
+  print <float>(41) * 9.2 \n;
+  print <float>(66) * 5.4 \n;
+  print <float>(83) * 6.0 \n;
+  print <float>(48) * 5.4 \n;
+  print <float>(44) * 8.1 \n;
+  print <float>(63) * 1.7 \n;
+  print <float>(95) * 5.7 \n;
+  print <float>(71) * 2.6 \n;
+  print <float>(42) * 2.5 \n;
+  print <float>(20) * 5.1 \n;
+  print <float>(62) * 4.1 \n;
+  print <float>(4) * 1.6 \n;
+
+  print 9.4 * <float>(68) \n;
+  print 8.2 * <float>(95) \n;
+  print 4.4 * <float>(80) \n;
+  print 3.8 * <float>(76) \n;
+  print 8.6 * <float>(19) \n;
+  print 3.3 * <float>(42) \n;
+  print 5.3 * <float>(32) \n;
+  print 6.9 * <float>(62) \n;
+  print 8.4 * <float>(5) \n;
+  print 3.7 * <float>(65) \n;
+  print 9.9 * <float>(23) \n;
+  print 5.9 * <float>(61) \n;
+
+  print <float>(2) * <float>(22) \n;
+  print <float>(12) * <float>(1) \n;
+  print <float>(61) * <float>(94) \n;
+  print <float>(12) * <float>(75) \n;
+  print <float>(58) * <float>(8) \n;
+  print <float>(8) * <float>(27) \n;
+  print <float>(4) * <float>(49) \n;
+  print <float>(95) * <float>(19) \n;
+  print <float>(55) * <float>(35) \n;
+  print <float>(20) * <float>(43) \n;
+  print <float>(78) * <float>(87) \n;
+  print <float>(26) * <float>(77) \n;
+
+}
+

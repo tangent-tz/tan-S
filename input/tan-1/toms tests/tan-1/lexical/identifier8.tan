@@ -1,0 +1,4 @@
+main {
+	const Ab3d := 8;
+	print Ab3d \n;
+}

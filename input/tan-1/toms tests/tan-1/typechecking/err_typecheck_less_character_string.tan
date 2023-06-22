@@ -1,0 +1,4 @@
+main {
+    const result := 'P' < "])";
+    print result \n;
+}

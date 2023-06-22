@@ -1,0 +1,4 @@
+main {
+    const result := <bool>("F)J4c*c");
+    print result \n;
+}

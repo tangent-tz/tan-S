@@ -1,0 +1,4 @@
+main {
+    const result := "SU-yS-" - 59;
+    print result \n;
+}

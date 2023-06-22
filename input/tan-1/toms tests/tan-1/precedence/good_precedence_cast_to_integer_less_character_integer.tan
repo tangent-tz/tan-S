@@ -1,0 +1,43 @@
+main {
+
+  print <int>('`') < 16 \n;
+  print <int>(' ') < 58 \n;
+  print <int>('+') < 21 \n;
+  print <int>('6') < 23 \n;
+  print <int>('c') < 35 \n;
+  print <int>('9') < 54 \n;
+  print <int>('T') < 76 \n;
+  print <int>('E') < 53 \n;
+  print <int>('O') < 52 \n;
+  print <int>('g') < 76 \n;
+  print <int>('r') < 77 \n;
+  print <int>('R') < 25 \n;
+
+  print 20 < <int>('8') \n;
+  print 83 < <int>('I') \n;
+  print 45 < <int>('&') \n;
+  print 8 < <int>('f') \n;
+  print 10 < <int>('#') \n;
+  print 61 < <int>('<') \n;
+  print 88 < <int>('(') \n;
+  print 71 < <int>('a') \n;
+  print 78 < <int>('7') \n;
+  print 62 < <int>(',') \n;
+  print 48 < <int>(';') \n;
+  print 93 < <int>('1') \n;
+
+  print <int>('U') < <int>('>') \n;
+  print <int>('[') < <int>('E') \n;
+  print <int>('5') < <int>('s') \n;
+  print <int>('N') < <int>('w') \n;
+  print <int>('U') < <int>('*') \n;
+  print <int>('Q') < <int>('f') \n;
+  print <int>('_') < <int>('!') \n;
+  print <int>('*') < <int>('w') \n;
+  print <int>(' ') < <int>('V') \n;
+  print <int>('[') < <int>('^') \n;
+  print <int>('1') < <int>('y') \n;
+  print <int>('h') < <int>('2') \n;
+
+}
+

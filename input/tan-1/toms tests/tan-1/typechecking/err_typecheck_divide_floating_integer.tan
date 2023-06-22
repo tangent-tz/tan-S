@@ -1,0 +1,4 @@
+main {
+    const result := 5.1 / 47;
+    print result \n;
+}

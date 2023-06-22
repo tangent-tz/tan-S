@@ -1,0 +1,5 @@
+main {
+    var result := 9.6;
+    result := ";G*k}z(";
+    print result \n;
+}

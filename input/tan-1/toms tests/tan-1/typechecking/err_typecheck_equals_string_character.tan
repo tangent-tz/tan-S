@@ -1,0 +1,4 @@
+main {
+    const result := "g%y7" == 'E';
+    print result \n;
+}

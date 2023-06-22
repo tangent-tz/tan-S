@@ -1,0 +1,4 @@
+main {
+    const result := 26 > ":\$9";
+    print result \n;
+}

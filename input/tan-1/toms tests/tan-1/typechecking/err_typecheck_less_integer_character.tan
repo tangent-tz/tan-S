@@ -1,0 +1,4 @@
+main {
+    const result := 86 < '[';
+    print result \n;
+}

@@ -1,0 +1,6 @@
+main {
+    const result := <float>(7.8);
+    var knownType := 6.0;
+    knownType := result;
+    print result \n;
+}

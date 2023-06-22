@@ -1,0 +1,4 @@
+main {
+    const result := 'V' / true;
+    print result \n;
+}
