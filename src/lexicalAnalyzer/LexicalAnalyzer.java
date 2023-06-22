@@ -77,7 +77,6 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		buffer.append(firstChar.getCharacter());
 		boolean isFloat = appendWholeNumbers(buffer);
 		if (isFloat) appendFloatingSequence(buffer);
-		boolean validNumber = validFloat(buffer.toString());
 		return NumberToken.make(firstChar, buffer.toString(), isFloat);
 	}
 	private boolean appendWholeNumbers(StringBuffer buffer) {
@@ -102,10 +101,13 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		boolean signFlag =false;
 		while(c.isDigit() || c.getCharacter() == LexicalMacros.E_NOTATION_UPPER || c.getCharacter() == LexicalMacros.E_NOTATION_LOWER || (c.getCharacter() == LexicalMacros.ADD && eFlag && !signFlag) || (c.getCharacter() == LexicalMacros.SUBTRACT && eFlag && !signFlag)) {
 			buffer.append(c.getCharacter());
+			if (validFloat(buffer.toString())) lexicalError(c);
 			if(c.getCharacter() == LexicalMacros.E_NOTATION_LOWER || c.getCharacter() == LexicalMacros.E_NOTATION_UPPER) eFlag = true;
 			if(c.getCharacter() == LexicalMacros.ADD || c.getCharacter() == LexicalMacros.SUBTRACT) signFlag = true;
 			c = input.next();
 		}
+		boolean valid = validFloat(buffer.toString());
+		if(!valid) lexicalError(c);
 		input.pushback(c);
 	}
 
