@@ -433,10 +433,10 @@ public class Parser {
 		return new FloatConstantNode(previouslyRead);
 	}
 	private boolean startsIntLiteral(Token token) {
-		return token instanceof NumberToken && ((NumberToken) token).getValue() instanceof Integer;
+		return token instanceof IntegerToken;
 	}
 	private boolean startsFloatLiteral(Token token) {
-		return token instanceof NumberToken && ((NumberToken) token).getValue() instanceof Float;
+		return token instanceof FloatToken;
 	}
 
 
