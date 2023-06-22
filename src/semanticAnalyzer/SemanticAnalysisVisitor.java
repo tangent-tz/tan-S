@@ -134,8 +134,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		assert 1 <= node.nChildren() && node.nChildren() <= 2;
 
 		Lextant operator = operatorFor(node);
-		Punctuator operatorAsPunctuator = Punctuator.forLexeme(operator.getLexeme());
-		FunctionSignature signature = FunctionSignatures.signature(operatorAsPunctuator, childTypes);
+		FunctionSignature signature = FunctionSignatures.signature(operator, childTypes);
 
 		if(signature == null && childTypes.size() > 0) {
 			typeCheckError(node, childTypes);
