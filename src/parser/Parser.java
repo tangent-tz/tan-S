@@ -246,19 +246,19 @@ public class Parser {
 		return startsComparisonExpression(token);
 	}
 
-	// comparisonExpression -> additiveExpression [> additiveExpression]?
+	// comparisonExpression -> additiveExpression [> additiveExpression]*
 	private ParseNode parseComparisonExpression() {
 		if(!startsComparisonExpression(nowReading)) {
 			return syntaxErrorNode("comparison expression");
 		}
 		
 		ParseNode left = parseAdditiveExpression();
-		if(nowReading.isLextant(Punctuator.GREATER) || nowReading.isLextant(Punctuator.LESSER) || nowReading.isLextant(Punctuator.GREATEREQUAL) || nowReading.isLextant(Punctuator.LESSEREQUAL) || nowReading.isLextant(Punctuator.EQUALS) || nowReading.isLextant(Punctuator.NOTEQUALS)) {
+		while(nowReading.isLextant(Punctuator.GREATER, Punctuator.LESSER, Punctuator.GREATEREQUAL, Punctuator.LESSEREQUAL, Punctuator.EQUALS, Punctuator.NOTEQUALS)) {
 			Token compareToken = nowReading;
 			readToken();
 			ParseNode right = parseAdditiveExpression();
 			
-			return OperatorNode.withChildren(compareToken, left, right);
+			left = OperatorNode.withChildren(compareToken, left, right);
 		}
 		return left;
 	}
