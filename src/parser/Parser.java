@@ -228,7 +228,7 @@ public class Parser {
 	///////////////////////////////////////////////////////////
 	// expressions
 	// expr                     -> comparisonExpression
-	// comparisonExpression     -> additiveExpression [> additiveExpression]?
+	// comparisonExpression     -> additiveExpression [> additiveExpression]* 	(left-assoc)
 	// additiveExpression       -> multiplicativeExpression [+ multiplicativeExpression]*  (left-assoc)
 	// multiplicativeExpression -> atomicExpression [MULT atomicExpression]*  (left-assoc)
 	// atomicExpression         -> unaryExpression | literal
