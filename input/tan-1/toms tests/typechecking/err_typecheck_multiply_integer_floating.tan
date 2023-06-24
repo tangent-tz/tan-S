@@ -1,0 +1,4 @@
+main {
+    const result := 48 * 6.0;
+    print result \n;
+}

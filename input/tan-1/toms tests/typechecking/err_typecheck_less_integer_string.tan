@@ -1,0 +1,4 @@
+main {
+    const result := 20 < "(v!d!";
+    print result \n;
+}

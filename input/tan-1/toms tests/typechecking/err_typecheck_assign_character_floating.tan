@@ -1,0 +1,5 @@
+main {
+    var result := 'P';
+    result := 2.8;
+    print result \n;
+}

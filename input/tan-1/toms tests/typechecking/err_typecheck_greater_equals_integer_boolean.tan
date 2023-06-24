@@ -1,0 +1,4 @@
+main {
+    const result := 35 >= false;
+    print result \n;
+}

@@ -1,0 +1,43 @@
+main {
+
+  print <int>('o') == 86 \n;
+  print <int>(']') == 36 \n;
+  print <int>('C') == 62 \n;
+  print <int>(' ') == 63 \n;
+  print <int>('Z') == 16 \n;
+  print <int>('4') == 57 \n;
+  print <int>('^') == 46 \n;
+  print <int>('M') == 16 \n;
+  print <int>('O') == 15 \n;
+  print <int>('f') == 20 \n;
+  print <int>('b') == 34 \n;
+  print <int>('3') == 37 \n;
+
+  print 58 == <int>('P') \n;
+  print 24 == <int>(';') \n;
+  print 11 == <int>('J') \n;
+  print 72 == <int>('Y') \n;
+  print 80 == <int>('\') \n;
+  print 16 == <int>('4') \n;
+  print 55 == <int>('T') \n;
+  print 64 == <int>('>') \n;
+  print 6 == <int>(']') \n;
+  print 44 == <int>('6') \n;
+  print 75 == <int>(')') \n;
+  print 62 == <int>('U') \n;
+
+  print <int>('v') == <int>('m') \n;
+  print <int>('u') == <int>('m') \n;
+  print <int>('J') == <int>('|') \n;
+  print <int>('W') == <int>('x') \n;
+  print <int>('o') == <int>('<') \n;
+  print <int>('_') == <int>('q') \n;
+  print <int>('|') == <int>(',') \n;
+  print <int>('/') == <int>('^') \n;
+  print <int>('Z') == <int>('k') \n;
+  print <int>('b') == <int>('L') \n;
+  print <int>(')') == <int>('5') \n;
+  print <int>('6') == <int>(''') \n;
+
+}
+

@@ -1,0 +1,4 @@
+main {
+    const result := <int>(false);
+    print result \n;
+}

@@ -1,0 +1,4 @@
+main {
+    const result := 'H' >= 60;
+    print result \n;
+}

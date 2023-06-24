@@ -1,0 +1,6 @@
+main {
+    const result := <bool>('8');
+    var knownType := false;
+    knownType := result;
+    print result \n;
+}

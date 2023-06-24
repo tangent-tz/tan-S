@@ -1,0 +1,4 @@
+main {
+    const result := 'K' > "#]";
+    print result \n;
+}

@@ -1,0 +1,6 @@
+main {
+    const result := <int>(54);
+    var knownType := 55;
+    knownType := result;
+    print result \n;
+}

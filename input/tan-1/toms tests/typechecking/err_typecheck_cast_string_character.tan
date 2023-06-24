@@ -1,0 +1,4 @@
+main {
+    const result := <char>(",':");
+    print result \n;
+}

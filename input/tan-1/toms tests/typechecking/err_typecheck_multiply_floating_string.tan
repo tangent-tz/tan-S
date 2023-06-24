@@ -1,0 +1,4 @@
+main {
+    const result := 8.4 * "Q}t(";
+    print result \n;
+}
