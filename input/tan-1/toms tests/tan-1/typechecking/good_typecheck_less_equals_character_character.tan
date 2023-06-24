@@ -1,0 +1,6 @@
+main {
+    const result := 'd' <= 'N';
+    var knownType := false;
+    knownType := result;
+    print result \n;
+}

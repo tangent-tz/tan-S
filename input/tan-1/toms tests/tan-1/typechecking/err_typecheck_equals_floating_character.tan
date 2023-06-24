@@ -1,0 +1,4 @@
+main {
+    const result := 3.3 == '_';
+    print result \n;
+}

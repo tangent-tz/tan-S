@@ -1,0 +1,4 @@
+main {
+    const result := 20 * '+';
+    print result \n;
+}

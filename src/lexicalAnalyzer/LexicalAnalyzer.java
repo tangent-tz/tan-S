@@ -273,6 +273,10 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 			buffer.append(c.getCharacter());
 			c = input.next();
 		}
+		if(!c.isStringWrapper()) {
+			lexicalError(c);
+			return NullToken.make(firstChar);
+		}
 		return StringToken.make(firstChar, buffer.toString());
 	}
 

@@ -1,0 +1,43 @@
+main {
+
+  print <float>(57) <= 8.9 \n;
+  print <float>(9) <= 7.0 \n;
+  print <float>(20) <= 4.9 \n;
+  print <float>(96) <= 1.1 \n;
+  print <float>(35) <= 3.2 \n;
+  print <float>(99) <= 5.3 \n;
+  print <float>(74) <= 5.3 \n;
+  print <float>(15) <= 9.5 \n;
+  print <float>(41) <= 2.7 \n;
+  print <float>(58) <= 3.9 \n;
+  print <float>(21) <= 4.6 \n;
+  print <float>(75) <= 1.5 \n;
+
+  print 5.4 <= <float>(60) \n;
+  print 1.3 <= <float>(1) \n;
+  print 9.2 <= <float>(84) \n;
+  print 8.8 <= <float>(96) \n;
+  print 8.2 <= <float>(96) \n;
+  print 9.0 <= <float>(38) \n;
+  print 2.4 <= <float>(43) \n;
+  print 3.0 <= <float>(72) \n;
+  print 8.7 <= <float>(76) \n;
+  print 7.8 <= <float>(87) \n;
+  print 4.3 <= <float>(71) \n;
+  print 9.5 <= <float>(4) \n;
+
+  print <float>(21) <= <float>(77) \n;
+  print <float>(66) <= <float>(28) \n;
+  print <float>(19) <= <float>(43) \n;
+  print <float>(49) <= <float>(3) \n;
+  print <float>(37) <= <float>(84) \n;
+  print <float>(18) <= <float>(58) \n;
+  print <float>(48) <= <float>(72) \n;
+  print <float>(25) <= <float>(84) \n;
+  print <float>(44) <= <float>(21) \n;
+  print <float>(89) <= <float>(73) \n;
+  print <float>(68) <= <float>(41) \n;
+  print <float>(97) <= <float>(81) \n;
+
+}
+

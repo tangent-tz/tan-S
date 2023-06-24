@@ -1,0 +1,56 @@
+main {
+
+  print 18 + 1 / 64 \n;
+  print 65 + 82 / 55 \n;
+  print 96 + 5 / 7 \n;
+  print 8 + 7 / 83 \n;
+  print 14 + 15 / 63 \n;
+  print 68 + 5 / 88 \n;
+  print 75 + 21 / 32 \n;
+  print 2 + 51 / 71 \n;
+  print 20 + 40 / 2 \n;
+  print 80 + 59 / 49 \n;
+  print 43 + 50 / 51 \n;
+  print 42 + 44 / 35 \n;
+
+  print 30 / 78 + 53 \n;
+  print 24 / 86 + 19 \n;
+  print 91 / 15 + 8 \n;
+  print 26 / 3 + 35 \n;
+  print 35 / 41 + 13 \n;
+  print 88 / 15 + 85 \n;
+  print 41 / 28 + 98 \n;
+  print 86 / 97 + 69 \n;
+  print 59 / 5 + 53 \n;
+  print 24 / 55 + 48 \n;
+  print 33 / 75 + 66 \n;
+  print 94 / 25 + 1 \n;
+
+  print 79 + 70 / 72 + 87 \n;
+  print 81 + 53 / 42 + 69 \n;
+  print 94 + 51 / 57 + 90 \n;
+  print 75 + 59 / 36 + 90 \n;
+  print 59 + 65 / 43 + 48 \n;
+  print 43 + 93 / 85 + 59 \n;
+  print 90 + 25 / 13 + 99 \n;
+  print 68 + 21 / 33 + 11 \n;
+  print 46 + 80 / 92 + 62 \n;
+  print 86 + 30 / 70 + 11 \n;
+  print 35 + 4 / 97 + 65 \n;
+  print 6 + 75 / 26 + 77 \n;
+
+  print 49 / 33 + 51 / 26 \n;
+  print 65 / 82 + 79 / 47 \n;
+  print 31 / 93 + 88 / 67 \n;
+  print 13 / 30 + 46 / 94 \n;
+  print 84 / 19 + 26 / 60 \n;
+  print 43 / 7 + 40 / 60 \n;
+  print 30 / 38 + 31 / 77 \n;
+  print 43 / 56 + 10 / 76 \n;
+  print 42 / 99 + 71 / 41 \n;
+  print 65 / 49 + 26 / 28 \n;
+  print 48 / 67 + 30 / 33 \n;
+  print 44 / 96 + 22 / 69 \n;
+
+}
+

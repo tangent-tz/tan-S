@@ -1,0 +1,4 @@
+main {
+    const result := <float>("Yi&");
+    print result \n;
+}

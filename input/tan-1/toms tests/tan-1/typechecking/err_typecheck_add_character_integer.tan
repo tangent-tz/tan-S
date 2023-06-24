@@ -1,0 +1,4 @@
+main {
+    const result := 'M' + 37;
+    print result \n;
+}

@@ -1,0 +1,14 @@
+main {
+	const alpha := 1;
+	{
+		var beta := 2;
+		{
+			var alpha := 4;
+			print alpha \n;
+		}
+		alpha := 3;
+		print alpha \n;
+		print beta \n;
+	}
+	print alpha \n;
+}

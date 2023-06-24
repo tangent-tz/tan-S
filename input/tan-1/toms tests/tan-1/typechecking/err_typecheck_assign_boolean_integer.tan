@@ -1,0 +1,5 @@
+main {
+    var result := false;
+    result := 42;
+    print result \n;
+}

@@ -1,0 +1,4 @@
+main {
+    const result := 'F' / 2.8;
+    print result \n;
+}

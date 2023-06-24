@@ -1,0 +1,4 @@
+main {
+    const result := 66 < 5.2;
+    print result \n;
+}

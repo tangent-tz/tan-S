@@ -1,0 +1,6 @@
+main {
+    const result := 92 == 56;
+    var knownType := true;
+    knownType := result;
+    print result \n;
+}

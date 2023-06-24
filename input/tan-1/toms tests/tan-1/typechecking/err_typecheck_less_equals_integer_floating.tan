@@ -1,0 +1,4 @@
+main {
+    const result := 78 <= 2.4;
+    print result \n;
+}

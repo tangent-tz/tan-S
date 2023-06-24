@@ -1,0 +1,4 @@
+main {
+    const result := 9.6 >= 'n';
+    print result \n;
+}
