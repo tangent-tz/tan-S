@@ -1,0 +1,43 @@
+main {
+
+  print <int>(2.0) <= 74 \n;
+  print <int>(8.3) <= 68 \n;
+  print <int>(1.5) <= 33 \n;
+  print <int>(7.5) <= 89 \n;
+  print <int>(3.7) <= 47 \n;
+  print <int>(1.0) <= 55 \n;
+  print <int>(9.8) <= 49 \n;
+  print <int>(2.6) <= 1 \n;
+  print <int>(5.3) <= 56 \n;
+  print <int>(4.9) <= 4 \n;
+  print <int>(1.2) <= 2 \n;
+  print <int>(6.5) <= 55 \n;
+
+  print 75 <= <int>(8.4) \n;
+  print 47 <= <int>(8.8) \n;
+  print 5 <= <int>(5.2) \n;
+  print 20 <= <int>(9.2) \n;
+  print 8 <= <int>(9.2) \n;
+  print 33 <= <int>(7.5) \n;
+  print 13 <= <int>(8.1) \n;
+  print 21 <= <int>(5.5) \n;
+  print 26 <= <int>(6.9) \n;
+  print 89 <= <int>(7.7) \n;
+  print 56 <= <int>(9.0) \n;
+  print 25 <= <int>(9.3) \n;
+
+  print <int>(6.2) <= <int>(9.7) \n;
+  print <int>(2.1) <= <int>(6.5) \n;
+  print <int>(7.7) <= <int>(4.2) \n;
+  print <int>(9.5) <= <int>(4.7) \n;
+  print <int>(1.1) <= <int>(9.6) \n;
+  print <int>(5.4) <= <int>(7.7) \n;
+  print <int>(8.2) <= <int>(9.2) \n;
+  print <int>(9.6) <= <int>(1.4) \n;
+  print <int>(3.5) <= <int>(6.0) \n;
+  print <int>(6.3) <= <int>(6.7) \n;
+  print <int>(6.7) <= <int>(5.0) \n;
+  print <int>(1.5) <= <int>(6.8) \n;
+
+}
+

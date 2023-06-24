@@ -1,0 +1,4 @@
+main {
+    const result := "]/n" - true;
+    print result \n;
+}

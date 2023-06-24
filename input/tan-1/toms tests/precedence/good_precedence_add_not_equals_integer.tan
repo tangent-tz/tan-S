@@ -1,0 +1,43 @@
+main {
+
+  print 35 + 60 != 33 \n;
+  print 71 + 62 != 31 \n;
+  print 65 + 13 != 44 \n;
+  print 16 + 68 != 58 \n;
+  print 79 + 5 != 23 \n;
+  print 24 + 83 != 8 \n;
+  print 99 + 40 != 91 \n;
+  print 1 + 77 != 5 \n;
+  print 55 + 90 != 60 \n;
+  print 63 + 43 != 92 \n;
+  print 23 + 20 != 36 \n;
+  print 47 + 61 != 83 \n;
+
+  print 56 != 11 + 79 \n;
+  print 86 != 90 + 94 \n;
+  print 94 != 96 + 97 \n;
+  print 62 != 89 + 77 \n;
+  print 56 != 58 + 32 \n;
+  print 6 != 17 + 96 \n;
+  print 13 != 2 + 2 \n;
+  print 51 != 16 + 87 \n;
+  print 5 != 94 + 92 \n;
+  print 77 != 92 + 39 \n;
+  print 93 != 58 + 99 \n;
+  print 1 != 91 + 66 \n;
+
+  print 78 + 3 != 35 + 84 \n;
+  print 32 + 36 != 52 + 80 \n;
+  print 23 + 17 != 61 + 69 \n;
+  print 70 + 59 != 75 + 83 \n;
+  print 5 + 14 != 67 + 61 \n;
+  print 68 + 69 != 80 + 38 \n;
+  print 93 + 26 != 86 + 83 \n;
+  print 12 + 31 != 40 + 74 \n;
+  print 8 + 96 != 56 + 35 \n;
+  print 99 + 12 != 15 + 84 \n;
+  print 66 + 10 != 48 + 40 \n;
+  print 30 + 57 != 82 + 60 \n;
+
+}
+

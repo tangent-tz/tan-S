@@ -1,0 +1,4 @@
+main {
+    const result := "fhqRK<*" / 38;
+    print result \n;
+}

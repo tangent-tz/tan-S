@@ -1,0 +1,43 @@
+main {
+
+  print <int>(4.4) == 83 \n;
+  print <int>(1.7) == 47 \n;
+  print <int>(7.5) == 36 \n;
+  print <int>(1.0) == 97 \n;
+  print <int>(1.4) == 5 \n;
+  print <int>(2.7) == 29 \n;
+  print <int>(9.8) == 11 \n;
+  print <int>(3.7) == 61 \n;
+  print <int>(6.3) == 25 \n;
+  print <int>(4.7) == 96 \n;
+  print <int>(5.4) == 70 \n;
+  print <int>(5.2) == 82 \n;
+
+  print 47 == <int>(4.9) \n;
+  print 51 == <int>(9.9) \n;
+  print 65 == <int>(5.6) \n;
+  print 52 == <int>(7.2) \n;
+  print 60 == <int>(9.5) \n;
+  print 67 == <int>(6.8) \n;
+  print 10 == <int>(8.4) \n;
+  print 62 == <int>(3.6) \n;
+  print 2 == <int>(6.6) \n;
+  print 27 == <int>(8.2) \n;
+  print 57 == <int>(2.1) \n;
+  print 45 == <int>(6.7) \n;
+
+  print <int>(5.9) == <int>(7.7) \n;
+  print <int>(5.4) == <int>(9.9) \n;
+  print <int>(5.1) == <int>(9.5) \n;
+  print <int>(7.6) == <int>(2.9) \n;
+  print <int>(8.5) == <int>(9.7) \n;
+  print <int>(1.1) == <int>(7.9) \n;
+  print <int>(3.9) == <int>(5.0) \n;
+  print <int>(1.5) == <int>(9.2) \n;
+  print <int>(7.1) == <int>(7.9) \n;
+  print <int>(1.1) == <int>(5.8) \n;
+  print <int>(4.1) == <int>(2.7) \n;
+  print <int>(9.6) == <int>(7.5) \n;
+
+}
+

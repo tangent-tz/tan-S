@@ -1,0 +1,4 @@
+main {
+    const result := "]e" < 9.3;
+    print result \n;
+}

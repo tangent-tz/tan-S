@@ -1,0 +1,4 @@
+main {
+    const result := 'z' * 2.2;
+    print result \n;
+}

@@ -1,0 +1,4 @@
+main {
+    const result := true > 'n';
+    print result \n;
+}

@@ -1,0 +1,6 @@
+main {
+    const result := 4.9 != 5.3;
+    var knownType := false;
+    knownType := result;
+    print result \n;
+}

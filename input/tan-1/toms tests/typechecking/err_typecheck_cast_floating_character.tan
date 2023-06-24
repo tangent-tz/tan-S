@@ -1,0 +1,4 @@
+main {
+    const result := <char>(5.8);
+    print result \n;
+}

@@ -1,0 +1,4 @@
+main {
+    const result := 7.1 + "j#X n";
+    print result \n;
+}

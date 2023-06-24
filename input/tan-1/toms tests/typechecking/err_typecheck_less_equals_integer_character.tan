@@ -1,0 +1,4 @@
+main {
+    const result := 69 <= 'U';
+    print result \n;
+}

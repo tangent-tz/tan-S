@@ -1,0 +1,4 @@
+main {
+	const divisor := 0.0;
+	print 17.35 / divisor \n;
+}

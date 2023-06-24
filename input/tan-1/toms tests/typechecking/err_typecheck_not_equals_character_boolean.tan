@@ -1,0 +1,4 @@
+main {
+    const result := 'R' != true;
+    print result \n;
+}

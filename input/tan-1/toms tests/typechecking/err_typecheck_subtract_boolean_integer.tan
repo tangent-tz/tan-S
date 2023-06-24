@@ -1,0 +1,4 @@
+main {
+    const result := true - 7;
+    print result \n;
+}

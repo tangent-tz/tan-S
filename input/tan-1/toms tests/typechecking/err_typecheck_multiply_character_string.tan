@@ -1,0 +1,4 @@
+main {
+    const result := 'L' * "_wmV";
+    print result \n;
+}

@@ -1,0 +1,4 @@
+main {
+    const result := 5.1 != 64;
+    print result \n;
+}

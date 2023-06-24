@@ -1,0 +1,4 @@
+main {
+    const result := 38 + ';';
+    print result \n;
+}

@@ -1,0 +1,4 @@
+main {
+    const result := 85 / false;
+    print result \n;
+}

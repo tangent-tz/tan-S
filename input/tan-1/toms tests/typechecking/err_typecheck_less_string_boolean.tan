@@ -1,0 +1,4 @@
+main {
+    const result := "^*2ntA" < true;
+    print result \n;
+}

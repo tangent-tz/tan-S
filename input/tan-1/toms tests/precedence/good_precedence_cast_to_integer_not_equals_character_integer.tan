@@ -1,0 +1,43 @@
+main {
+
+  print <int>('\') != 62 \n;
+  print <int>('"') != 23 \n;
+  print <int>('^') != 74 \n;
+  print <int>('^') != 29 \n;
+  print <int>('^') != 50 \n;
+  print <int>('o') != 19 \n;
+  print <int>('s') != 71 \n;
+  print <int>('F') != 69 \n;
+  print <int>('1') != 46 \n;
+  print <int>('h') != 85 \n;
+  print <int>('o') != 12 \n;
+  print <int>('-') != 17 \n;
+
+  print 29 != <int>('u') \n;
+  print 75 != <int>('M') \n;
+  print 81 != <int>('m') \n;
+  print 64 != <int>('J') \n;
+  print 81 != <int>('3') \n;
+  print 5 != <int>(' ') \n;
+  print 72 != <int>('i') \n;
+  print 79 != <int>('w') \n;
+  print 8 != <int>('S') \n;
+  print 20 != <int>('C') \n;
+  print 46 != <int>('[') \n;
+  print 9 != <int>('=') \n;
+
+  print <int>('L') != <int>('k') \n;
+  print <int>('F') != <int>('u') \n;
+  print <int>('/') != <int>('9') \n;
+  print <int>('F') != <int>('7') \n;
+  print <int>('<') != <int>('9') \n;
+  print <int>('_') != <int>('P') \n;
+  print <int>('3') != <int>('^') \n;
+  print <int>('R') != <int>('$') \n;
+  print <int>('1') != <int>('?') \n;
+  print <int>('k') != <int>('I') \n;
+  print <int>('y') != <int>('*') \n;
+  print <int>('9') != <int>(']') \n;
+
+}
+
