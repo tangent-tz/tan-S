@@ -1,4 +1,4 @@
-main{
-    var x := 1234e;
+main {
+    var x := 1.2e+12+10.0;
     print x;
 }
