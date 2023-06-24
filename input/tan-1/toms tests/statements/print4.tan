@@ -1,0 +1,4 @@
+main {
+	var ja := true;
+	print \t ja \s ja \t ja\ja \n;
+}

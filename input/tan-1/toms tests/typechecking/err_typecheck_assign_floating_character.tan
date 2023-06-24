@@ -1,0 +1,5 @@
+main {
+    var result := 8.3;
+    result := '-';
+    print result \n;
+}

@@ -1,0 +1,43 @@
+main {
+
+  print 50 - 40 == 42 \n;
+  print 22 - 82 == 4 \n;
+  print 55 - 28 == 90 \n;
+  print 35 - 33 == 12 \n;
+  print 92 - 22 == 57 \n;
+  print 59 - 21 == 92 \n;
+  print 60 - 42 == 22 \n;
+  print 48 - 46 == 30 \n;
+  print 97 - 42 == 93 \n;
+  print 35 - 57 == 27 \n;
+  print 48 - 61 == 34 \n;
+  print 82 - 88 == 77 \n;
+
+  print 34 == 71 - 89 \n;
+  print 20 == 34 - 92 \n;
+  print 44 == 1 - 51 \n;
+  print 51 == 37 - 78 \n;
+  print 12 == 33 - 16 \n;
+  print 1 == 87 - 37 \n;
+  print 79 == 11 - 81 \n;
+  print 55 == 48 - 20 \n;
+  print 38 == 64 - 38 \n;
+  print 46 == 37 - 5 \n;
+  print 31 == 53 - 30 \n;
+  print 43 == 47 - 45 \n;
+
+  print 84 - 57 == 36 - 95 \n;
+  print 9 - 62 == 12 - 4 \n;
+  print 78 - 22 == 70 - 26 \n;
+  print 31 - 88 == 97 - 73 \n;
+  print 57 - 29 == 67 - 39 \n;
+  print 72 - 98 == 60 - 25 \n;
+  print 63 - 54 == 11 - 93 \n;
+  print 34 - 35 == 30 - 24 \n;
+  print 24 - 6 == 30 - 10 \n;
+  print 32 - 78 == 24 - 56 \n;
+  print 90 - 21 == 31 - 77 \n;
+  print 16 - 18 == 29 - 58 \n;
+
+}
+

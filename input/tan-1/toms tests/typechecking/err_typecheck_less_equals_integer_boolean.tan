@@ -1,0 +1,4 @@
+main {
+    const result := 53 <= true;
+    print result \n;
+}

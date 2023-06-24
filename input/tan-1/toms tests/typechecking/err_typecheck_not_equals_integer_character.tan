@@ -1,0 +1,4 @@
+main {
+    const result := 28 != 'e';
+    print result \n;
+}

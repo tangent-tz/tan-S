@@ -1,0 +1,4 @@
+main {
+    const result := 92 - 6.5;
+    print result \n;
+}

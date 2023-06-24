@@ -1,0 +1,4 @@
+main {
+    const result := <int>(":7T");
+    print result \n;
+}

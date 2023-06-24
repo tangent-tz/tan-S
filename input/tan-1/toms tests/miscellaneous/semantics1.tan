@@ -1,0 +1,8 @@
+main {
+	var alpha := 1;
+	{
+		const alpha := 2;
+		print alpha \n;
+	}
+	print alpha \n;
+}

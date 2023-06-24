@@ -1,0 +1,4 @@
+main {
+    const result := 2.2 + 85;
+    print result \n;
+}

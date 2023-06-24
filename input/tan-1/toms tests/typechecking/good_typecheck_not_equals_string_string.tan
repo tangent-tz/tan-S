@@ -1,0 +1,6 @@
+main {
+    const result := "Je@!\d" != "ou<x";
+    var knownType := true;
+    knownType := result;
+    print result \n;
+}

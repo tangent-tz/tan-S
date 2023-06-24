@@ -1,0 +1,43 @@
+main {
+
+  print <char>(92) == 'U' \n;
+  print <char>(54) == 'z' \n;
+  print <char>(99) == 'l' \n;
+  print <char>(20) == 't' \n;
+  print <char>(12) == 'F' \n;
+  print <char>(49) == ' ' \n;
+  print <char>(10) == 'v' \n;
+  print <char>(15) == 'O' \n;
+  print <char>(97) == 's' \n;
+  print <char>(73) == ' ' \n;
+  print <char>(39) == '!' \n;
+  print <char>(20) == '^' \n;
+
+  print 'j' == <char>(60) \n;
+  print 'F' == <char>(16) \n;
+  print '}' == <char>(40) \n;
+  print ',' == <char>(60) \n;
+  print '}' == <char>(76) \n;
+  print 'D' == <char>(39) \n;
+  print 'G' == <char>(87) \n;
+  print '%' == <char>(81) \n;
+  print 'y' == <char>(69) \n;
+  print '\' == <char>(55) \n;
+  print 'T' == <char>(38) \n;
+  print 'e' == <char>(35) \n;
+
+  print <char>(45) == <char>(25) \n;
+  print <char>(96) == <char>(37) \n;
+  print <char>(55) == <char>(99) \n;
+  print <char>(18) == <char>(88) \n;
+  print <char>(16) == <char>(93) \n;
+  print <char>(24) == <char>(22) \n;
+  print <char>(74) == <char>(32) \n;
+  print <char>(93) == <char>(23) \n;
+  print <char>(5) == <char>(52) \n;
+  print <char>(38) == <char>(88) \n;
+  print <char>(56) == <char>(46) \n;
+  print <char>(43) == <char>(3) \n;
+
+}
+

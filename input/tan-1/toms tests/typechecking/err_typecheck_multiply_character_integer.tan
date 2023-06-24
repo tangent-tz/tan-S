@@ -1,0 +1,4 @@
+main {
+    const result := 'I' * 87;
+    print result \n;
+}

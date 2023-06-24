@@ -1,0 +1,4 @@
+main {
+    const result := '{' > 1.5;
+    print result \n;
+}

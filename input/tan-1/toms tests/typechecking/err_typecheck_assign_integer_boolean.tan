@@ -1,0 +1,5 @@
+main {
+    var result := 58;
+    result := false;
+    print result \n;
+}

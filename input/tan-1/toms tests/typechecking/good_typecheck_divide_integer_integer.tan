@@ -1,0 +1,6 @@
+main {
+    const result := 76 / 31;
+    var knownType := 41;
+    knownType := result;
+    print result \n;
+}
