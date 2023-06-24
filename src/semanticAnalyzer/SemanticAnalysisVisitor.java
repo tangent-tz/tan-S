@@ -1,5 +1,6 @@
 package semanticAnalyzer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -124,54 +125,17 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	// expressions
 	@Override
 	public void visitLeave(OperatorNode node) {
-		List<Type> childTypes;  
-		if(node.nChildren() == 1) {
-			ParseNode child = node.child(0);
-			childTypes = Arrays.asList(child.getType());
-		}
-		else {
-			assert node.nChildren() == 2;
-			ParseNode left  = node.child(0);
-			ParseNode right = node.child(1);
-			
-			childTypes = Arrays.asList(left.getType(), right.getType());		
-		}
-		
-		Lextant operator = operatorFor(node);
-		Punctuator operatorAsPunctuator = Punctuator.forLexeme(operator.getLexeme());
-		FunctionSignature signature = null;
+		List<Type> childTypes =  new ArrayList<>();
 
-		if (childTypes.size() == 2) {
-			if(operatorAsPunctuator == Punctuator.CAST) {
-				signature = FunctionSignatures.signature(operatorAsPunctuator, childTypes);
-			}
-			else if (node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
-				signature = FunctionSignature.signatureOfInteger(operator);
-			}
-			else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT){
-				signature = FunctionSignature.signatureOfFloat(operator);
-			}
-			else if(node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER){
-				signature = FunctionSignature.signatureOfChar(operator);
-			}
-			else if(node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN){
-				signature = FunctionSignature.signatureOfBoolean(operator);
-			}
-			else if(node.child(0).getType() == ReferenceType.STRING && node.child(1).getType() == ReferenceType.STRING){
-				signature = FunctionSignature.signatureOfString(operator);
-			}
-		} else {
-			if(node.child(0).getType() == PrimitiveType.INTEGER) {
-				signature = FunctionSignature.unarySignatureOfInteger(operator);
-			} else {
-				signature = FunctionSignature.unarySignatureOfFloat(operator);
-			}
+		for(int i =0; i < node.nChildren(); i++) {
+			ParseNode child  = node.child(i);
+			childTypes.add(child.getType());
 		}
-		if(signature == null && childTypes.size() == 2) {
-			typeCheckError(node, childTypes);
-			node.setType(PrimitiveType.ERROR);
-			return;
-		}
+		assert 1 <= node.nChildren() && node.nChildren() <= 2;
+
+		Lextant operator = operatorFor(node);
+		FunctionSignature signature = FunctionSignatures.signature(operator, childTypes);
+
 		if(signature.accepts(childTypes)) {
 			node.setType(signature.resultType());
 		}

@@ -8,7 +8,6 @@ import inputHandler.LocatedChar;
 import inputHandler.LocatedCharStream;
 import inputHandler.PushbackCharStream;
 import tokens.*;
-
 import static lexicalAnalyzer.PunctuatorScanningAids.*;
 
 public class LexicalAnalyzer extends ScannerImp implements Scanner {
@@ -97,14 +96,46 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	}
 
 	private void appendFloatingSequence(StringBuffer buffer){
+		boolean digitPhase = false;
+		boolean exponentPhase = false;
+		boolean exponentSignPhase = false;
+		boolean exponentDigitPhase = false;
 		LocatedChar c = input.next();
-		boolean eFlag = false;
-		while(c.isDigit() || c.getCharacter() == LexicalMacros.E_NOTATION_UPPER || c.getCharacter() == LexicalMacros.E_NOTATION_LOWER || (c.getCharacter() == LexicalMacros.ADD && eFlag) || (c.getCharacter() == LexicalMacros.SUBTRACT && eFlag)) {
+
+		while(c.isDigit()){
 			buffer.append(c.getCharacter());
-			if(c.getCharacter() == LexicalMacros.E_NOTATION_LOWER || c.getCharacter() == LexicalMacros.E_NOTATION_UPPER) eFlag = true;
 			c = input.next();
+			digitPhase = true;
 		}
+		if(!digitPhase) lexicalError(c);
+
+		if((c.getCharacter() == LexicalMacros.E_NOTATION_LOWER || c.getCharacter() == LexicalMacros.E_NOTATION_UPPER) && digitPhase){
+			buffer.append(c.getCharacter());
+			c = input.next();
+			exponentPhase = true;
+		}
+
+		if((c.getCharacter() == LexicalMacros.ADD || c.getCharacter() == LexicalMacros.SUBTRACT) && exponentPhase){
+			buffer.append(c.getCharacter());
+			c = input.next();
+			exponentSignPhase = true;
+		}
+		if(!exponentSignPhase && exponentPhase) lexicalError(c);
+
+		while(c.isDigit() && exponentSignPhase){
+			buffer.append(c.getCharacter());
+			c = input.next();
+			exponentDigitPhase = true;
+		}
+		if(!exponentDigitPhase && exponentSignPhase) lexicalError(c);
 		input.pushback(c);
+	}
+
+	private boolean validNumber(String numberString){
+		String regexFloat = "^[0-9]+\\.[0-9]+$";
+		String regexScientific = "^[0-9]+\\.[0-9]+[eE][+-][0-9]+$";
+		String regexInt= "^[0-9]+$";
+		return numberString.matches(regexFloat) || numberString.matches(regexScientific) || numberString.matches(regexInt);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
