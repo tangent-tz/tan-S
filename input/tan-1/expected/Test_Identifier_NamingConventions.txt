@@ -10,7 +10,7 @@ false
 Test 2: Identifiers with just a single character
 o
 program
-55.369999
+55.370000
 true
 
 Test 3: Re-assignment of var variables
