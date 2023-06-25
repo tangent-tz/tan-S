@@ -1,0 +1,6 @@
+# Boolean-Not can only be applied to a boolean operand.
+
+main {
+    var x := !10;
+    print x;
+}

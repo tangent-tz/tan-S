@@ -30,6 +30,7 @@ public enum Punctuator implements Lextant {
 	HASH_SYMBOL("#"),
 	PERCENT_SIGN("%"),
 	CAST("<>"),
+	BOOLEAN_NOT("!"),
 	NULL_PUNCTUATOR("");
 
 	private String lexeme;
