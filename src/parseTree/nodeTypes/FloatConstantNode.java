@@ -17,8 +17,8 @@ public class FloatConstantNode extends ParseNode {
 ////////////////////////////////////////////////////////////
 // attributes
 
-    public float getValue() {
-        return (Float) numberToken().getValue();
+    public double getValue() {
+        return (Double) (numberToken().getValue());
     }
 
     public NumberToken numberToken() {

@@ -21,8 +21,8 @@ public class NumberToken extends TokenImp {
 		NumberToken result = new NumberToken(locator, lexeme);
 		if(isFloat) {
 			try {
-				Number floatValue = Float.parseFloat(lexeme);
-				if(floatValue.equals(Float.POSITIVE_INFINITY)) {
+				Number floatValue = Double.parseDouble(lexeme);
+				if(floatValue.equals(Double.POSITIVE_INFINITY)) {
 					lexicalError((LocatedChar) locator, "floating");
 				}
 				result.setValue(floatValue);

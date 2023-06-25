@@ -436,7 +436,7 @@ public class Parser {
 		return token instanceof NumberToken && ((NumberToken) token).getValue() instanceof Integer;
 	}
 	private boolean startsFloatLiteral(Token token) {
-		return token instanceof NumberToken && ((NumberToken) token).getValue() instanceof Float;
+		return token instanceof NumberToken && ((NumberToken) token).getValue() instanceof Double;
 	}
 
 
