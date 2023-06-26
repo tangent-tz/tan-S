@@ -1,14 +1,33 @@
+import shutil
 import subprocess
 import os
 import datetime
 
 TOMS_TEST_LEXICAL = "D:\CMPT379\input\\tan-1\\toms tests\lexical"
 TOMS_TEST_LEXICAL_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\lexical"
-TAN_PATH = "D:\CMPT379\input\\tan-1\\toms tests\lexical"
+
+TOMS_TEST_MISCELLANEOUS = "D:\CMPT379\input\\tan-1\\toms tests\miscellaneous"
+TOMS_TEST_MISCELLANEOUS_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\miscellaneous"
+
+TOMS_TEST_PRECEDENCE = "D:\CMPT379\input\\tan-1\\toms tests\precedence"
+TOMS_TEST_PRECEDENCE_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\precedence"
+
+TOMS_TEST_STATEMENTS = "D:\CMPT379\input\\tan-1\\toms tests\statements"
+TOMS_TEST_STATEMENTS_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\statements"
+
+TOMS_TEST_TYPECHECKING = "D:\CMPT379\input\\tan-1\\toms tests\\typechecking"
+TOMS_TEST_TYPECHECKING_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\\typechecking"
+
+GENERAL_TEST = "D:\CMPT379\input\\tan-1"
+GENERAL_TEST_EXPECTED = "D:\CMPT379\input\\tan-1\expected"
+
+global TAN_PATH
+global EXPECTED_PATH
+
 OUTPUT_PATH = "D:\CMPT379\input\\tan-1\output"
 ASM_PATH = "D:\CMPT379\ASM_Emulator\ASMEmu.exe"
 BIN_PATH = "D:\CMPT379\\bin"
-EXPECTED_PATH = "D:\CMPT379\input\\tan-1\Toms Test Expected\lexical"
+
 
 def run_java_file(java_file_path, java_class, file):
     command = ['java', '-cp', java_file_path, java_class, f"{TAN_PATH}\{file}", OUTPUT_PATH]
@@ -95,27 +114,61 @@ def ticks(dt):
 
 
 def assertions(tanFiles, compilerOutput, expectedOutput):
+    test_not_ran = []
     temp = ''
     for i in range(len(tanFiles)):
         try:
             common, total, fail = check_two_list(compilerOutput[i], expectedOutput[i])
+            temp = temp + f'{tanFiles[i]}: {common}/{total}'
+            if (len(fail)) > 0:
+                temp = temp + f' <<<------------->>> {fail}\n'
+            else:
+                temp = temp + '\n'
         except:
-            print(f"Couldnt Run Test on :{tanFiles[i]}")
-        temp = temp + f'{tanFiles[i]}: {common}/{total}'
-        if (len(fail)) > 0:
-            temp = temp + f' <<<------------->>> {fail}\n'
-        else:
-            temp = temp + '\n'
-    with open(
-            f"{datetime.datetime.now().year}-{datetime.datetime.now().month}-{datetime.datetime.now().day}_{datetime.datetime.now().hour}-{datetime.datetime.now().minute}-{datetime.datetime.now().second}.txt",
-            'w') as file:
-        for line in temp:
-            file.write(line)
-    print(temp)
+            test_not_ran.append(tanFiles[i])
+        with open(
+                f"{datetime.datetime.now().year}-{datetime.datetime.now().month}-{datetime.datetime.now().day}_{datetime.datetime.now().hour}-{datetime.datetime.now().minute}-{datetime.datetime.now().second}.txt",
+                'w') as file:
+            for line in temp:
+                file.write(line)
+        print(temp)
+        print(f"Couldnt Run Test on :{test_not_ran}")
+
+
+def test_to_run():
+    user_input = input("What Test to run? [Tom, General]\n")
+    tan_path = ""
+    expected_path = ""
+    if user_input.lower() == "tom":
+        user_input = input("Please Choose by writing:\n Lexical \n Miscellaneous\n Precedence\n Statements\n TypeChecking\n")
+        if user_input.lower() == "lexical":
+            tan_path = TOMS_TEST_LEXICAL
+            expected_path = TOMS_TEST_LEXICAL_EXPECTED
+        elif user_input.lower() == "miscellaneous":
+            tan_path = TOMS_TEST_MISCELLANEOUS
+            expected_path = TOMS_TEST_MISCELLANEOUS_EXPECTED
+        elif user_input.lower() == "precedence":
+            tan_path = TOMS_TEST_PRECEDENCE
+            expected_path = TOMS_TEST_PRECEDENCE_EXPECTED
+        elif user_input.lower() == "statements":
+            tan_path = TOMS_TEST_STATEMENTS
+            expected_path = TOMS_TEST_STATEMENTS_EXPECTED
+        elif user_input.lower() == "typeChecking":
+            tan_path = TOMS_TEST_TYPECHECKING
+            expected_path = TOMS_TEST_TYPECHECKING_EXPECTED
+    elif user_input.lower() == "general":
+        tan_path = GENERAL_TEST
+        expected_path = GENERAL_TEST_EXPECTED
+    return tan_path, expected_path
 
 
 if __name__ == "__main__":
     delete_if_exists("output.txt")
+    TAN_PATH, EXPECTED_PATH = test_to_run()
+    try:
+        shutil.rmtree('D:\CMPT379\input\\tan-1\output\\')
+    except:
+        pass
     tanFiles = java_file_execute_orchestrator()
     compilerOutput = ASM_file_execute_orchestrator()
     expectedOutput = expected_file_orchestrator()
