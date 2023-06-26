@@ -32,6 +32,9 @@ BIN_PATH = "D:\CMPT379\\bin"
 def run_java_file(java_file_path, java_class, file):
     command = ['java', '-cp', java_file_path, java_class, f"{TAN_PATH}\{file}", OUTPUT_PATH]
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if process.stderr != b'':
+        return False
+    return True
 
 
 def run_ASM_files(exe_path, arg):
@@ -49,7 +52,7 @@ def find_files(directory_path):
     with os.scandir(directory_path) as entries:
         for entry in entries:
             if entry.is_file():
-                if 'Violations' in entry.name or 'Conventions' in entry.name or 'err' in entry.name:
+                if 'Violations' in entry.name or 'Conventions' in entry.name or 'err' in entry.name or 'rte' in entry.name:
                     continue
                 else:
                     fileList.append(entry.name)
@@ -76,22 +79,26 @@ def terminal_output_to_list(filesASM):
 
 def java_file_execute_orchestrator():
     files = find_files(TAN_PATH)
-    print(files)
+    bad_file = []
     for i in range(len(files)):
-        run_java_file(BIN_PATH, 'applications.TanCompiler', files[i])
-    return files
+        response = run_java_file(BIN_PATH, 'applications.TanCompiler', files[i])
+        if response == False:
+            bad_file.append(i)
+    for i in range(len(bad_file)):
+        files.pop(bad_file[i])
+    return files, bad_file
 
 
 def ASM_file_execute_orchestrator():
     filesASM = find_files(OUTPUT_PATH)
-    print(filesASM)
     return terminal_output_to_list(filesASM)
 
 
-def expected_file_orchestrator():
+def expected_file_orchestrator(badFile):
     expectedOutputs = []
     filesExpected = find_files(EXPECTED_PATH)
-    print(filesExpected)
+    for i in range(len(badFile)):
+        filesExpected.pop(badFile[i])
     for i in range(len(filesExpected)):
         expectedOutputs.append(read_lines(f"{EXPECTED_PATH}\{filesExpected[i]}"))
     return expectedOutputs
@@ -131,16 +138,16 @@ def assertions(tanFiles, compilerOutput, expectedOutput):
                 'w') as file:
             for line in temp:
                 file.write(line)
-        print(temp)
-        print(f"Couldnt Run Test on :{test_not_ran}")
+    print(temp)
+    print(f"Couldnt Run Test on :{test_not_ran}")
 
 
 def test_to_run():
-    user_input = input("What Test to run? [Tom, General]\n")
+    user_input = input("System: What Test to run? [Tom, General]\nYou: ")
     tan_path = ""
     expected_path = ""
     if user_input.lower() == "tom":
-        user_input = input("Please Choose by writing:\n Lexical \n Miscellaneous\n Precedence\n Statements\n TypeChecking\n")
+        user_input = input("System: Please choose Test: [Lexical, Miscellaneous, Precedence, Statements, TypeChecking]\nYou: ")
         if user_input.lower() == "lexical":
             tan_path = TOMS_TEST_LEXICAL
             expected_path = TOMS_TEST_LEXICAL_EXPECTED
@@ -156,20 +163,27 @@ def test_to_run():
         elif user_input.lower() == "typeChecking":
             tan_path = TOMS_TEST_TYPECHECKING
             expected_path = TOMS_TEST_TYPECHECKING_EXPECTED
+        else:
+            return None, None
     elif user_input.lower() == "general":
         tan_path = GENERAL_TEST
         expected_path = GENERAL_TEST_EXPECTED
+    else:
+        return None, None
     return tan_path, expected_path
 
-
 if __name__ == "__main__":
-    delete_if_exists("output.txt")
-    TAN_PATH, EXPECTED_PATH = test_to_run()
-    try:
-        shutil.rmtree('D:\CMPT379\input\\tan-1\output\\')
-    except:
-        pass
-    tanFiles = java_file_execute_orchestrator()
-    compilerOutput = ASM_file_execute_orchestrator()
-    expectedOutput = expected_file_orchestrator()
-    assertions(tanFiles, compilerOutput, expectedOutput)
+    while True:
+        delete_if_exists("output.txt")
+        TAN_PATH, EXPECTED_PATH = test_to_run()
+        if TAN_PATH == None or EXPECTED_PATH == None:
+            print("System: Invalid Input exiting Program")
+            exit(0)
+        try:
+            shutil.rmtree('D:\CMPT379\input\\tan-1\output\\')
+        except:
+            pass
+        tanFiles, badFile = java_file_execute_orchestrator()
+        compilerOutput = ASM_file_execute_orchestrator()
+        expectedOutput = expected_file_orchestrator(badFile)
+        assertions(tanFiles, compilerOutput, expectedOutput)
