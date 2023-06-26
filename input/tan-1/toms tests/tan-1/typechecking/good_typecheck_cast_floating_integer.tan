@@ -1,6 +1,0 @@
-main {
-    const result := <int>(2.7);
-    var knownType := 88;
-    knownType := result;
-    print result \n;
-}

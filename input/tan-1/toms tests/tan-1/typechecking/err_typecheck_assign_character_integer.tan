@@ -1,5 +1,0 @@
-main {
-    var result := '_';
-    result := 67;
-    print result \n;
-}

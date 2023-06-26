@@ -1,4 +1,0 @@
-main {
-    const result := "@ \zL" > false;
-    print result \n;
-}

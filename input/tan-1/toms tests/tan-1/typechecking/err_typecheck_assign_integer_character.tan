@@ -1,5 +1,0 @@
-main {
-    var result := 1;
-    result := '{';
-    print result \n;
-}

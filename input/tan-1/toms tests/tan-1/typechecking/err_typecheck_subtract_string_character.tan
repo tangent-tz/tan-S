@@ -1,4 +1,0 @@
-main {
-    const result := "+6#rtt" - 'R';
-    print result \n;
-}

@@ -1,4 +1,0 @@
-main {
-    const result := "|>" < 53;
-    print result \n;
-}

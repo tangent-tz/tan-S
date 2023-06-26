@@ -1,4 +1,0 @@
-main {
-    const result := "Fj,Z+(x" >= "wB<";
-    print result \n;
-}

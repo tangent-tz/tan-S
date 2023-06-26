@@ -1,4 +1,0 @@
-main {
-    const result := 'e' + 5.6;
-    print result \n;
-}

@@ -1,9 +1,0 @@
-main {
-	const nein := false;
-	{
-		var ja := true;
-		ja := false;
-		print ja \n;
-	}
-	print nein \n;
-}

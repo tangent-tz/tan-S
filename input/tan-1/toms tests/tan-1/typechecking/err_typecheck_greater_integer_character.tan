@@ -1,4 +1,0 @@
-main {
-    const result := 23 > 'I';
-    print result \n;
-}

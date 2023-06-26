@@ -1,5 +1,0 @@
-main {
-	var ja := 1.0;
-	ja + 14.1 := 2.9;
-	print ja \n;
-}

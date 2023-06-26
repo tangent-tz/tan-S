@@ -1,4 +1,0 @@
-main {
-    const result := "A[Uvd" >= true;
-    print result \n;
-}

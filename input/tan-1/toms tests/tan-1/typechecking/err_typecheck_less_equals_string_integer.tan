@@ -1,4 +1,0 @@
-main {
-    const result := "EDQ$" <= 69;
-    print result \n;
-}

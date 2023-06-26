@@ -1,4 +1,0 @@
-main {
-    const result := "v&5" - 2.4;
-    print result \n;
-}

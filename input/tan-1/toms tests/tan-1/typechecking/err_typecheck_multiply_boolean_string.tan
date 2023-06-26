@@ -1,4 +1,0 @@
-main {
-    const result := true * "cB)8q";
-    print result \n;
-}

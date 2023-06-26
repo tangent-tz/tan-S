@@ -1,6 +1,0 @@
-main {
-    const result := 84 >= 5;
-    var knownType := true;
-    knownType := result;
-    print result \n;
-}

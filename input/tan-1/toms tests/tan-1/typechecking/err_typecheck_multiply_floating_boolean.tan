@@ -1,4 +1,0 @@
-main {
-    const result := 7.6 * false;
-    print result \n;
-}

@@ -1,5 +1,0 @@
-main {
-    var result := "U_Q/&";
-    result := "E_9d.{";
-    print result \n;
-}

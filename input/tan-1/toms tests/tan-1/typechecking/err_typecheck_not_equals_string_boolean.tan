@@ -1,4 +1,0 @@
-main {
-    const result := "pV4W@z)" != true;
-    print result \n;
-}

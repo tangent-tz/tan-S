@@ -1,4 +1,0 @@
-main {
-    const result := 6.3 / "(*";
-    print result \n;
-}

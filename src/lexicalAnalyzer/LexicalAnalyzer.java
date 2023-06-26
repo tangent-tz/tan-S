@@ -76,8 +76,11 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(firstChar.getCharacter());
 		boolean isFloat = appendWholeNumbers(buffer);
-		if (isFloat) appendFloatingSequence(buffer);
-		return NumberToken.make(firstChar, buffer.toString(), isFloat);
+		if(isFloat) {
+			appendFloatingSequence(buffer);
+			return FloatToken.make(firstChar, buffer.toString());
+		}
+		return IntegerToken.make(firstChar, buffer.toString());
 	}
 	private boolean appendWholeNumbers(StringBuffer buffer) {
 		LocatedChar c = input.next();
