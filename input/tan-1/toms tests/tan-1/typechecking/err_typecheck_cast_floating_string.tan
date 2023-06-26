@@ -1,4 +1,0 @@
-main {
-    const result := <string>(5.3);
-    print result \n;
-}

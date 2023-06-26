@@ -1,4 +1,0 @@
-main {
-    const result := false / ":f!FFX";
-    print result \n;
-}

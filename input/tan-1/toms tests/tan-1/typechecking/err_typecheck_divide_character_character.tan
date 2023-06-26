@@ -1,4 +1,0 @@
-main {
-    const result := 'j' / '1';
-    print result \n;
-}

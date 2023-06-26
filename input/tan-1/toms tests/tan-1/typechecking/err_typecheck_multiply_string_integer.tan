@@ -1,4 +1,0 @@
-main {
-    const result := "/4;r''R" * 84;
-    print result \n;
-}

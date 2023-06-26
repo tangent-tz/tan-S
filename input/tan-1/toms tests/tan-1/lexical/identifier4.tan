@@ -1,4 +1,0 @@
-main {
-	const @bcd := 4;
-	print @bcd \n;
-}

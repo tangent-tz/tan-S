@@ -1,4 +1,0 @@
-main {
-    const result := 85 - "/xtae";
-    print result \n;
-}

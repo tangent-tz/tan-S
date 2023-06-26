@@ -1,4 +1,0 @@
-main {
-    const result := "ARP|']f" <= 9.2;
-    print result \n;
-}

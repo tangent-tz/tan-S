@@ -1,5 +1,0 @@
-main {
-	const ja := 1;
-	ja := 2;
-	print ja \n;
-}

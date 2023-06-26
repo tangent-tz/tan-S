@@ -1,4 +1,0 @@
-main {
-    const result := "#LJ" > 2.0;
-    print result \n;
-}
