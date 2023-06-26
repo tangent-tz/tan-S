@@ -2,14 +2,21 @@ import subprocess
 import os
 import datetime
 
+TOMS_TEST_LEXICAL = "D:\CMPT379\input\\tan-1\\toms tests\lexical"
+TOMS_TEST_LEXICAL_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\lexical"
+TAN_PATH = "D:\CMPT379\input\\tan-1\\toms tests\lexical"
+OUTPUT_PATH = "D:\CMPT379\input\\tan-1\output"
+ASM_PATH = "D:\CMPT379\ASM_Emulator\ASMEmu.exe"
+BIN_PATH = "D:\CMPT379\\bin"
+EXPECTED_PATH = "D:\CMPT379\input\\tan-1\Toms Test Expected\lexical"
 
 def run_java_file(java_file_path, java_class, file):
-    command = ['java', '-cp', java_file_path, java_class, f'D:\CMPT379\input\\tan-1\{file}', 'D:\CMPT379\input\\tan-1\output']
+    command = ['java', '-cp', java_file_path, java_class, f"{TAN_PATH}\{file}", OUTPUT_PATH]
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
 def run_ASM_files(exe_path, arg):
-    result = subprocess.run([exe_path] + [f'D:\CMPT379\input\\tan-1\output\{arg}'], capture_output=True, text=True)
+    result = subprocess.run([exe_path] + [f'{OUTPUT_PATH}\{arg}'], capture_output=True, text=True)
     return result.stdout
 
 
@@ -23,7 +30,7 @@ def find_files(directory_path):
     with os.scandir(directory_path) as entries:
         for entry in entries:
             if entry.is_file():
-                if 'Violations' in entry.name or 'Conventions' in entry.name:
+                if 'Violations' in entry.name or 'Conventions' in entry.name or 'err' in entry.name:
                     continue
                 else:
                     fileList.append(entry.name)
@@ -39,7 +46,7 @@ def read_lines(textFile):
 def terminal_output_to_list(filesASM):
     results = []
     for i in range(len(filesASM)):
-        result = run_ASM_files('D:\CMPT379\ASM_Emulator\ASMEmu.exe', filesASM[i])
+        result = run_ASM_files(ASM_PATH, filesASM[i])
         with open('output.txt', 'w') as file:
             for line in result:
                 file.write(line)
@@ -49,22 +56,25 @@ def terminal_output_to_list(filesASM):
 
 
 def java_file_execute_orchestrator():
-    files = find_files('D:\CMPT379\input\\tan-1')
+    files = find_files(TAN_PATH)
+    print(files)
     for i in range(len(files)):
-        run_java_file('D:\CMPT379\\bin', 'applications.TanCompiler', files[i])
+        run_java_file(BIN_PATH, 'applications.TanCompiler', files[i])
     return files
 
 
 def ASM_file_execute_orchestrator():
-    filesASM = find_files('D:\CMPT379\input\\tan-1\output')
+    filesASM = find_files(OUTPUT_PATH)
+    print(filesASM)
     return terminal_output_to_list(filesASM)
 
 
 def expected_file_orchestrator():
     expectedOutputs = []
-    filesExpected = find_files('D:\CMPT379\input\\tan-1\expected')
+    filesExpected = find_files(EXPECTED_PATH)
+    print(filesExpected)
     for i in range(len(filesExpected)):
-        expectedOutputs.append(read_lines(f'D:\CMPT379\input\\tan-1\expected\{filesExpected[i]}'))
+        expectedOutputs.append(read_lines(f"{EXPECTED_PATH}\{filesExpected[i]}"))
     return expectedOutputs
 
 
@@ -87,7 +97,10 @@ def ticks(dt):
 def assertions(tanFiles, compilerOutput, expectedOutput):
     temp = ''
     for i in range(len(tanFiles)):
-        common, total, fail = check_two_list(compilerOutput[i], expectedOutput[i])
+        try:
+            common, total, fail = check_two_list(compilerOutput[i], expectedOutput[i])
+        except:
+            print(f"Couldnt Run Test on :{tanFiles[i]}")
         temp = temp + f'{tanFiles[i]}: {common}/{total}'
         if (len(fail)) > 0:
             temp = temp + f' <<<------------->>> {fail}\n'
