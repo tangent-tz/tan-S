@@ -160,7 +160,7 @@ def test_to_run():
         elif user_input.lower() == "statements":
             tan_path = TOMS_TEST_STATEMENTS
             expected_path = TOMS_TEST_STATEMENTS_EXPECTED
-        elif user_input.lower() == "typeChecking":
+        elif user_input.lower() == "typechecking":
             tan_path = TOMS_TEST_TYPECHECKING
             expected_path = TOMS_TEST_TYPECHECKING_EXPECTED
         else:
