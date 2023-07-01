@@ -1,0 +1,9 @@
+Based on the code, the expected output would be a series of boolean values separated by new lines (\n). The boolean values would be true if the calculation on the left side of the equality operator (==) is equal to the value on the right side, and false otherwise. 
+
+For example, the first line of code would output "true" because 60 divided by 25 is equal to 2, and 2 is equal to 22. 
+
+The second line of code would output "false" because 81 divided by 49 is equal to 1.653, which is not equal to 14. 
+
+Similarly, the third line of code would output "false" because 96 divided by 3 is equal to 32, which is not equal to 39. 
+
+The rest of the lines of code would follow this pattern of performing a division calculation and comparing it to a given value, outputting true or false based on the result.
