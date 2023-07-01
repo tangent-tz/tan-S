@@ -118,11 +118,11 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new EqualCodeGenerator(), ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN)
 		);
 		new FunctionSignatures(Punctuator.NOTEQUALS,
-				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
-				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
-				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
-				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
-				new FunctionSignature(ASMOpcode.Nop, ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN)
+				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new NotEqualCodeGenerator(), ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN)
 		);
 		new FunctionSignatures(Punctuator.CAST,
 			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
