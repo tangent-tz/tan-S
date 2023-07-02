@@ -2,6 +2,7 @@ import shutil
 import subprocess
 import os
 import datetime
+import time
 
 TOMS_TEST_LEXICAL = "D:\CMPT379\input\\tan-1\\toms tests\lexical"
 TOMS_TEST_LEXICAL_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\lexical"
@@ -30,6 +31,9 @@ BIN_PATH = "D:\CMPT379\\bin"
 
 
 def run_java_file(java_file_path, java_class, file):
+    command = ['javac', '-cp', "D:\\CMPT379\\src\\", '-d', BIN_PATH, "D:\\CMPT379\\src\\applications\\TanCompiler.java"]
+    process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
     command = ['java', '-cp', java_file_path, java_class, f"{TAN_PATH}\{file}", OUTPUT_PATH]
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if process.stderr != b'':
@@ -80,17 +84,21 @@ def terminal_output_to_list(filesASM):
 def java_file_execute_orchestrator():
     files = find_files(TAN_PATH)
     bad_file = []
+    bad_file_names = []
     for i in range(len(files)):
         response = run_java_file(BIN_PATH, 'applications.TanCompiler', files[i])
         if response == False:
             bad_file.append(i)
+            bad_file_names.append(files[i])
     for i in range(len(bad_file)):
         files.pop(bad_file[i])
-    return files, bad_file
+    return files, bad_file, bad_file_names
 
 
-def ASM_file_execute_orchestrator():
+def ASM_file_execute_orchestrator(badFile):
     filesASM = find_files(OUTPUT_PATH)
+    for i in range(len(badFile)):
+        filesASM.pop(badFile[i])
     return terminal_output_to_list(filesASM)
 
 
@@ -120,8 +128,10 @@ def ticks(dt):
     return (dt - datetime(1, 1, 1)).total_seconds() * 10000000
 
 
-def assertions(tanFiles, compilerOutput, expectedOutput):
+def assertions(tanFiles, compilerOutput, expectedOutput, bad_file_names):
     test_not_ran = []
+    for i in range(len(bad_file_names)):
+        test_not_ran.append(bad_file_names[i])
     temp = ''
     for i in range(len(tanFiles)):
         try:
@@ -172,18 +182,31 @@ def test_to_run():
         return None, None
     return tan_path, expected_path
 
+
+def deleteFolder():
+    folder_path = 'D:\CMPT379\input\\tan-1\\output'
+    if os.path.exists(folder_path):
+        try:
+            for filename in os.listdir(folder_path):
+                file_path = os.path.join(folder_path, filename)
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            print("Folder contents deleted successfully.")
+        except OSError as e:
+            print(f"Error: {e}. Failed to delete the folder contents.")
+
+
 if __name__ == "__main__":
     while True:
         delete_if_exists("output.txt")
         TAN_PATH, EXPECTED_PATH = test_to_run()
         if TAN_PATH == None or EXPECTED_PATH == None:
             print("System: Invalid Input exiting Program")
-            exit(0)
-        try:
-            shutil.rmtree('D:\CMPT379\input\\tan-1\output\\')
-        except:
-            pass
-        tanFiles, badFile = java_file_execute_orchestrator()
-        compilerOutput = ASM_file_execute_orchestrator()
+            continue
+        deleteFolder()
+        tanFiles, badFile, bad_file_names = java_file_execute_orchestrator()
+        compilerOutput = ASM_file_execute_orchestrator(badFile)
         expectedOutput = expected_file_orchestrator(badFile)
-        assertions(tanFiles, compilerOutput, expectedOutput)
+        assertions(tanFiles, compilerOutput, expectedOutput, bad_file_names)
