@@ -4,6 +4,7 @@ import asmCodeGenerator.Labeller;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import parseTree.ParseNode;
+import parseTree.nodeTypes.OperatorNode;
 
 import java.util.List;
 
@@ -23,5 +24,10 @@ public class IntToBoolCodeGenerator implements SimpleCodeGenerator {
         code.add(ASMOpcode.Label, trueLabel);
         code.add(ASMOpcode.PushI, 1);
         code.add(ASMOpcode.Label, joinLabel);
+    }
+
+    @Override
+    public void generate(OperatorNode node, ASMCodeFragment code) {
+
     }
 }
