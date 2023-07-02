@@ -309,15 +309,15 @@ public class ASMCodeGenerator {
 			generateComparisonCodeFragment(node);
 		}
 		private void generateComparisonCodeFragment(OperatorNode node) {
-			FunctionSignature castingSignature = FunctionSignatures.signature(node.getOperator(), Arrays.asList(node.child(0).getType(), node.child(1).getType()));
-			Object castingVariant = castingSignature.getVariant();
+			FunctionSignature signature = FunctionSignatures.signature(node.getOperator(), Arrays.asList(node.child(0).getType(), node.child(1).getType()));
+			Object variant = signature.getVariant();
 
-			if(castingVariant instanceof ASMOpcode) {
-				code.add((ASMOpcode) castingVariant);
+			if(variant instanceof ASMOpcode) {
+				code.add((ASMOpcode) variant);
 				return;
 			}
 
-			((SimpleCodeGenerator)castingVariant).generate(node , code);
+			((SimpleCodeGenerator)variant).generate(node , code);
 		}
 
 		private void visitNormalBinaryOperatorNode(OperatorNode node) {
