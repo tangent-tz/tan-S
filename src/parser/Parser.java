@@ -235,24 +235,47 @@ public class Parser {
 	// unaryExpression			-> UNARYOP atomicExpression
 	// literal                  -> intNumber | identifier | booleanConstant
 
-	// expr  -> booleanORExpression
+
 	private ParseNode parseExpression() {		
 		if(!startsExpression(nowReading)) {
 			return syntaxErrorNode("expression");
 		}
-		return parseAndExpression();
+		return parseConditionalOrExpression();
 	}
 	private boolean startsExpression(Token token) {
-		return startsComparisonExpression(token);
+		return startsConditionalOrExpression(token);
 	}
 
-	private ParseNode parseAndExpression(){
-		if(!startsAndExpression(nowReading)) {
-			return syntaxErrorNode("and expression");
+	
+	
+	private ParseNode parseConditionalOrExpression() {
+		if(!startsConditionalOrExpression(nowReading)) {
+			return syntaxErrorNode("conditional-or expression"); 
+		}
+		
+		ParseNode left = parseConditionalAndExpression(); 
+		while(nowReading.isLextant(Punctuator.CONDITIONAL_OR)) {
+			Token orToken = nowReading; 
+			readToken();
+			ParseNode right = parseConditionalAndExpression(); 
+			
+			left = OperatorNode.withChildren(orToken, left, right); 
+		}
+		return left;
+	}
+	private boolean startsConditionalOrExpression(Token token) {
+		return startsConditionalAndExpression(token); 
+	}
+	
+	
+	
+	private ParseNode parseConditionalAndExpression(){
+		if(!startsConditionalAndExpression(nowReading)) {
+			return syntaxErrorNode("conditional-and expression");
 		}
 
 		ParseNode left = parseComparisonExpression();
-		while(nowReading.isLextant(Punctuator.AND)) {
+		while(nowReading.isLextant(Punctuator.CONDITIONAL_AND)) {
 			Token andToken = nowReading;
 			readToken();
 			ParseNode right = parseComparisonExpression();
@@ -262,10 +285,12 @@ public class Parser {
 		return left;
 	}
 
-	private boolean startsAndExpression(Token token) {
+	private boolean startsConditionalAndExpression(Token token) {
 		return startsComparisonExpression(token);
 	}
 
+	
+	
 	// comparisonExpression -> additiveExpression [> additiveExpression]*
 	private ParseNode parseComparisonExpression() {
 		if(!startsComparisonExpression(nowReading)) {

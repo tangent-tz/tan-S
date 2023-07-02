@@ -124,8 +124,11 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new NotEqualCodeGenerator(), ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN)
 		);
-		new FunctionSignatures(Punctuator.AND,
-				new FunctionSignature(new AndCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
+		new FunctionSignatures(Punctuator.CONDITIONAL_AND,
+				new FunctionSignature(new ConditionalAndCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
+		);
+		new FunctionSignatures(Punctuator.CONDITIONAL_OR,
+				new FunctionSignature(new ConditionalOrCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
 		);
 		new FunctionSignatures(Punctuator.CAST,
 			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
@@ -140,9 +143,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 			new FunctionSignature(ASMOpcode.ConvertI, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.INTEGER),
 			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT)
 		);
-		new FunctionSignatures(Punctuator.BOOLEAN_OR, 
-			new FunctionSignature(1, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
-		); 
+
 
 
 	}

@@ -32,7 +32,7 @@ public class IntToBoolCodeGenerator implements SimpleCodeGenerator {
     }
 
     @Override
-    public void generate(OperatorNode node, ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2) {
+    public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2) {
 
     }
 }
