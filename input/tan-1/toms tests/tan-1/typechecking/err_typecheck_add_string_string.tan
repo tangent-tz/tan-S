@@ -1,4 +1,0 @@
-main {
-    const result := "2$" + "sPmBiy|";
-    print result \n;
-}

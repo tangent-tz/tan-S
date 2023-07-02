@@ -1,4 +1,0 @@
-main {
-    const result := 'N' != "O79aA<V";
-    print result \n;
-}

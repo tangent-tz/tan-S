@@ -1,4 +1,0 @@
-main {
-    const result := 'w' <= 99;
-    print result \n;
-}

@@ -1,4 +1,0 @@
-main {
-    const result := "$W\P*DA" != 1.8;
-    print result \n;
-}

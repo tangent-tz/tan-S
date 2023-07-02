@@ -1,6 +1,0 @@
-main {
-    const result := 1.0 == 3.9;
-    var knownType := true;
-    knownType := result;
-    print result \n;
-}

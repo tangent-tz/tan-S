@@ -1,5 +1,0 @@
-main {
-    var result := "luCvrY";
-    result := 2.5;
-    print result \n;
-}

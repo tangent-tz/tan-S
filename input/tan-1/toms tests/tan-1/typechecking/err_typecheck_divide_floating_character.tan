@@ -1,4 +1,0 @@
-main {
-    const result := 1.5 / 'C';
-    print result \n;
-}

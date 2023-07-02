@@ -1,4 +1,0 @@
-main {
-    const result := "|0SE*&m" / false;
-    print result \n;
-}

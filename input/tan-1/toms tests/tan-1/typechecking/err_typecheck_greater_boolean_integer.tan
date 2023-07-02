@@ -1,4 +1,0 @@
-main {
-    const result := false > 77;
-    print result \n;
-}

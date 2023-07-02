@@ -1,4 +1,0 @@
-main {
-    const result := "T4*ryU" != 51;
-    print result \n;
-}

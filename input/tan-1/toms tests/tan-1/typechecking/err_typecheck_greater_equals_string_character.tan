@@ -1,4 +1,0 @@
-main {
-    const result := "@p]L_." >= 'a';
-    print result \n;
-}

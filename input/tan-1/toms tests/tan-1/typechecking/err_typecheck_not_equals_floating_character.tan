@@ -1,4 +1,0 @@
-main {
-    const result := 2.4 != 'D';
-    print result \n;
-}

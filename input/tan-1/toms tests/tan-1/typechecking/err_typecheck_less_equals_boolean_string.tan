@@ -1,4 +1,0 @@
-main {
-    const result := true <= "V\<A8f(";
-    print result \n;
-}

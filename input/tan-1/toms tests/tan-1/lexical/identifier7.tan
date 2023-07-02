@@ -1,4 +1,0 @@
-main {
-	const Ab@d := 7;
-	print Ab@d \n;
-}

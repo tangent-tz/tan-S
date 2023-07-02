@@ -1,4 +1,0 @@
-main {
-	const Abd$ := 1;
-	print Abd$ \n;
-}

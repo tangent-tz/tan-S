@@ -1,5 +1,0 @@
-main {
-    var result := 'E';
-    result := "sd )$)";
-    print result \n;
-}

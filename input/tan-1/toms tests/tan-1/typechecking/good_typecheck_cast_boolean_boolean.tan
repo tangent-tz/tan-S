@@ -1,6 +1,0 @@
-main {
-    const result := <bool>(false);
-    var knownType := false;
-    knownType := result;
-    print result \n;
-}

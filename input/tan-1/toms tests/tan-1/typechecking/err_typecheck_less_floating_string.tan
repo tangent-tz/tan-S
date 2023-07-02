@@ -1,4 +1,0 @@
-main {
-    const result := 8.0 < "SN";
-    print result \n;
-}

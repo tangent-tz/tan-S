@@ -1,4 +1,0 @@
-main {
-    const result := '/' - 9.3;
-    print result \n;
-}

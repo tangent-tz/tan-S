@@ -1,5 +1,0 @@
-main {
-    var result := "1lI:=q";
-    result := 25;
-    print result \n;
-}

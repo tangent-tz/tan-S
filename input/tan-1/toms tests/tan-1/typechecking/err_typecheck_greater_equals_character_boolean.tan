@@ -1,4 +1,0 @@
-main {
-    const result := 'l' >= false;
-    print result \n;
-}

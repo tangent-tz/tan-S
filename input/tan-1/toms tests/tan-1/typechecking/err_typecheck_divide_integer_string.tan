@@ -1,4 +1,0 @@
-main {
-    const result := 66 / "O$ b`";
-    print result \n;
-}
