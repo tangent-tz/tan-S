@@ -4,3 +4,5 @@ main {
     var x := !10;
     print x;
 }
+
+# Expected error: SEVERE: operator ! not defined for types [INTEGER] at (Test_UnaryOperator_BooleanNot_Violations.tan line 4, character 13)
