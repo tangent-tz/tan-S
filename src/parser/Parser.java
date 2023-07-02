@@ -227,7 +227,8 @@ public class Parser {
 
 	///////////////////////////////////////////////////////////
 	// expressions
-	// expr                     -> comparisonExpression
+	// expr				        -> AndExpression
+	// AndExpression            -> comparisonExpression
 	// comparisonExpression     -> additiveExpression [> additiveExpression]* 	(left-assoc)
 	// additiveExpression       -> multiplicativeExpression [+ multiplicativeExpression]*  (left-assoc)
 	// multiplicativeExpression -> atomicExpression [MULT atomicExpression]*  (left-assoc)
@@ -240,9 +241,29 @@ public class Parser {
 		if(!startsExpression(nowReading)) {
 			return syntaxErrorNode("expression");
 		}
-		return parseComparisonExpression();
+		return parseAndExpression();
 	}
 	private boolean startsExpression(Token token) {
+		return startsComparisonExpression(token);
+	}
+
+	private ParseNode parseAndExpression(){
+		if(!startsAndExpression(nowReading)) {
+			return syntaxErrorNode("and expression");
+		}
+
+		ParseNode left = parseComparisonExpression();
+		while(nowReading.isLextant(Punctuator.AND)) {
+			Token andToken = nowReading;
+			readToken();
+			ParseNode right = parseComparisonExpression();
+
+			left = OperatorNode.withChildren(andToken, left, right);
+		}
+		return left;
+	}
+
+	private boolean startsAndExpression(Token token) {
 		return startsComparisonExpression(token);
 	}
 
