@@ -1,4 +1,0 @@
-main {
-    const result := 41 >= "JOwuw98";
-    print result \n;
-}

@@ -1,4 +1,0 @@
-main {
-    const result := "+y" + 8.7;
-    print result \n;
-}

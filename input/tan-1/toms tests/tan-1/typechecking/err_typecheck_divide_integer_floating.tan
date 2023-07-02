@@ -1,4 +1,0 @@
-main {
-    const result := 31 / 1.4;
-    print result \n;
-}

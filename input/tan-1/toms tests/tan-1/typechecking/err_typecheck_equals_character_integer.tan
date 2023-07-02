@@ -1,4 +1,0 @@
-main {
-    const result := 'a' == 45;
-    print result \n;
-}

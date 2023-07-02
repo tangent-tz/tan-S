@@ -1,4 +1,0 @@
-main {
-	const Ab_d := 6;
-	print Ab_d \n;
-}

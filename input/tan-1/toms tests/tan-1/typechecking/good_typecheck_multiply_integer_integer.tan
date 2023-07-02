@@ -1,6 +1,0 @@
-main {
-    const result := 7 * 33;
-    var knownType := 78;
-    knownType := result;
-    print result \n;
-}

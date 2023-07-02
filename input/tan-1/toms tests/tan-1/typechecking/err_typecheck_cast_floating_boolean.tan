@@ -1,4 +1,0 @@
-main {
-    const result := <bool>(7.4);
-    print result \n;
-}

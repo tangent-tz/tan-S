@@ -1,4 +1,0 @@
-main {
-    const result := 33 != "6H>&";
-    print result \n;
-}

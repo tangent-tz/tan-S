@@ -1,4 +1,0 @@
-main {
-    const result := 45 * true;
-    print result \n;
-}

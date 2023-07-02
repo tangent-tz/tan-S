@@ -1,6 +1,0 @@
-main {
-    const result := "X4" == "/4{rz:Q";
-    var knownType := true;
-    knownType := result;
-    print result \n;
-}

@@ -1,4 +1,0 @@
-main {
-	var ja := true;
-	print ja \s ja \ ja \n;
-}

@@ -1,4 +1,0 @@
-main {
-    const result := '+' != 6.8;
-    print result \n;
-}

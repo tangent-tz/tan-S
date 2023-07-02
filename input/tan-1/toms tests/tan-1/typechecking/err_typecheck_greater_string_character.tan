@@ -1,4 +1,0 @@
-main {
-    const result := "Ur" > '?';
-    print result \n;
-}

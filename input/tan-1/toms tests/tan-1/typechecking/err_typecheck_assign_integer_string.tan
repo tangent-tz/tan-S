@@ -1,5 +1,0 @@
-main {
-    var result := 83;
-    result := "&r\gO\";
-    print result \n;
-}

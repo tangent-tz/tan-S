@@ -1,4 +1,0 @@
-main {
-    const result := 4.5 - 18;
-    print result \n;
-}

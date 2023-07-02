@@ -1,5 +1,0 @@
-main {
-	print 112 \n;
-}
-# comment lines after main
-# more than one of them

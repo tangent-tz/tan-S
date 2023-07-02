@@ -1,6 +1,0 @@
-main {
-    const result := <int>('Y');
-    var knownType := 63;
-    knownType := result;
-    print result \n;
-}

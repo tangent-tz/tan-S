@@ -1,4 +1,0 @@
-main {
-    const result := + "/fD";
-    print result \n;
-}
