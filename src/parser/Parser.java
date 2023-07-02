@@ -226,7 +226,8 @@ public class Parser {
 	///////////////////////////////////////////////////////////
 	// expressions
 	// expr                     -> booleanORExpression
-	// booleanORExpression 		-> comparisonExpression [|| comparisonExpression]*	(left-assoc + short-circuit)
+	// booleanORExpression		-> booleanANDExpression [|| booleanANDExpression]*	(left-assoc + short-circuit)
+	// booleanANDExpression 	-> comparisonExpression [&& comparisonExpression]*	(left-assoc + short-circuit)
 	// comparisonExpression     -> additiveExpression [> additiveExpression]* 	(left-assoc)
 	// additiveExpression       -> multiplicativeExpression [+ multiplicativeExpression]*  (left-assoc)
 	// multiplicativeExpression -> atomicExpression [MULT atomicExpression]*  (left-assoc)
