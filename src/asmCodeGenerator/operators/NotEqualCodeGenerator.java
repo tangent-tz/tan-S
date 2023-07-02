@@ -70,4 +70,9 @@ public class NotEqualCodeGenerator implements SimpleCodeGenerator {
             code.add(Label, joinLabel);
         }
     }
+
+    @Override
+    public void generate(OperatorNode node, ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2) {
+
+    }
 }

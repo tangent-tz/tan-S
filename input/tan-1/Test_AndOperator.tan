@@ -1,0 +1,38 @@
+main {
+	print  true &&  true &&  true \n;
+	print  true && false &&  true \n;
+	print false &&  true &&  true \n;
+	print false && false &&  true;
+	print \n\n;
+
+	print  true &&  true &&  false \n;
+	print  true && false &&  false \n;
+	print false &&  true &&  false \n;
+	print false && false &&  false;
+	print \n\n;
+
+	var a := 10;
+    var b := 20;
+    var c := 30;
+    var e := 40;
+
+    # Precedence Test
+    print ((a + b) * c > e) && (e / a == b) \n;
+
+    var aa := 10;
+    var bb := 20;
+    var cc := 30;
+    var ee := 200;
+
+    # Precedence Test
+    print ((aa + bb) * cc > ee) && (ee / aa == bb) \n;
+
+    var d := false && (17 / 0) > 1;
+    print d \n;
+
+    var v := true && (17 / 0) > 1;
+    print v \n;
+
+
+
+}
