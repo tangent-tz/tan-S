@@ -1,0 +1,26 @@
+main {
+    # Basic logic tests:
+    const x := true || true; 
+    print x \n; 
+    
+    var x1 := true || false;
+    print x1 \n; 
+    
+    x1 := false || false; 
+    print x1 \n; 
+    
+    x1 := false || true; 
+    print x1 \n; 
+    
+    
+    # Short circuit tests (also precedence tests):
+    var x2 := <bool>(12) || (12/0 == 1); 
+    print x2 \n; 
+    
+    x2 := 1+2 == 5 || 7.7 - 3.3 < 0 || 'a' == 'b' || 'a' == 'a'; 
+    print x2 \n;
+    
+    x2 := 1+2 == 5 || 7.7 - 3.3 < 0 || 'a' == 'b' || 'a' == 'c'; 
+    print x2 \n;
+    
+}
