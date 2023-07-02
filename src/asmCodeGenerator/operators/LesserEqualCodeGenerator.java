@@ -12,7 +12,7 @@ import java.util.List;
 
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
-public class GreaterThanCodeGenerator implements SimpleCodeGenerator {
+public class LesserEqualCodeGenerator implements SimpleCodeGenerator {
     public ASMCodeFragment generate(ParseNode node, List<ASMCodeFragment> args) {
         return null;    //todo: returns null for now since we are not using this function anywhere
     }
@@ -40,8 +40,8 @@ public class GreaterThanCodeGenerator implements SimpleCodeGenerator {
         {
             code.add(Subtract);
 
-            code.add(JumpPos, trueLabel);
-            code.add(Jump, falseLabel);
+            code.add(JumpPos, falseLabel);
+            code.add(Jump, trueLabel);
 
             code.add(Label, trueLabel);
             code.add(PushI, 1);
@@ -55,8 +55,8 @@ public class GreaterThanCodeGenerator implements SimpleCodeGenerator {
         {
             code.add(FSubtract);
 
-            code.add(JumpFPos, trueLabel);
-            code.add(Jump, falseLabel);
+            code.add(JumpFPos, falseLabel);
+            code.add(Jump, trueLabel);
 
             code.add(Label, trueLabel);
             code.add(PushI, 1);

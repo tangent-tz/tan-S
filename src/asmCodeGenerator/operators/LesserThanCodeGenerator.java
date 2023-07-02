@@ -31,13 +31,13 @@ public class LesserThanCodeGenerator implements SimpleCodeGenerator {
         String trueLabel  = labeller.newLabel("true");
         String falseLabel = labeller.newLabel("false");
         String joinLabel  = labeller.newLabel("join");
+        code.add(Label, startLabel);
+        code.add(Label, arg2Label);
+        code.add(Label, subLabel);
 
         if(node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER ||
                 node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER)
         {
-            code.add(Label, startLabel);
-            code.add(Label, arg2Label);
-            code.add(Label, subLabel);
             code.add(Subtract);
 
             code.add(JumpNeg, trueLabel);
@@ -53,9 +53,6 @@ public class LesserThanCodeGenerator implements SimpleCodeGenerator {
         }
         else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT)
         {
-            code.add(Label, startLabel);
-            code.add(Label, arg2Label);
-            code.add(Label, subLabel);
             code.add(FSubtract);
 
             code.add(JumpFNeg, trueLabel);
