@@ -240,34 +240,32 @@ public class Parser {
 		if(!startsExpression(nowReading)) {
 			return syntaxErrorNode("expression");
 		}
-		return parseBooleanORExpression(); 
+		return parseAndExpression();
 	}
 	private boolean startsExpression(Token token) {
-		return startsBooleanORExpression(token);
+		return startsComparisonExpression(token);
 	}
-	
 
-	// booleanORExpression 		-> comparisonExpression [|| comparisonExpression]*
-	private ParseNode parseBooleanORExpression() {
-		if(!startsBooleanORExpression(nowReading)) {
-			return syntaxErrorNode("boolean-OR expression"); 
+	private ParseNode parseAndExpression(){
+		if(!startsAndExpression(nowReading)) {
+			return syntaxErrorNode("and expression");
 		}
-		
+
 		ParseNode left = parseComparisonExpression();
-		while(nowReading.isLextant(Punctuator.BOOLEAN_OR)) {
-			Token orToken = nowReading;
+		while(nowReading.isLextant(Punctuator.AND)) {
+			Token andToken = nowReading;
 			readToken();
-			ParseNode right = parseComparisonExpression(); 
-			
-			left = OperatorNode.withChildren(orToken, left, right);
+			ParseNode right = parseComparisonExpression();
+
+			left = OperatorNode.withChildren(andToken, left, right);
 		}
 		return left;
 	}
-	private boolean startsBooleanORExpression(Token token) {
-		return startsComparisonExpression(token); 
+
+	private boolean startsAndExpression(Token token) {
+		return startsComparisonExpression(token);
 	}
-	
-	
+
 	// comparisonExpression -> additiveExpression [> additiveExpression]*
 	private ParseNode parseComparisonExpression() {
 		if(!startsComparisonExpression(nowReading)) {
