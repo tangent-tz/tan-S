@@ -834,7 +834,7 @@ public class ASMCodeGenerator {
 			code.append(arg1);
 
 			FunctionSignature sig = FunctionSignatures.signature(node.getOperator(), Arrays.asList(node.child(0).getType()));
-			ASMOpcode opcode = (ASMOpcode) sig.getVariant();
+			ASMOpcode opcode = (ASMOpcode) (sig.getVariant());
 			code.add(opcode);
 		}
 
