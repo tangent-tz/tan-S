@@ -262,6 +262,9 @@ public class ASMCodeGenerator {
 			else if(operator == Punctuator.CAST) {
 				visitCastingOperatorNode(node);
 			}
+			else if(operator == Punctuator.BOOLEAN_OR) {
+				visitBooleanOROperatorNode(node); 
+			}
 			else {
 				visitNormalBinaryOperatorNode(node);
 			}
@@ -299,6 +302,39 @@ public class ASMCodeGenerator {
 
 			((SimpleCodeGenerator)castingVariant).generate(code);
 		}
+
+		private void visitBooleanOROperatorNode(OperatorNode node) {
+			newValueCode(node);
+			ASMCodeFragment arg1 = removeValueCode(node.child(0)); 
+			ASMCodeFragment arg2 = removeValueCode(node.child(1)); 
+			
+			Labeller labeller = new Labeller("boolean-OR");
+			String startLabel = labeller.newLabel("arg1");
+			String arg2Label  = labeller.newLabel("arg2");
+			String falseLabel = labeller.newLabel("false"); 
+			String trueLabel = labeller.newLabel("true");
+			String joinLabel = labeller.newLabel("join");
+			
+			code.add(Label, startLabel); 
+			code.append(arg1);
+			code.add(JumpTrue, trueLabel); 
+			
+			code.add(Label, arg2Label); 
+			code.append(arg2);
+			code.add(JumpTrue, trueLabel);
+			
+			code.add(Label, falseLabel);
+			code.add(PushI, 0); 
+			code.add(Jump, joinLabel); 
+			
+			code.add(Label, trueLabel); 
+			code.add(PushI, 1); 
+			
+			code.add(Label, joinLabel);
+		}
+		
+		
+		
 		private void visitComparisonOperatorNode(OperatorNode node) {
 			newValueCode(node);
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));

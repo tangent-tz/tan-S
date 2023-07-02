@@ -5,8 +5,6 @@ import java.util.Arrays;
 import logging.TanLogger;
 import parseTree.*;
 import parseTree.nodeTypes.*;
-import semanticAnalyzer.types.Type;
-import symbolTable.SymbolTable;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
@@ -227,7 +225,8 @@ public class Parser {
 
 	///////////////////////////////////////////////////////////
 	// expressions
-	// expr                     -> comparisonExpression
+	// expr                     -> booleanORExpression
+	// booleanORExpression 		-> comparisonExpression [|| comparisonExpression]*	(left-assoc + short-circuit)
 	// comparisonExpression     -> additiveExpression [> additiveExpression]* 	(left-assoc)
 	// additiveExpression       -> multiplicativeExpression [+ multiplicativeExpression]*  (left-assoc)
 	// multiplicativeExpression -> atomicExpression [MULT atomicExpression]*  (left-assoc)
@@ -235,17 +234,39 @@ public class Parser {
 	// unaryExpression			-> UNARYOP atomicExpression
 	// literal                  -> intNumber | identifier | booleanConstant
 
-	// expr  -> comparisonExpression
+	// expr  -> booleanORExpression
 	private ParseNode parseExpression() {		
 		if(!startsExpression(nowReading)) {
 			return syntaxErrorNode("expression");
 		}
-		return parseComparisonExpression();
+		return parseBooleanORExpression(); 
 	}
 	private boolean startsExpression(Token token) {
-		return startsComparisonExpression(token);
+		return startsBooleanORExpression(token);
 	}
+	
 
+	// booleanORExpression 		-> comparisonExpression [|| comparisonExpression]*
+	private ParseNode parseBooleanORExpression() {
+		if(!startsBooleanORExpression(nowReading)) {
+			return syntaxErrorNode("boolean-OR expression"); 
+		}
+		
+		ParseNode left = parseComparisonExpression();
+		while(nowReading.isLextant(Punctuator.BOOLEAN_OR)) {
+			Token orToken = nowReading;
+			readToken();
+			ParseNode right = parseComparisonExpression(); 
+			
+			left = OperatorNode.withChildren(orToken, left, right);
+		}
+		return left;
+	}
+	private boolean startsBooleanORExpression(Token token) {
+		return startsComparisonExpression(token); 
+	}
+	
+	
 	// comparisonExpression -> additiveExpression [> additiveExpression]*
 	private ParseNode parseComparisonExpression() {
 		if(!startsComparisonExpression(nowReading)) {
