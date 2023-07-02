@@ -256,11 +256,14 @@ public class ASMCodeGenerator {
 				else
 					visitNormalBinaryOperatorNode(node);
 			}
-			else if(operator == Punctuator.EQUALS ||operator == Punctuator.GREATER||operator == Punctuator.LESSER||operator == Punctuator.NOTEQUALS || operator  == Punctuator.GREATEREQUAL || operator == Punctuator.LESSEREQUAL || operator == Punctuator.AND) {
+			else if(operator == Punctuator.EQUALS ||operator == Punctuator.GREATER||operator == Punctuator.LESSER||operator == Punctuator.NOTEQUALS || operator  == Punctuator.GREATEREQUAL || operator == Punctuator.LESSEREQUAL) {
 				visitComparisonOperatorNode(node);
 			}
 			else if(operator == Punctuator.CAST) {
 				visitCastingOperatorNode(node);
+			}
+			else if(operator == Punctuator.CONDITIONAL_OR || operator == Punctuator.CONDITIONAL_AND) {
+				visitConditionalOperatorNode(node); 
 			}
 			else {
 				visitNormalBinaryOperatorNode(node);
@@ -299,18 +302,25 @@ public class ASMCodeGenerator {
 
 			((SimpleCodeGenerator)castingVariant).generate(code);
 		}
+
+		private void visitConditionalOperatorNode(OperatorNode node) {
+			newValueCode(node);
+			ASMCodeFragment arg1 = removeValueCode(node.child(0)); 
+			ASMCodeFragment arg2 = removeValueCode(node.child(1)); 
+			
+			FunctionSignature sig = FunctionSignatures.signature(node.getOperator(), Arrays.asList(node.child(0).getType(), node.child(1).getType()));
+			((SimpleCodeGenerator) sig.getVariant()).generate(code, arg1, arg2);
+		}
+		
+		
 		private void visitComparisonOperatorNode(OperatorNode node) {
 			newValueCode(node);
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			ASMCodeFragment arg2 = removeValueCode(node.child(1));
-			if (node.getOperator() == Punctuator.AND) {
-				generateComparisonCodeFragment(node, arg1, arg2);
-			}
-			else {
-				code.append(arg1);
-				code.append(arg2);
-				generateComparisonCodeFragment(node, arg1, arg2);
-			}
+
+			code.append(arg1);
+			code.append(arg2);
+			generateComparisonCodeFragment(node, arg1, arg2);
 		}
 
 		private void generateComparisonCodeFragment(OperatorNode node, ASMCodeFragment arg1, ASMCodeFragment arg2) {
@@ -319,10 +329,6 @@ public class ASMCodeGenerator {
 
 			if(variant instanceof ASMOpcode) {
 				code.add((ASMOpcode) variant);
-				return;
-			}
-			else if(node.getOperator() == Punctuator.AND){
-				((SimpleCodeGenerator)variant).generate(node, code, arg1, arg2);
 				return;
 			}
 			((SimpleCodeGenerator)variant).generate(node , code);

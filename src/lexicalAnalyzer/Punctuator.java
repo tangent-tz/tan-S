@@ -15,7 +15,6 @@ public enum Punctuator implements Lextant {
 	NOTEQUALS("!="),
 	GREATEREQUAL(">="),
 	LESSEREQUAL("<="),
-	AND("&&"),
 	ASSIGN(":="),
 	PRINT_SEPARATOR("\\"),
 	PRINT_SPACE("\\s"),
@@ -31,6 +30,8 @@ public enum Punctuator implements Lextant {
 	HASH_SYMBOL("#"),
 	PERCENT_SIGN("%"),
 	CAST("<>"),
+	CONDITIONAL_OR("||"),
+	CONDITIONAL_AND("&&"),
 	NULL_PUNCTUATOR("");
 
 	private String lexeme;
