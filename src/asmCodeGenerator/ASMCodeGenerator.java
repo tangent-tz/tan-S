@@ -262,6 +262,9 @@ public class ASMCodeGenerator {
 			else if(operator == Punctuator.CAST) {
 				visitCastingOperatorNode(node);
 			}
+			else if(operator == Punctuator.CONDITIONAL_OR || operator == Punctuator.CONDITIONAL_AND) {
+				visitConditionalOperatorNode(node); 
+			}
 			else {
 				visitNormalBinaryOperatorNode(node);
 			}
@@ -295,16 +298,28 @@ public class ASMCodeGenerator {
 
 			((SimpleCodeGenerator)castingVariant).generate(code);
 		}
+
+		private void visitConditionalOperatorNode(OperatorNode node) {
+			newValueCode(node);
+			ASMCodeFragment arg1 = removeValueCode(node.child(0)); 
+			ASMCodeFragment arg2 = removeValueCode(node.child(1)); 
+			
+			FunctionSignature sig = FunctionSignatures.signature(node.getOperator(), Arrays.asList(node.child(0).getType(), node.child(1).getType()));
+			((SimpleCodeGenerator) sig.getVariant()).generate(code, arg1, arg2);
+		}
+		
+		
 		private void visitComparisonOperatorNode(OperatorNode node) {
 			newValueCode(node);
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			ASMCodeFragment arg2 = removeValueCode(node.child(1));
+
 			code.append(arg1);
 			code.append(arg2);
-
-			generateComparisonCodeFragment(node);
+			generateComparisonCodeFragment(node, arg1, arg2);
 		}
-		private void generateComparisonCodeFragment(OperatorNode node) {
+
+		private void generateComparisonCodeFragment(OperatorNode node, ASMCodeFragment arg1, ASMCodeFragment arg2) {
 			FunctionSignature signature = FunctionSignatures.signature(node.getOperator(), Arrays.asList(node.child(0).getType(), node.child(1).getType()));
 			Object variant = signature.getVariant();
 
@@ -312,7 +327,6 @@ public class ASMCodeGenerator {
 				code.add((ASMOpcode) variant);
 				return;
 			}
-
 			((SimpleCodeGenerator)variant).generate(node , code);
 		}
 

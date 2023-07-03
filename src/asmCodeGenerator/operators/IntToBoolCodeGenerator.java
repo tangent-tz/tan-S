@@ -30,4 +30,9 @@ public class IntToBoolCodeGenerator implements SimpleCodeGenerator {
     public void generate(OperatorNode node, ASMCodeFragment code) {
 
     }
+
+    @Override
+    public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2) {
+
+    }
 }

@@ -124,6 +124,12 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new NotEqualCodeGenerator(), ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN)
 		);
+		new FunctionSignatures(Punctuator.CONDITIONAL_AND,
+				new FunctionSignature(new ConditionalAndCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
+		);
+		new FunctionSignatures(Punctuator.CONDITIONAL_OR,
+				new FunctionSignature(new ConditionalOrCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
+		);
 		new FunctionSignatures(Punctuator.CAST,
 				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new CharToBoolCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
@@ -140,6 +146,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		new FunctionSignatures(Punctuator.BOOLEAN_NOT,
 				new FunctionSignature(ASMOpcode.BNegate, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
 		);
+
 
 
 	}

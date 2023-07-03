@@ -1,0 +1,14 @@
+true
+false
+false
+false
+
+false
+false
+false
+false
+
+false
+true
+false
+Runtime error: integer divide by zero

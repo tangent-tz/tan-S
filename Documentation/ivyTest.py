@@ -19,16 +19,22 @@ TOMS_TEST_STATEMENTS_EXPECTED = "C:\CMPT379\input\\tan-1\Toms Test Expected\stat
 TOMS_TEST_TYPECHECKING = "C:\CMPT379\input\\tan-1\\toms tests\\typechecking"
 TOMS_TEST_TYPECHECKING_EXPECTED = "C:\CMPT379\input\\tan-1\Toms Test Expected\\typechecking"
 
-GENERAL_TEST = "C:\CMPT379\input\\tan-1"
-GENERAL_TEST_EXPECTED = "C:\CMPT379\input\\tan-1\expected"
+GENERAL_TEST_1 = "C:\CMPT379\input\\tan-1"
+GENERAL_TEST_1_EXPECTED = "C:\CMPT379\input\\tan-1\expected"
+
+GENERAL_TEST_2 = "C:\CMPT379\input\\tan-2"
+GENERAL_TEST_2_EXPECTED = "C:\CMPT379\input\\tan-2\expected"
 
 global TAN_PATH
 global EXPECTED_PATH
 
-OUTPUT_PATH = "C:\CMPT379\input\\tan-1\output"
+OUTPUT_PATH_1 = "C:\CMPT379\input\\tan-1\output"
+OUTPUT_PATH_2 = "C:\CMPT379\input\\tan-2\output"
+
 ASM_PATH = "C:\CMPT379\ASM_Emulator\ASMEmu.exe"
 BIN_PATH = "C:\CMPT379\\bin"
 
+EXIT = "exit"
 
 def run_java_file(java_file_path, java_class, file):
     command = ['javac', '-cp', "C:\\CMPT379\\src\\", '-d', BIN_PATH, "C:\\CMPT379\\src\\applications\\TanCompiler.java"]
@@ -153,7 +159,7 @@ def assertions(tanFiles, compilerOutput, expectedOutput, bad_file_names):
 
 
 def test_to_run():
-    user_input = input("System: What Test to run? [Tom, General]\nYou: ")
+    user_input = input("System: What Test to run? [Tom, General1, General2]\nYou: ")
     tan_path = ""
     expected_path = ""
     if user_input.lower() == "tom":
@@ -175,16 +181,22 @@ def test_to_run():
             expected_path = TOMS_TEST_TYPECHECKING_EXPECTED
         else:
             return None, None
-    elif user_input.lower() == "general":
-        tan_path = GENERAL_TEST
-        expected_path = GENERAL_TEST_EXPECTED
+    elif user_input.lower() == "general1":
+        tan_path = GENERAL_TEST_1
+        expected_path = GENERAL_TEST_1_EXPECTED
+    elif user_input.lower() == "general2":
+        tan_path = GENERAL_TEST_2
+        expected_path = GENERAL_TEST_2_EXPECTED
+    elif user_input.lower() == EXIT:
+        tan_path = EXIT
+        expected_path = EXIT
     else:
         return None, None
     return tan_path, expected_path
 
 
 def deleteFolder():
-    folder_path = 'C:\CMPT379\input\\tan-1\\output'
+    folder_path = OUTPUT_PATH
     if os.path.exists(folder_path):
         try:
             for filename in os.listdir(folder_path):
@@ -198,13 +210,28 @@ def deleteFolder():
             print(f"Error: {e}. Failed to delete the folder contents.")
 
 
+def setOutputPath():
+    global OUTPUT_PATH
+    if TAN_PATH == GENERAL_TEST_1:
+        OUTPUT_PATH = OUTPUT_PATH_1
+        return
+    
+    OUTPUT_PATH = OUTPUT_PATH_2
+     
+
 if __name__ == "__main__":
     while True:
         delete_if_exists("output.txt")
         TAN_PATH, EXPECTED_PATH = test_to_run()
+
         if TAN_PATH == None or EXPECTED_PATH == None:
-            print("System: Invalid Input exiting Program")
+            print("System: Invalid Input")
             continue
+
+        if TAN_PATH == EXIT:
+            break
+
+        setOutputPath()
         deleteFolder()
         tanFiles, badFile, bad_file_names = java_file_execute_orchestrator()
         compilerOutput = ASM_file_execute_orchestrator(badFile)
