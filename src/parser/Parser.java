@@ -77,13 +77,17 @@ public class Parser {
 		if(startsBlockStatement(nowReading)) {
 			return parseBlockStatement();
 		}
+		if(startsIfStatement(nowReading)) {
+			return parseIfStatement(); 
+		}
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
 		return startsPrintStatement(token) ||
 			   	startsDeclaration(token) ||
 				startsAssignmentStatement(token) ||
-				startsBlockStatement(token);
+				startsBlockStatement(token) ||
+				startsIfStatement(token); 
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
@@ -221,6 +225,25 @@ public class Parser {
 		return token.isLextant(Punctuator.OPEN_BRACE);
 	}
 
+	
+	private ParseNode parseIfStatement() {
+		if(!startsIfStatement(nowReading)) {
+			return syntaxErrorNode("ifStatement");
+		}
+		Token ifToken = nowReading;
+		readToken();
+		ParseNode ifCondition = parseParenthesesWrappedExpression(); 
+		ParseNode ifBlock = parseBlockStatement(); 
+		if(nowReading.isLextant(Keyword.ELSE)){
+			readToken();
+			ParseNode elseBlock = parseBlockStatement();
+			return IfStatementNode.withChildren(ifToken, ifCondition, ifBlock, elseBlock); 
+		}
+		return IfStatementNode.withChildren(ifToken, ifCondition, ifBlock);
+	}
+	private boolean startsIfStatement(Token token) {
+		return token.isLextant(Keyword.IF); 
+	}
 
 
 	///////////////////////////////////////////////////////////
