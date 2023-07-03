@@ -5,7 +5,6 @@ main {
         print x \n;
         x := x + 1;
     }
-    print \n;
 
     # Test 2
     x := 10;
@@ -13,7 +12,6 @@ main {
         print x \n;
         x := x + 1;
     }
-    print \n;
 
     # Test 3
     x := 1;
@@ -21,7 +19,6 @@ main {
         print x \n;
         x := x * 2;
     }
-    print \n;
 
     # Test 4
     x := 0;
@@ -34,5 +31,14 @@ main {
         }
         x := x + 1;
     }
+
+    # Test 5
+    x := 0;
+    while( x < 5 ) {
+    	print "then" \s;
+    	x := x + 1;
+    }
+    print "after" \n;
+
 }
 
