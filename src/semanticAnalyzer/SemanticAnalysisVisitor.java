@@ -37,8 +37,17 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitLeave(ProgramNode node) {
 		leaveScope(node);
 	}
-	
-	
+	@Override
+	public void visitLeave(WhileNode node) {
+		ParseNode condition = node.child(0);
+
+		if (condition.getType() != PrimitiveType.BOOLEAN) {
+			logError("Condition in while loop at " + node.getToken().getLocation() + " is not a boolean expression");
+			node.setType(PrimitiveType.ERROR);
+		} else {
+			node.setType(PrimitiveType.NO_TYPE);
+		}
+	}
 	///////////////////////////////////////////////////////////////////////////
 	// helper methods for scoping.
 	private void enterProgramScope(ParseNode node) {
