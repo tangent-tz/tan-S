@@ -26,8 +26,6 @@ public interface ParseNodeVisitor {
 	
 	void visitEnter(ProgramNode node);
 	void visitLeave(ProgramNode node);
-	void visitEnter(WhileNode node);
-	void visitLeave(WhileNode node);
 
 
 
@@ -43,9 +41,8 @@ public interface ParseNodeVisitor {
 	void visit(SpaceNode node);
 	void visit(TabNode node);
 	void visit(TypeIndicatorNode node);
-	void visit(WhileNode node);
 
-
+	
 	public static class Default implements ParseNodeVisitor
 	{
 		public void defaultVisit(ParseNode node) {	}
@@ -101,12 +98,6 @@ public interface ParseNodeVisitor {
 		public void visitLeave(ProgramNode node) {
 			defaultVisitLeave(node);
 		}
-		public void visitEnter(WhileNode node) {
-			defaultVisitEnter(node);
-		}
-		public void visitLeave(WhileNode node) {
-			defaultVisitLeave(node);
-		}
 
 		public void visit(BooleanConstantNode node) {
 			defaultVisitForLeaf(node);
@@ -141,10 +132,5 @@ public interface ParseNodeVisitor {
 		public void visit(TypeIndicatorNode node) {
 			defaultVisitForLeaf(node);
 		}
-
-		public void visit(WhileNode node) {
-			defaultVisitForLeaf(node);
-		}
-
 	}
 }

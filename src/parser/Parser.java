@@ -77,16 +77,13 @@ public class Parser {
 		if(startsBlockStatement(nowReading)) {
 			return parseBlockStatement();
 		}
-		if(startsWhileStatement(nowReading)) {
-			return parseWhileStatement();
-		}
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
 		return startsPrintStatement(token) ||
 			   	startsDeclaration(token) ||
 				startsAssignmentStatement(token) ||
-				startsBlockStatement(token)|| startsWhileStatement(token);
+				startsBlockStatement(token);
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
@@ -224,27 +221,7 @@ public class Parser {
 		return token.isLextant(Punctuator.OPEN_BRACE);
 	}
 
-	private ParseNode parseWhileStatement() {
-		if(!startsWhileStatement(nowReading)) {
-			return syntaxErrorNode("whileStatement");
-		}
 
-		Token whileToken = nowReading; // Save the while token for creating the WhileNode later
-		readToken(); // Consume the "while" keyword
-
-		expect(Punctuator.OPEN_PARENTHESIS);
-		ParseNode condition = parseExpression();
-		expect(Punctuator.CLOSE_PARENTHESIS);
-
-		ParseNode whileBlock = parseBlockStatement();
-
-		return WhileNode.withChildren(whileToken, condition, whileBlock);
-	}
-
-
-	private boolean startsWhileStatement(Token token) {
-		return token.isLextant(Keyword.WHILE);
-	}
 
 	///////////////////////////////////////////////////////////
 	// expressions

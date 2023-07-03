@@ -224,23 +224,6 @@ public class ASMCodeGenerator {
 			}
 		}
 
-		public void visitLeave(WhileNode node) {
-			newVoidCode(node);
-			ASMCodeFragment lvalue = removeValueCode(node.child(0));
-			ASMCodeFragment rvalue = removeVoidCode(node.child(1));
-
-			Labeller labeller = new Labeller("while-statement");
-			String startLabel = labeller.newLabel("-while-start");
-			String endLabel = labeller.newLabel("-while-end");
-
-			code.add(Label, startLabel);
-			code.append(lvalue);
-			code.add(JumpFalse, endLabel);
-			code.append(rvalue);
-			code.add(Jump, startLabel);
-			code.add(Label, endLabel);
-
-		}
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
 				return StoreI;
