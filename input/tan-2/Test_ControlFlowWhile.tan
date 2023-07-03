@@ -1,0 +1,44 @@
+main {
+    # Test 1
+    var x := 0;
+    while(x < 5) {
+        print x \n;
+        x := x + 1;
+    }
+
+    # Test 2
+    x := 10;
+    while(x < 5){
+        print x \n;
+        x := x + 1;
+    }
+
+    # Test 3
+    x := 1;
+    while(x < 100){
+        print x \n;
+        x := x * 2;
+    }
+
+    # Test 4
+    x := 0;
+    while(x < 3){
+        var y := 0;
+        while(y < 3){
+            print x \n;
+            print y \n;
+            y := y + 1;
+        }
+        x := x + 1;
+    }
+
+    # Test 5
+    x := 0;
+    while( x < 5 ) {
+    	print "then" \s;
+    	x := x + 1;
+    }
+    print "after" \n;
+
+}
+
