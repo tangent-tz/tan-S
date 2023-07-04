@@ -40,5 +40,35 @@ main {
     }
     print "after" \n;
 
+
+
+    # Test 6
+    const x1 := "hi";
+    var z := x1;
+    var i := 0;
+    while (i < 5) {
+        print z \n;
+        if(x1==z){
+            print "equal" \n;
+            z := "bye";
+        }
+        else{
+            print "not equal" \n;
+        }
+        i := i + 1;
+    }
+
+    # Test 7
+    x := 0;
+    while(x < 5) {
+        var y := 0;
+        while(y < 5) {
+            print x \t;
+            print y \n;
+            y := y + 1;
+        }
+        x := x + 1;
+    }
+
 }
 
