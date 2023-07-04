@@ -1,0 +1,4 @@
+main {
+    const result := 9.6 == "8{0}y@)";
+    print result \n;
+}

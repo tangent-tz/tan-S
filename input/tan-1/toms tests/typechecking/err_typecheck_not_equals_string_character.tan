@@ -1,0 +1,4 @@
+main {
+    const result := "4R" != 's';
+    print result \n;
+}

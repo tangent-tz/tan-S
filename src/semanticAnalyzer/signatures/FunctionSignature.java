@@ -14,8 +14,7 @@ public class FunctionSignature {
 	private Type resultType;
 	private Type[] paramTypes;
 	Object whichVariant;
-	
-	
+
 	///////////////////////////////////////////////////////////////
 	// construction
 	
@@ -125,8 +124,6 @@ public class FunctionSignature {
 	private static FunctionSignature notEqualsStringSignature = new FunctionSignature(1, ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN);
 
 
-
-
 	// the switch here is ugly compared to polymorphism.  This should perhaps be a method on Lextant.
 	public static FunctionSignature signatureOfInteger(Lextant lextant) {
 		assert(lextant instanceof Punctuator);	
@@ -229,3 +226,4 @@ public class FunctionSignature {
 		}
 	}
 }
+

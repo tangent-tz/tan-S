@@ -1,0 +1,4 @@
+main {
+    const result := true + "Y`S";
+    print result \n;
+}

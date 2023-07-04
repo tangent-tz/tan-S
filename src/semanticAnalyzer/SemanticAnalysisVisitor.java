@@ -1,15 +1,19 @@
 package semanticAnalyzer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
+import lexicalAnalyzer.Punctuator;
 import logging.TanLogger;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
+import semanticAnalyzer.signatures.FunctionSignatures;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
@@ -33,8 +37,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitLeave(ProgramNode node) {
 		leaveScope(node);
 	}
-	
-	
+
 	///////////////////////////////////////////////////////////////////////////
 	// helper methods for scoping.
 	private void enterProgramScope(ParseNode node) {
@@ -115,56 +118,52 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		leaveSubScope(node);
 	}
 
+	@Override
+	public void visitLeave(IfStatementNode node) {
+		if(node.child(0) instanceof ErrorNode) {
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
+		
+		ParseNode ifCondition = node.child(0); 
+		Type conditionType = ifCondition.getType(); 
+		
+		if(conditionType != PrimitiveType.BOOLEAN) {
+			logError("if condition must be of BOOLEAN type, currently detecting " + conditionType);
+			return; 
+		}
+		
+		node.setType(PrimitiveType.NO_TYPE);
+	}
+
+	@Override
+	public void visitLeave(WhileNode node) {
+		ParseNode condition = node.child(0);
+
+		if (condition.getType() != PrimitiveType.BOOLEAN) {
+			logError("Condition in while loop at " + node.getToken().getLocation() + " is not a boolean expression");
+			node.setType(PrimitiveType.ERROR);
+		} else {
+			node.setType(PrimitiveType.NO_TYPE);
+		}
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////
 	// expressions
 	@Override
 	public void visitLeave(OperatorNode node) {
-		List<Type> childTypes;  
-		if(node.nChildren() == 1) {
-			ParseNode child = node.child(0);
-			childTypes = Arrays.asList(child.getType());
-		}
-		else {
-			assert node.nChildren() == 2;
-			ParseNode left  = node.child(0);
-			ParseNode right = node.child(1);
-			
-			childTypes = Arrays.asList(left.getType(), right.getType());		
-		}
-		
-		Lextant operator = operatorFor(node);
-		FunctionSignature signature = null;
+		List<Type> childTypes =  new ArrayList<>();
 
-		if (childTypes.size() == 2) {
-			if (node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER) {
-				signature = FunctionSignature.signatureOfInteger(operator);
-			}
-			else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT){
-				signature = FunctionSignature.signatureOfFloat(operator);
-			}
-			else if(node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER){
-				signature = FunctionSignature.signatureOfChar(operator);
-			}
-			else if(node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN){
-				signature = FunctionSignature.signatureOfBoolean(operator);
-			}
-			else if(node.child(0).getType() == ReferenceType.STRING && node.child(1).getType() == ReferenceType.STRING){
-				signature = FunctionSignature.signatureOfString(operator);
-			}
-		} else {
-			if(node.child(0).getType() == PrimitiveType.INTEGER) {
-				signature = FunctionSignature.unarySignatureOfInteger(operator);
-			} else {
-				signature = FunctionSignature.unarySignatureOfFloat(operator);
-			}
+		for(int i=0; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
+			childTypes.add(child.getType());
 		}
-		if(signature == null && childTypes.size() == 2) {
-			typeCheckError(node, childTypes);
-			node.setType(PrimitiveType.ERROR);
-			return;
-		}
+		assert 1 <= node.nChildren() && node.nChildren() <= 2;
+
+		Lextant operator = operatorFor(node);
+		FunctionSignature signature = FunctionSignatures.signature(operator, childTypes);
+
 		if(signature.accepts(childTypes)) {
 			node.setType(signature.resultType());
 		}
@@ -214,6 +213,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	@Override
 	public void visit(TabNode node) {
 	}
+	@Override
+	public void visit(TypeIndicatorNode node) {
+		node.setType(node.getValue());
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods
@@ -242,7 +245,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
 		Token token = node.getToken();
-		
+		if (token.isLextant(Punctuator.CAST)) {
+			logError("casting from " + operandTypes.get(1) + " to " + operandTypes.get(0) + " is not allowed, at " + token.getLocation());
+			return;
+		}
+
 		logError("operator " + token.getLexeme() + " not defined for types " 
 				 + operandTypes  + " at " + token.getLocation());	
 	}

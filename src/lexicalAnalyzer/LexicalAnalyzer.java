@@ -8,7 +8,6 @@ import inputHandler.LocatedChar;
 import inputHandler.LocatedCharStream;
 import inputHandler.PushbackCharStream;
 import tokens.*;
-
 import static lexicalAnalyzer.PunctuatorScanningAids.*;
 
 public class LexicalAnalyzer extends ScannerImp implements Scanner {
@@ -35,14 +34,14 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		else if(ch.isIdentifierStarter()) {
 			return scanIdentifier(ch);
 		}
-		else if(isPunctuatorStart(ch)) {
-			Punctuator p = Punctuator.forLexeme(ch.getCharacter());
-			if (p == Punctuator.HASH_SYMBOL) {
-				scanComment();
-				return findNextToken();
-			} else if (p == Punctuator.PERCENT_SIGN) {
+		else if(ch.getCharacter() == LexicalMacros.HASH_TAG && isPunctuatorStart(ch)) {
+			scanComment();
+			return findNextToken();
+		}
+		else if(ch.getCharacter() == LexicalMacros.PERCENT && isPunctuatorStart(ch)) {
 				return scanCharacterOct(ch);
-			}
+		}
+		else if(isPunctuatorStart(ch)) {
 			return PunctuatorScanner.scan(ch, input);
 		}
 		else if(ch.isCharacterWrapper()) {
@@ -76,69 +75,71 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	private Token scanNumber(LocatedChar firstChar) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(firstChar.getCharacter());
-		boolean isFloat = appendSubsequentDigits(buffer);
-		
-		return NumberToken.make(firstChar, buffer.toString(), isFloat);
+		boolean isFloat = appendWholeNumbers(buffer);
+		if(isFloat) {
+			appendFloatingSequence(buffer);
+			return FloatToken.make(firstChar, buffer.toString());
+		}
+		return IntegerToken.make(firstChar, buffer.toString());
 	}
-	private boolean appendSubsequentDigits(StringBuffer buffer) {
-		boolean isFloatTriggered = false;
+	private boolean appendWholeNumbers(StringBuffer buffer) {
 		LocatedChar c = input.next();
 		while(c.isDigit()) {
 			buffer.append(c.getCharacter());
 			c = input.next();
 		}
-		if(c.getCharacter() != '.') {
+		if(c.getCharacter() != LexicalMacros.PERIOD) {
 			input.pushback(c);
-			return isFloatTriggered;
+			return false;
 		}
-
-		isFloatTriggered = true;
-		buffer.append(c.getCharacter());
-		c = input.next();
-		if(!c.isDigit()) {
-			lexicalError(c);
-			return isFloatTriggered;
-		}
-
-		buffer.append(c.getCharacter());
-		c = input.next();
-		while(c.isDigit()) {
+		else{
 			buffer.append(c.getCharacter());
-			c = input.next();
+			return true;
 		}
-
-		if(c.getCharacter() != 'e' && c.getCharacter() != 'E') {
-			input.pushback(c);
-			return isFloatTriggered;
-		}
-
-		buffer.append(c.getCharacter());
-		c = input.next();
-
-		if (c.getCharacter() != '+' && c.getCharacter() != '-') {
-			lexicalError(c);
-			return isFloatTriggered;
-		}
-
-		buffer.append(c.getCharacter());
-		c = input.next();
-
-		if(!c.isDigit()) {
-			lexicalError(c);
-			return isFloatTriggered;
-		}
-
-		buffer.append(c.getCharacter());
-		c = input.next();
-		while(c.isDigit()) {
-			buffer.append(c.getCharacter());
-			c = input.next();
-		}
-
-		input.pushback(c);
-		return isFloatTriggered;
 	}
 
+	private void appendFloatingSequence(StringBuffer buffer){
+		boolean digitPhase = false;
+		boolean exponentPhase = false;
+		boolean exponentSignPhase = false;
+		boolean exponentDigitPhase = false;
+		LocatedChar c = input.next();
+
+		while(c.isDigit()){
+			buffer.append(c.getCharacter());
+			c = input.next();
+			digitPhase = true;
+		}
+		if(!digitPhase) lexicalError(c);
+
+		if((c.getCharacter() == LexicalMacros.E_NOTATION_LOWER || c.getCharacter() == LexicalMacros.E_NOTATION_UPPER) && digitPhase){
+			buffer.append(c.getCharacter());
+			c = input.next();
+			exponentPhase = true;
+		}
+
+		if((c.getCharacter() == LexicalMacros.ADD || c.getCharacter() == LexicalMacros.SUBTRACT) && exponentPhase){
+			buffer.append(c.getCharacter());
+			c = input.next();
+			exponentSignPhase = true;
+		}
+		if(!exponentSignPhase && exponentPhase) lexicalError(c);
+
+		while(c.isDigit() && exponentSignPhase){
+			buffer.append(c.getCharacter());
+			c = input.next();
+			exponentDigitPhase = true;
+		}
+		if(!exponentDigitPhase && exponentSignPhase) lexicalError(c);
+		input.pushback(c);
+	}
+
+	private boolean validNumber(String numberString){
+		String regexFloat = "^[0-9]+\\.[0-9]+$";
+		String regexScientific = "^[0-9]+\\.[0-9]+[eE][+-][0-9]+$";
+		String regexInt= "^[0-9]+$";
+		return numberString.matches(regexFloat) || numberString.matches(regexScientific) || numberString.matches(regexInt);
+	}
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Identifier and keyword lexical analysis	
@@ -220,7 +221,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 	// Comment lexical analysis
 	private void scanComment() {
 		LocatedChar c = input.next();
-		while (!(c.getCharacter() == '#' || c.getCharacter() == '\n')) {
+		while (!(c.getCharacter() == LexicalMacros.HASH_TAG || c.getCharacter() == LexicalMacros.NEXT_LINE )) {
 			c = input.next();
 		}
 	}
@@ -252,8 +253,7 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		StringBuffer buffer = new StringBuffer();
 		LocatedChar c = input.next();
 		int octCount = 0;
-		int octMax = 3;
-		while(octCount < octMax) {
+		while(octCount < LexicalMacros.OCTAL_MAX) {
 			if(c.isDigit()) {
 				buffer.append(c.getCharacter());
 				octCount++;
@@ -275,6 +275,10 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		while(c.isValidStringChar()) {
 			buffer.append(c.getCharacter());
 			c = input.next();
+		}
+		if(!c.isStringWrapper()) {
+			lexicalError(c);
+			return NullToken.make(firstChar);
 		}
 		return StringToken.make(firstChar, buffer.toString());
 	}

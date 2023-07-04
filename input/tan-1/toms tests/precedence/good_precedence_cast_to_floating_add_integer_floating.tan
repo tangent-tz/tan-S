@@ -1,0 +1,43 @@
+main {
+
+  print <float>(95) + 6.7 \n;
+  print <float>(3) + 1.1 \n;
+  print <float>(23) + 5.3 \n;
+  print <float>(80) + 8.3 \n;
+  print <float>(52) + 8.5 \n;
+  print <float>(85) + 7.1 \n;
+  print <float>(87) + 2.6 \n;
+  print <float>(2) + 9.7 \n;
+  print <float>(83) + 6.7 \n;
+  print <float>(42) + 8.9 \n;
+  print <float>(74) + 6.2 \n;
+  print <float>(91) + 5.0 \n;
+
+  print 8.6 + <float>(65) \n;
+  print 9.9 + <float>(5) \n;
+  print 3.0 + <float>(25) \n;
+  print 3.0 + <float>(20) \n;
+  print 8.8 + <float>(69) \n;
+  print 5.0 + <float>(65) \n;
+  print 6.0 + <float>(28) \n;
+  print 2.3 + <float>(64) \n;
+  print 3.3 + <float>(52) \n;
+  print 9.6 + <float>(43) \n;
+  print 3.0 + <float>(27) \n;
+  print 3.1 + <float>(17) \n;
+
+  print <float>(44) + <float>(36) \n;
+  print <float>(20) + <float>(83) \n;
+  print <float>(83) + <float>(27) \n;
+  print <float>(59) + <float>(10) \n;
+  print <float>(3) + <float>(23) \n;
+  print <float>(98) + <float>(64) \n;
+  print <float>(63) + <float>(27) \n;
+  print <float>(24) + <float>(37) \n;
+  print <float>(27) + <float>(92) \n;
+  print <float>(66) + <float>(85) \n;
+  print <float>(94) + <float>(62) \n;
+  print <float>(20) + <float>(63) \n;
+
+}
+

@@ -1,0 +1,5 @@
+main {
+	var s := "xx";
+	s := 324;
+	print s \s 324 \n;
+}

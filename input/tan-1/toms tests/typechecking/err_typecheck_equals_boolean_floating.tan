@@ -1,0 +1,4 @@
+main {
+    const result := false == 1.8;
+    print result \n;
+}

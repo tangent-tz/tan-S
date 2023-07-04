@@ -1,0 +1,4 @@
+main {
+    const result := "N#()DH" == true;
+    print result \n;
+}

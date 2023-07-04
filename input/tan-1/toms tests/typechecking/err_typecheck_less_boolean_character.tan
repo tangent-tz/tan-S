@@ -1,0 +1,4 @@
+main {
+    const result := false < 'a';
+    print result \n;
+}

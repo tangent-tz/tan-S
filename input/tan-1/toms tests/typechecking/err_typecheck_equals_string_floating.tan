@@ -1,0 +1,4 @@
+main {
+    const result := "Pd'" == 4.3;
+    print result \n;
+}

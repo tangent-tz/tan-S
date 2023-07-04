@@ -1,0 +1,6 @@
+main {
+    const result := <string>("F5{$X#");
+    var knownType := "}=[";
+    knownType := result;
+    print result \n;
+}

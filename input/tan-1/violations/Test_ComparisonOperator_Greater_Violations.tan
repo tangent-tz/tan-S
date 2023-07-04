@@ -1,0 +1,6 @@
+main {
+    # Comparison operations between mismatch types should report errors.
+    var v1 := 4;
+    var v2 := 2.1;
+    var b := v1 > v2;
+}
