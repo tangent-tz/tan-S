@@ -1,0 +1,76 @@
+main {
+    const x := 10;
+    const y := 5;
+
+    # Basic subtraction
+    print x - y;  # Output: 5
+    print \n;
+
+    # Subtraction with negative numbers
+    const a := -7;
+    const b := -3;
+    print a - b;  # Output: -4
+    print \n;
+
+    # Subtraction with mixed positive and negative numbers
+    const c := 15;
+    const d := -2;
+    print c - d;  # Output: 17
+    print \n;
+
+    # Subtraction with zero
+    const e := 10;
+    const f := 0;
+    print e - f;  # Output: 10
+    print \n;
+
+    # Subtraction with large numbers
+    const g := 999999999;
+    const h := 888888888;
+    print g - h;  # Output: 111111111
+    print \n;
+
+#     Subtraction with expressions
+    const exprone := (x + y) - 3;
+    print exprone;   #Output: 12
+    print \n;
+
+    const exprtwo := (c - d) - (x - y);
+    print exprtwo;   #Output: 12
+    print \n;
+
+    # Subtraction with zero result
+    const zeroresult := x - x;
+    print zeroresult;   #Output: 0
+    print \n;
+
+    # Subtraction with one operand being zero
+    const zerooperand := 0 - y;
+    print zerooperand;   #Output: -5
+    print \n;
+
+    # Subtraction with both operands being negative
+    const bothnegative := -10 - (-3);
+    print bothnegative;   #Output: -7
+    print \n;
+
+    # Subtraction resulting in a negative value
+    const negativeresult := 5 - 10;
+    print negativeresult;   #Output: -5
+    print \n;
+
+    # Subtraction involving a large negative value
+    const largenegative := -999999 - 888888;
+    print largenegative;   #Output: -1888887
+    print \n;
+
+    # Subtraction involving expressions and constants
+    const result := (x * y) - (x + y);
+    print result;   #Output: 35
+    print \n;
+
+    # Subtraction involving parentheses and multiple operations
+    const multiops := (x - y) - (x + y) + (x * y);
+    print multiops;   #Output: 40
+    print \n;
+}

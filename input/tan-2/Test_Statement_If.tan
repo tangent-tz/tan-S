@@ -1,0 +1,71 @@
+main {
+
+    # TEST IF ALONE //////////////////////////////////////////////////
+    if(true) {
+        print 1 \n 2.2 \n "if block" \n; 
+    }
+    const x := 9 * 10 - 2; 
+    print x \n; 
+    print \n\n; 
+    
+    
+
+    # TEST IF-ELSE ///////////////////////////////////////////////////
+    if ('a' == 'a') {
+        print "hi" \n;
+        var y := "some string"; 
+        print y \n;   
+    } else {
+        print "else1..." \n; 
+    }
+    
+    #////////////////////////
+    
+    if ('a' == 'b') {
+        print "hi" \n;
+        var y := "some string"; 
+        print y \n;     
+    } else {
+        print "else2..." \n; 
+    }
+    print \n\n; 
+    
+    #////////////////////////   
+    
+  
+    # TEST EMPTY IF BLOCK //////////////////////////////////////////////////
+    if(<bool>(3)) {
+    }
+    print "empty if block test 1" \n; 
+    
+    #////////////////////////
+    
+    if (1+10 > 2) {
+   
+    } else {
+        print "else..." \n; 
+        print "empty if block test 2" \n; 
+    }
+    print "empty if block test 2" \n; 
+    
+    #////////////////////////
+    
+    if (1+10 > 2) {} 
+    else {
+        print "else..." \n; 
+        print "empty if block test 3" \n; 
+    }
+    print "empty if block test 3" \n; 
+    print \n\n; 
+    
+    
+    # TEST EMPTY ELSE BLOCK //////////////////////////////////////////////////
+    if(false) {
+        print 10 \n; 
+    }
+    else {
+    
+    }
+    print "test empty else block" \n; 
+    
+}

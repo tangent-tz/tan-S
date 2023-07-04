@@ -1,0 +1,4 @@
+main {
+    const result := ' ' + 'h';
+    print result \n;
+}

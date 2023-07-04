@@ -1,0 +1,46 @@
+main {
+    const x := 1000;
+    const y := 500;
+
+    # Basic multiplication
+    const a := 100;
+    const b := 200;
+    print a * b;  # Output: 20000
+    print \n;
+
+    # Multiplication with negative numbers
+    const c := -7000;
+    const d := -3000;
+    print c * d;  # Output: 21000000
+    print \n;
+
+    # Multiplication with mixed positive and negative numbers
+    const e := 1500;
+    const f := -200;
+    print e * f;  # Output: -300000
+    print \n;
+
+    # Multiplication with zero
+    const g := 10000;
+    const h := 0;
+    print g * h;  # Output: 0
+    print \n;
+
+    # Multiplication with large numbers
+#   const i := 99999999;
+#   const j := 88888888;
+#   print i * j;   Output: 8888888705555552
+#   print \n;
+
+    # Multiplication resulting in a negative value
+    const k := -5000;
+    const l := -10000;
+    print k * l;  # Output: 50000000
+    print \n;
+
+    # Multiplication involving a large negative value
+#    const m := -9999999;
+#    const n := 8888888;
+#    print m * n;   Output: -88888877555555112
+#    print \n;
+}

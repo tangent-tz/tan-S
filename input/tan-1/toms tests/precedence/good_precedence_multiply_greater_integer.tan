@@ -1,0 +1,43 @@
+main {
+
+  print 16 * 52 > 33 \n;
+  print 35 * 50 > 97 \n;
+  print 65 * 20 > 69 \n;
+  print 93 * 5 > 14 \n;
+  print 28 * 10 > 73 \n;
+  print 16 * 91 > 43 \n;
+  print 70 * 27 > 80 \n;
+  print 99 * 4 > 88 \n;
+  print 43 * 64 > 93 \n;
+  print 98 * 74 > 74 \n;
+  print 37 * 89 > 99 \n;
+  print 28 * 47 > 67 \n;
+
+  print 75 > 3 * 53 \n;
+  print 10 > 6 * 56 \n;
+  print 57 > 3 * 62 \n;
+  print 47 > 70 * 63 \n;
+  print 49 > 14 * 40 \n;
+  print 59 > 28 * 73 \n;
+  print 20 > 8 * 51 \n;
+  print 66 > 87 * 39 \n;
+  print 49 > 50 * 99 \n;
+  print 66 > 5 * 86 \n;
+  print 62 > 73 * 7 \n;
+  print 60 > 28 * 44 \n;
+
+  print 44 * 73 > 80 * 23 \n;
+  print 91 * 99 > 58 * 4 \n;
+  print 35 * 56 > 50 * 32 \n;
+  print 74 * 55 > 3 * 22 \n;
+  print 21 * 37 > 98 * 74 \n;
+  print 14 * 85 > 7 * 51 \n;
+  print 30 * 95 > 41 * 87 \n;
+  print 52 * 28 > 24 * 7 \n;
+  print 88 * 1 > 37 * 13 \n;
+  print 36 * 89 > 51 * 64 \n;
+  print 96 * 10 > 15 * 80 \n;
+  print 50 * 60 > 97 * 26 \n;
+
+}
+

@@ -1,0 +1,36 @@
+main {
+    const floatone := 10.5;
+    const floattwo := -5.25;
+
+    # Negation of a positive float
+    const negfloatone := -floatone;
+    print negfloatone;  # Output: -10.5
+    print \n;
+
+    # Negation of a negative float
+    const negfloattwo := -floattwo;
+    print negfloattwo;  # Output: 5.25
+    print \n;
+
+    # Negation of zero
+    const zero := 0.0;
+    const negzero := -zero;
+    print negzero;  # Output: -0.0
+    print \n;
+
+    # Negation of a large positive float
+    const largepos := 9999.99;
+    const neglargepos := -largepos;
+    print neglargepos;  # Output: -9999.99
+    print \n;
+
+    # Negation of a large negative float
+    const largeneg := -8888.88;
+    const neglargeneg := -largeneg;
+    print neglargeneg;  # Output: 8888.88
+    print \n;
+
+    # Non-negation (aka. unary plus)
+    const f1 := -4.0 * (+3.0) + (-30.0 / +15.0);
+    print f1 \n;
+}

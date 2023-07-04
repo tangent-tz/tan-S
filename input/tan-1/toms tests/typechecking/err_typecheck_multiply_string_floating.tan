@@ -1,0 +1,4 @@
+main {
+    const result := "z2&=" * 1.4;
+    print result \n;
+}

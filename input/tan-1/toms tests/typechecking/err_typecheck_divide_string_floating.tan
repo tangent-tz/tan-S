@@ -1,0 +1,4 @@
+main {
+    const result := "E&0{ T" / 9.6;
+    print result \n;
+}

@@ -1,0 +1,4 @@
+main {
+    const result := 96 >= 'b';
+    print result \n;
+}

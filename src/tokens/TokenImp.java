@@ -10,7 +10,13 @@ public abstract class TokenImp implements Token {
 
 	protected TokenImp(Locator locator, String lexeme) {
 		super();
-		this.location =locator.getLocation();
+		this.location = locator.getLocation();
+		this.lexeme = lexeme;
+	}
+
+	protected TokenImp(TextLocation location, String lexeme) {
+		super();
+		this.location = location;
 		this.lexeme = lexeme;
 	}
 

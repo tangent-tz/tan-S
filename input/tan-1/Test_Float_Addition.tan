@@ -1,0 +1,47 @@
+main {
+#=======================================================================================#
+    # Basic addition
+    const floatone := 1.5;
+    const floattwo := 2.75;
+    const resultone := floatone + floattwo;
+    print resultone;  # Output: 4.25
+    print \n;
+
+#=======================================================================================#
+
+    # Addition with negative numbers
+   const floatthree := -3.25;
+   const floatfour := -1.5;
+   const resulttwo := floatthree + floatfour;
+   print resulttwo;   #Output: -4.75
+   print \n;
+
+#=======================================================================================#
+
+    # Addition with mixed positive and negative numbers
+    const floatfive := 5.5;
+    const floatsix := -2.25;
+    const resultthree := floatfive + floatsix;
+    print resultthree;   #Output: 3.25
+    print \n;
+
+#=======================================================================================#
+
+    # Addition with zero
+    const floatseven := 10.0;
+    const floateight := 0.0;
+    const resultfour := floatseven + floateight;
+    print resultfour;  # Output: 10.0
+    print \n;
+
+#=======================================================================================#
+
+    # Addition with large numbers
+    const floatnine := 999999.99;
+    const floatten := 888888.88;
+    const resultfive := floatnine + floatten;
+    print resultfive;  # Output: 1888888.87
+    print \n;
+
+#=======================================================================================#
+}

@@ -1,0 +1,4 @@
+main {
+    const result := false != 2.6;
+    print result \n;
+}

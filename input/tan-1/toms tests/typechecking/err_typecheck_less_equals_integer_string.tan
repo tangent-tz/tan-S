@@ -1,0 +1,4 @@
+main {
+    const result := 30 <= "fdu@";
+    print result \n;
+}

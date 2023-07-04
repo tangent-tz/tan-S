@@ -1,0 +1,362 @@
+main {
+    # Test 1: Less than comparison for integers
+    var a := -5;
+    var b := 10;
+    var resultlessthanint := a < b;
+    print resultlessthanint;
+    print \n;
+
+    # Expected output: true
+
+    # Test 2: Less than comparison for integers - negative case
+    var c := 15;
+    var d := 10;
+    var resultlessthannegativeint := c < d;
+    print resultlessthannegativeint;
+    print \n;
+
+    # Expected output: false
+
+    # Test 3: Less than or equal to comparison for integers
+    var e := 20;
+    var f := 20;
+    var resultlessthanorequalint := e <= f;
+    print resultlessthanorequalint;
+    print \n;
+
+    # Expected output: true
+
+    # Test 4: Less than or equal to comparison for integers - negative case
+    var g := 25;
+    var h := 30;
+    var resultlessthanorequalnegativeint := g <= h;
+    print resultlessthanorequalnegativeint;
+    print \n;
+
+    # Expected output: true
+
+    # Test 5: Equal to comparison for integers
+    var i := 35;
+    var j := 35;
+    var resultequaltoint := i == j;
+    print resultequaltoint;
+    print \n;
+
+    # Expected output: true
+
+    # Test 6: Equal to comparison for integers - negative case
+    var k := 40;
+    var l := 45;
+    var resultequaltonegativeint := k == l;
+    print resultequaltonegativeint;
+    print \n;
+
+    # Expected output: false
+
+    # Test 7: Not equal to comparison for integers
+    var m := 50;
+    var n := 60;
+    var resultnotequaltoint := m != n;
+    print resultnotequaltoint;
+    print \n;
+
+    # Expected output: true
+
+    # Test 8: Not equal to comparison for integers - negative case
+    var o := 65;
+    var p := 65;
+    var resultnotequaltonegativeint := o != p;
+    print resultnotequaltonegativeint;
+    print \n;
+
+    # Expected output: false
+
+    # Test 9: Greater than comparison for integers
+    var q := 80;
+    var r := 75;
+    var resultgreaterthanint := q > r;
+    print resultgreaterthanint;
+    print \n;
+
+    # Expected output: true
+
+    # Test 10: Greater than comparison for integers - negative case
+    var s := 80;
+    var t := 85;
+    var resultgreaterthannegativeint := s > t;
+    print resultgreaterthannegativeint;
+    print \n;
+
+    # Expected output: false
+
+    # Test 11: Greater than or equal to comparison for integers
+    var u := 90;
+    var v := 95;
+    var resultgreaterthanorequalint := u >= v;
+    print resultgreaterthanorequalint;
+    print \n;
+
+    # Expected output: false
+
+    # Test 12: Greater than or equal to comparison for integers - negative case
+    var w := 100;
+    var x := 105;
+    var resultgreaterthanorequalnegativeint := w >= x;
+    print resultgreaterthanorequalnegativeint;
+    print \n;
+
+    # Expected output: false
+
+    # Test 13: Less than comparison for floats
+    var afloat := -5.0;
+    var bfloat := 10.0;
+    var resultlessthanfloat := afloat < bfloat;
+    print resultlessthanfloat;
+    print \n;
+
+    # Expected output: true
+
+    # Test 14: Less than comparison for floats - negative case
+    var cfloat := 15.0;
+    var dfloat := 10.0;
+    var resultlessthannegativefloat := cfloat < dfloat;
+    print resultlessthannegativefloat;
+    print \n;
+
+    # Expected output: false
+
+    # Test 15: Less than or equal to comparison for floats
+    var efloat := 20.0;
+    var ffloat := 20.0;
+    var resultlessthanorequalfloat := efloat <= ffloat;
+    print resultlessthanorequalfloat;
+    print \n;
+
+    # Expected output: true
+
+    # Test 16: Less than or equal to comparison for floats - negative case
+    var gfloat := 25.0;
+    var hfloat := 30.0;
+    var resultlessthanorequalnegativefloat := gfloat <= hfloat;
+    print resultlessthanorequalnegativefloat;
+    print \n;
+
+    # Expected output: true
+
+    # Test 17: Equal to comparison for floats
+    var ifloat := 35.0;
+    var jfloat := 35.0;
+    var resultequaltofloat := ifloat == jfloat;
+    print resultequaltofloat;
+    print \n;
+
+    # Expected output: true
+
+    # Test 18: Equal to comparison for floats - negative case
+    var kfloat := 40.0;
+    var lfloat := 45.0;
+    var resultequaltonegativefloat := kfloat == lfloat;
+    print resultequaltonegativefloat;
+    print \n;
+
+    # Expected output: false
+
+    # Test 19: Not equal to comparison for floats
+    var mfloat := 50.0;
+    var nfloat := 60.0;
+    var resultnotequaltofloat := mfloat != nfloat;
+    print resultnotequaltofloat;
+    print \n;
+
+    # Expected output: true
+
+    # Test 20: Not equal to comparison for floats - negative case
+    var ofloat := 65.0;
+    var pfloat := 65.0;
+    var resultnotequaltonegativefloat := ofloat != pfloat;
+    print resultnotequaltonegativefloat;
+    print \n;
+
+    # Expected output: false
+
+    # Test 21: Greater than comparison for floats
+    var qfloat := 80.0;
+    var rfloat := 75.0;
+    var resultgreaterthanfloat := qfloat > rfloat;
+    print resultgreaterthanfloat;
+    print \n;
+
+    # Expected output: true
+
+    # Test 22: Greater than comparison for floats - negative case
+    var sfloat := 80.0;
+    var tfloat := 85.0;
+    var resultgreaterthannegativefloat := sfloat > tfloat;
+    print resultgreaterthannegativefloat;
+    print \n;
+
+    # Expected output: false
+
+    # Test 23: Greater than or equal to comparison for floats
+    var ufloat := 90.0;
+    var vfloat := 95.0;
+    var resultgreaterthanorequalfloat := ufloat >= vfloat;
+    print resultgreaterthanorequalfloat;
+    print \n;
+
+    # Expected output: false
+
+    # Test 24: Greater than or equal to comparison for floats - negative case
+    var wfloat := 100.0;
+    var xfloat := 105.0;
+    var resultgreaterthanorequalnegativefloat := wfloat >= xfloat;
+    print resultgreaterthanorequalnegativefloat;
+    print \n;
+
+    # Expected output: false
+
+    # Test 25: Less than comparison for characters
+    var achar := 'a';
+    var bchar := 'z';
+    var resultlessthanchar := achar < bchar;
+    print resultlessthanchar;
+    print \n;
+
+    # Expected output: true
+
+    # Test 26: Less than comparison for characters - negative case
+    var cchar := 'C';
+    var dchar := 'B';
+    var resultlessthannegativechar := cchar < dchar;
+    print resultlessthannegativechar;
+    print \n;
+
+    # Expected output: false
+
+    # Test 27: Less than or equal to comparison for characters
+    var echar := 'c';
+    var fchar := 'c';
+    var resultlessthanorequalchar := echar <= fchar;
+    print resultlessthanorequalchar;
+    print \n;
+
+    # Expected output: true
+
+    # Test 28: Less than or equal to comparison for characters - negative case
+    var gchar := 'd';
+    var hchar := 'c';
+    var resultlessthanorequalnegativechar := gchar <= hchar;
+    print resultlessthanorequalnegativechar;
+    print \n;
+
+    # Expected output: false
+
+    # Test 29: Equal to comparison for characters
+    var ichar := 'e';
+    var jchar := 'e';
+    var resultequaltochar := ichar == jchar;
+    print resultequaltochar;
+    print \n;
+
+    # Expected output: true
+
+    # Test 30: Equal to comparison for characters - negative case
+    var kchar := 'f';
+    var lchar := 'g';
+    var resultequaltonegativechar := kchar == lchar;
+    print resultequaltonegativechar;
+    print \n;
+
+    # Expected output: false
+
+    # Test 31: Not equal to comparison for characters
+    var mchar := 'h';
+    var nchar := 'i';
+    var resultnotequaltochar := mchar != nchar;
+    print resultnotequaltochar;
+    print \n;
+
+    # Expected output: true
+
+    # Test 32: Not equal to comparison for characters - negative case
+    var ochar := 'j';
+    var pchar := 'j';
+    var resultnotequaltonegativechar := ochar != pchar;
+    print resultnotequaltonegativechar;
+    print \n;
+
+    # Expected output: false
+
+   # Test 33: Equal to comparison for booleans
+    var ibool := false;
+    var jbool := false;
+    var resultequaltobool := ibool == jbool;
+    print resultequaltobool;
+    print \n;
+
+    # Expected output: true
+
+    # Test 34: Equal to comparison for booleans - negative case
+    var kbool := true;
+    var lbool := false;
+    var resultequaltonegativebool := kbool == lbool;
+    print resultequaltonegativebool;
+    print \n;
+
+   # Expected output: false
+
+   # Test 35: Not equal to comparison for booleans
+    var mbool := true;
+    var nbool := false;
+    var resultnotequaltobool := mbool != nbool;
+    print resultnotequaltobool;
+    print \n;
+
+    # Expected output: true
+
+    # Test 36: Not equal to comparison for booleans - negative case
+    var obool := false;
+    var pbool := false;
+    var resultnotequaltonegativebool := obool != pbool;
+    print resultnotequaltonegativebool;
+    print \n;
+
+    # Expected output: false
+
+    # Test 37: Equal to comparison for strings
+   var istr := "hello";
+   var jstr := "hello";
+   var resultequaltostr := istr == jstr;
+   print resultequaltostr;
+   print \n;
+
+    # Expected output: false
+
+    # Test 38: Equal to comparison for strings - negative case
+    var kstr := "hello";
+    var lstr := kstr;
+    var resultequaltonegativestr := kstr == lstr;
+    print resultequaltonegativestr;
+    print \n;
+
+    # Expected output: true
+
+    # Test 39: Not equal to comparison for strings
+   var mstr := "hello";
+   var nstr := "hello";
+   var resultnotequaltostr := mstr != nstr;
+   print resultnotequaltostr;
+   print \n;
+
+    # Expected output: true
+
+    # Test 40: Not equal to comparison for strings - negative case
+   var ostr := "hello";
+   var pstr := ostr;
+   var resultnotequaltonegativestr := ostr != pstr;
+   print resultnotequaltonegativestr;
+   print \n;
+
+    # Expected output: false
+
+}

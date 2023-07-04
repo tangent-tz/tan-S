@@ -1,0 +1,4 @@
+main {
+    const result := ']' / "wlGG";
+    print result \n;
+}

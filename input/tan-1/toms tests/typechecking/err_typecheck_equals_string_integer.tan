@@ -1,0 +1,4 @@
+main {
+    const result := "K>3&Ub" == 37;
+    print result \n;
+}

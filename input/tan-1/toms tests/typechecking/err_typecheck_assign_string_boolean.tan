@@ -1,0 +1,5 @@
+main {
+    var result := "jH_VDR";
+    result := true;
+    print result \n;
+}

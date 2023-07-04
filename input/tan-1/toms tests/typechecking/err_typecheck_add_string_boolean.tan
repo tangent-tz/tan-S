@@ -1,0 +1,4 @@
+main {
+    const result := ".b" + true;
+    print result \n;
+}

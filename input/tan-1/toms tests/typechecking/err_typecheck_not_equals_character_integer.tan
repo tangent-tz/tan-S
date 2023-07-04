@@ -1,0 +1,4 @@
+main {
+    const result := 'L' != 74;
+    print result \n;
+}

@@ -1,0 +1,4 @@
+main {
+	const 3 * ja := 12;
+	print ja \n;
+}

@@ -1,0 +1,4 @@
+main {
+    const result := 6.8 * 7;
+    print result \n;
+}

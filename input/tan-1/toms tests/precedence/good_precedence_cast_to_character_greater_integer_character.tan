@@ -1,0 +1,43 @@
+main {
+
+  print <char>(86) > 'H' \n;
+  print <char>(64) > '>' \n;
+  print <char>(38) > 'Q' \n;
+  print <char>(72) > 's' \n;
+  print <char>(85) > 'X' \n;
+  print <char>(10) > '2' \n;
+  print <char>(19) > 'F' \n;
+  print <char>(28) > 'T' \n;
+  print <char>(41) > 'M' \n;
+  print <char>(51) > 'o' \n;
+  print <char>(23) > ',' \n;
+  print <char>(20) > 'X' \n;
+
+  print 'x' > <char>(85) \n;
+  print '6' > <char>(41) \n;
+  print '8' > <char>(34) \n;
+  print '"' > <char>(22) \n;
+  print 'T' > <char>(25) \n;
+  print 'w' > <char>(58) \n;
+  print 'L' > <char>(80) \n;
+  print 'g' > <char>(39) \n;
+  print 'x' > <char>(30) \n;
+  print '6' > <char>(33) \n;
+  print 'o' > <char>(64) \n;
+  print 'Q' > <char>(64) \n;
+
+  print <char>(20) > <char>(87) \n;
+  print <char>(99) > <char>(35) \n;
+  print <char>(63) > <char>(48) \n;
+  print <char>(91) > <char>(68) \n;
+  print <char>(22) > <char>(24) \n;
+  print <char>(74) > <char>(2) \n;
+  print <char>(99) > <char>(85) \n;
+  print <char>(21) > <char>(56) \n;
+  print <char>(37) > <char>(11) \n;
+  print <char>(70) > <char>(15) \n;
+  print <char>(3) > <char>(97) \n;
+  print <char>(24) > <char>(60) \n;
+
+}
+

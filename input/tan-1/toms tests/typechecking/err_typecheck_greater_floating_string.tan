@@ -1,0 +1,4 @@
+main {
+    const result := 4.1 > "?#7!wl";
+    print result \n;
+}

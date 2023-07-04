@@ -1,0 +1,5 @@
+main {
+	var s := "howdy";
+	s := true;
+	print s \s true \n;
+}

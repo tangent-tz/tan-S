@@ -1,0 +1,4 @@
+main {
+    const result := " %F#BW" * false;
+    print result \n;
+}

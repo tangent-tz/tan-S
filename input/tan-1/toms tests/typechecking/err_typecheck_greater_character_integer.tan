@@ -1,0 +1,4 @@
+main {
+    const result := 'v' > 34;
+    print result \n;
+}

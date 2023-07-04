@@ -1,0 +1,4 @@
+main {
+    const result := <string>(88);
+    print result \n;
+}
