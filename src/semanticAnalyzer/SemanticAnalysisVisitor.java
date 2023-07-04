@@ -119,6 +119,23 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		leaveSubScope(node);
 	}
 
+	@Override
+	public void visitLeave(IfStatementNode node) {
+		if(node.child(0) instanceof ErrorNode) {
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
+		
+		ParseNode ifCondition = node.child(0); 
+		Type conditionType = ifCondition.getType(); 
+		
+		if(conditionType != PrimitiveType.BOOLEAN) {
+			logError("if condition must be of BOOLEAN type, currently detecting " + conditionType);
+			return; 
+		}
+		
+		node.setType(PrimitiveType.NO_TYPE);
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////

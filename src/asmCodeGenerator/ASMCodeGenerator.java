@@ -223,6 +223,41 @@ public class ASMCodeGenerator {
 				code.append(childCode);
 			}
 		}
+		
+		public void visitLeave(IfStatementNode node) {
+			newVoidCode(node);
+			ASMCodeFragment ifCondition = removeValueCode(node.child(0)); 
+			ASMCodeFragment ifBlock = removeVoidCode(node.child(1)); 
+			
+			if(node.nChildren() == 3) {
+				ASMCodeFragment elseBlock = removeVoidCode(node.child(2));
+				generateIfElseCodeFragment(ifCondition, ifBlock, elseBlock);
+				return; 
+			}
+			generateIfCodeFragment(ifCondition, ifBlock);
+		}
+		private void generateIfCodeFragment(ASMCodeFragment ifCondition, ASMCodeFragment ifBlock) {
+			Labeller labeller = new Labeller("if-statement"); 
+			String endLabel = labeller.newLabel("end"); 
+
+			code.append(ifCondition);
+			code.add(JumpFalse, endLabel); 
+			code.append(ifBlock);
+			code.add(Label, endLabel);
+		}
+		private void generateIfElseCodeFragment(ASMCodeFragment ifCondition, ASMCodeFragment ifBlock, ASMCodeFragment elseBlock) {
+			Labeller labeller = new Labeller("if-statement");
+			String elseBlockLabel = labeller.newLabel("elseBlock"); 
+			String endLabel = labeller.newLabel("end");
+			
+			code.append(ifCondition); 
+			code.add(JumpFalse, elseBlockLabel); 
+			code.append(ifBlock);
+			code.add(Jump, endLabel); 
+			code.add(Label, elseBlockLabel); 
+			code.append(elseBlock);
+			code.add(Label, endLabel); 
+		}
 
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
