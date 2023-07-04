@@ -9,15 +9,13 @@ public interface ParseNodeVisitor {
 	void visitEnter(OperatorNode node);
 	void visitLeave(OperatorNode node);
 	
-	void visitEnter(BlockStatementNode node);
-	void visitLeave(BlockStatementNode node);
+	void visitEnter(MainBlockNode node);
+	void visitLeave(MainBlockNode node);
 
 	void visitEnter(DeclarationNode node);
 	void visitLeave(DeclarationNode node);
 
-	void visitEnter(AssignmentStatementNode node);
-	void visitLeave(AssignmentStatementNode node);
-
+	
 	void visitEnter(ParseNode node);
 	void visitLeave(ParseNode node);
 	
@@ -33,12 +31,10 @@ public interface ParseNodeVisitor {
 	void visit(ErrorNode node);
 	void visit(IdentifierNode node);
 	void visit(IntegerConstantNode node);
+
 	void visit(FloatConstantNode node);
-	void visit(CharacterNode node);
-	void visit(StringConstantNode node);
 	void visit(NewlineNode node);
 	void visit(SpaceNode node);
-	void visit(TabNode node);
 
 	
 	public static class Default implements ParseNodeVisitor
@@ -65,17 +61,11 @@ public interface ParseNodeVisitor {
 		}
 		public void visitLeave(DeclarationNode node) {
 			defaultVisitLeave(node);
-		}
-		public void visitEnter(AssignmentStatementNode node) {
+		}					
+		public void visitEnter(MainBlockNode node) {
 			defaultVisitEnter(node);
 		}
-		public void visitLeave(AssignmentStatementNode node) {
-			defaultVisitLeave(node);
-		}
-		public void visitEnter(BlockStatementNode node) {
-			defaultVisitEnter(node);
-		}
-		public void visitLeave(BlockStatementNode node) {
+		public void visitLeave(MainBlockNode node) {
 			defaultVisitLeave(node);
 		}				
 		public void visitEnter(ParseNode node) {
@@ -108,24 +98,15 @@ public interface ParseNodeVisitor {
 			defaultVisitForLeaf(node);
 		}
 		public void visit(IntegerConstantNode node) {
-			defaultVisitForLeaf(node);
-		}
+		defaultVisitForLeaf(node);
+	}
 		public void visit(FloatConstantNode node) {
-			defaultVisitForLeaf(node);
-		}
-		public void visit(CharacterNode node) {
-			defaultVisitForLeaf(node);
-		}
-		public void visit(StringConstantNode node) {
 			defaultVisitForLeaf(node);
 		}
 		public void visit(NewlineNode node) {
 			defaultVisitForLeaf(node);
-		}
+		}	
 		public void visit(SpaceNode node) {
-			defaultVisitForLeaf(node);
-		}
-		public void visit(TabNode node) {
 			defaultVisitForLeaf(node);
 		}
 	}

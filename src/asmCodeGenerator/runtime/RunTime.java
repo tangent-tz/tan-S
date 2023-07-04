@@ -7,11 +7,8 @@ public class RunTime {
 	public static final String INTEGER_PRINT_FORMAT   = "$print-format-integer";
 	public static final String BOOLEAN_PRINT_FORMAT   = "$print-format-boolean";
 	public static final String FLOAT_PRINT_FORMAT     = "$print-format-float";
-	public static final String CHARACTER_PRINT_FORMAT = "$print-format-character";
-	public static final String STRING_PRINT_FORMAT 	  = "$print-format-string";
 	public static final String NEWLINE_PRINT_FORMAT   = "$print-format-newline";
 	public static final String SPACE_PRINT_FORMAT     = "$print-format-space";
-	public static final String TAB_PRINT_FORMAT 	  = "$print-format-tab";
 	public static final String BOOLEAN_TRUE_STRING    = "$boolean-true-string";
 	public static final String BOOLEAN_FALSE_STRING   = "$boolean-false-string";
 	public static final String GLOBAL_MEMORY_BLOCK    = "$global-memory-block";
@@ -20,7 +17,6 @@ public class RunTime {
 	
 	public static final String GENERAL_RUNTIME_ERROR = "$$general-runtime-error";
 	public static final String INTEGER_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$i-divide-by-zero";
-	public static final String FLOAT_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$f-divide-by-zero";
 
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
@@ -47,16 +43,10 @@ public class RunTime {
 		frag.add(DataS, "%s");
 		frag.add(DLabel, FLOAT_PRINT_FORMAT);
 		frag.add(DataS, "%f");
-		frag.add(DLabel, CHARACTER_PRINT_FORMAT);
-		frag.add(DataS, "%c");
-		frag.add(DLabel, STRING_PRINT_FORMAT);
-		frag.add(DataS, "%s");
 		frag.add(DLabel, NEWLINE_PRINT_FORMAT);
 		frag.add(DataS, "\n");
 		frag.add(DLabel, SPACE_PRINT_FORMAT);
 		frag.add(DataS, " ");
-		frag.add(DLabel, TAB_PRINT_FORMAT);
-		frag.add(DataS, "\t");
 		frag.add(DLabel, BOOLEAN_TRUE_STRING);
 		frag.add(DataS, "true");
 		frag.add(DLabel, BOOLEAN_FALSE_STRING);
@@ -71,7 +61,6 @@ public class RunTime {
 		
 		generalRuntimeError(frag);
 		integerDivideByZeroError(frag);
-		floatDivideByZeroError(frag);
 		
 		return frag;
 	}
@@ -95,17 +84,6 @@ public class RunTime {
 		
 		frag.add(Label, INTEGER_DIVIDE_BY_ZERO_RUNTIME_ERROR);
 		frag.add(PushD, intDivideByZeroMessage);
-		frag.add(Jump, GENERAL_RUNTIME_ERROR);
-	}
-
-	private void floatDivideByZeroError(ASMCodeFragment frag) {
-		String floatDivideByZeroMessage = "$errors-float-divide-by-zero";
-
-		frag.add(DLabel, floatDivideByZeroMessage);
-		frag.add(DataS, "float divide by zero");
-
-		frag.add(Label, FLOAT_DIVIDE_BY_ZERO_RUNTIME_ERROR);
-		frag.add(PushD, floatDivideByZeroMessage);
 		frag.add(Jump, GENERAL_RUNTIME_ERROR);
 	}
 	

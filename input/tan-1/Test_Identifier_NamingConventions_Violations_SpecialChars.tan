@@ -1,7 +1,0 @@
-# Naming an identifier with invalid characters should throw error(s)
-
-main {
-    const atoZ!$#1 := "hi";
-
-    # Expected error: Lexical error: invalid character (!, (Test_Identifier_NamingConventions_Violation_SpecialChars.tan line 4, character 14))
-}

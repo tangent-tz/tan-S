@@ -1,9 +1,0 @@
-# If we the number of open parentheses and close parentheses does not math,
-# then we should report an error.
-
-
-main {
-    var i := 2 * (3 * (4 - 9);
-
-    # Expected error: syntax error: (Test_ParenthesesWrapppedExpression_Violation.tan line 6, character 29) expecting [CLOSE_PARENTHESIS]
-}
