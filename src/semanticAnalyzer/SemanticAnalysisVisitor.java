@@ -128,6 +128,23 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		leaveSubScope(node);
 	}
 
+	@Override
+	public void visitLeave(IfStatementNode node) {
+		if(node.child(0) instanceof ErrorNode) {
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
+		
+		ParseNode ifCondition = node.child(0); 
+		Type conditionType = ifCondition.getType(); 
+		
+		if(conditionType != PrimitiveType.BOOLEAN) {
+			logError("if condition must be of BOOLEAN type, currently detecting " + conditionType);
+			return; 
+		}
+		
+		node.setType(PrimitiveType.NO_TYPE);
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -136,8 +153,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitLeave(OperatorNode node) {
 		List<Type> childTypes =  new ArrayList<>();
 
-		for(int i =0; i < node.nChildren(); i++) {
-			ParseNode child  = node.child(i);
+		for(int i=0; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
 			childTypes.add(child.getType());
 		}
 		assert 1 <= node.nChildren() && node.nChildren() <= 2;

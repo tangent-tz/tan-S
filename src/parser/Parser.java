@@ -80,13 +80,18 @@ public class Parser {
 		if(startsWhileStatement(nowReading)) {
 			return parseWhileStatement();
 		}
+		if(startsIfStatement(nowReading)) {
+			return parseIfStatement();
+		}
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
 		return startsPrintStatement(token) ||
 			   	startsDeclaration(token) ||
 				startsAssignmentStatement(token) ||
-				startsBlockStatement(token)|| startsWhileStatement(token);
+				startsBlockStatement(token) ||
+				startsWhileStatement(token) ||
+				startsIfStatement(token);
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
@@ -231,7 +236,6 @@ public class Parser {
 
 		Token whileToken = nowReading; // Save the while token for creating the WhileNode later
 		readToken(); // Consume the "while" keyword
-
 		expect(Punctuator.OPEN_PARENTHESIS);
 		ParseNode condition = parseExpression();
 		expect(Punctuator.CLOSE_PARENTHESIS);
@@ -240,10 +244,28 @@ public class Parser {
 
 		return WhileNode.withChildren(whileToken, condition, whileBlock);
 	}
-
-
 	private boolean startsWhileStatement(Token token) {
 		return token.isLextant(Keyword.WHILE);
+	}
+
+
+	private ParseNode parseIfStatement() {
+		if(!startsIfStatement(nowReading)) {
+			return syntaxErrorNode("ifStatement");
+		}
+		Token ifToken = nowReading;
+		readToken();
+		ParseNode ifCondition = parseParenthesesWrappedExpression();
+		ParseNode ifBlock = parseBlockStatement();
+		if(nowReading.isLextant(Keyword.ELSE)){
+			readToken();
+			ParseNode elseBlock = parseBlockStatement();
+			return IfStatementNode.withChildren(ifToken, ifCondition, ifBlock, elseBlock);
+		}
+		return IfStatementNode.withChildren(ifToken, ifCondition, ifBlock);
+	}
+	private boolean startsIfStatement(Token token) {
+		return token.isLextant(Keyword.IF);
 	}
 
 	///////////////////////////////////////////////////////////
@@ -410,7 +432,7 @@ public class Parser {
 		return OperatorNode.withChildren(operatorToken, child);
 	}
 	private boolean startsUnaryExpression(Token token) {
-		return token.isLextant(Punctuator.SUBTRACT) || token.isLextant(Punctuator.ADD);
+		return token.isLextant(Punctuator.SUBTRACT, Punctuator.ADD, Punctuator.BOOLEAN_NOT);
 	}
 
 

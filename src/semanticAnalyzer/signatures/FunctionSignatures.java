@@ -83,8 +83,8 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		new FunctionSignatures(Punctuator.SUBTRACT,
 				new FunctionSignature(ASMOpcode.Subtract, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
 				new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
-				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
-				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.INTEGER)
+				new FunctionSignature(ASMOpcode.FNegate, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.Negate, PrimitiveType.INTEGER, PrimitiveType.INTEGER)
 		);
 		new FunctionSignatures(Punctuator.DIVIDE,
 				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
@@ -131,17 +131,20 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(new ConditionalOrCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
 		);
 		new FunctionSignatures(Punctuator.CAST,
-			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
-			new FunctionSignature(new CharToBoolCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
-			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER),
-			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER),
-			new FunctionSignature(ASMOpcode.Nop, ReferenceType.STRING, ReferenceType.STRING, ReferenceType.STRING),
-			new FunctionSignature(new IntToBoolCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
-			new FunctionSignature(new IntToCharCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.CHARACTER),
-			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
-			new FunctionSignature(ASMOpcode.ConvertF, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
-			new FunctionSignature(ASMOpcode.ConvertI, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.INTEGER),
-			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT)
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new CharToBoolCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.CHARACTER),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.Nop, ReferenceType.STRING, ReferenceType.STRING, ReferenceType.STRING),
+				new FunctionSignature(new IntToBoolCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new IntToCharCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.CHARACTER),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.ConvertF, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.ConvertI, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT)
+		);
+		new FunctionSignatures(Punctuator.BOOLEAN_NOT,
+				new FunctionSignature(ASMOpcode.BNegate, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
 		);
 
 

@@ -223,6 +223,41 @@ public class ASMCodeGenerator {
 				code.append(childCode);
 			}
 		}
+		
+		public void visitLeave(IfStatementNode node) {
+			newVoidCode(node);
+			ASMCodeFragment ifCondition = removeValueCode(node.child(0)); 
+			ASMCodeFragment ifBlock = removeVoidCode(node.child(1)); 
+			
+			if(node.nChildren() == 3) {
+				ASMCodeFragment elseBlock = removeVoidCode(node.child(2));
+				generateIfElseCodeFragment(ifCondition, ifBlock, elseBlock);
+				return; 
+			}
+			generateIfCodeFragment(ifCondition, ifBlock);
+		}
+		private void generateIfCodeFragment(ASMCodeFragment ifCondition, ASMCodeFragment ifBlock) {
+			Labeller labeller = new Labeller("if-statement"); 
+			String endLabel = labeller.newLabel("end"); 
+
+			code.append(ifCondition);
+			code.add(JumpFalse, endLabel); 
+			code.append(ifBlock);
+			code.add(Label, endLabel);
+		}
+		private void generateIfElseCodeFragment(ASMCodeFragment ifCondition, ASMCodeFragment ifBlock, ASMCodeFragment elseBlock) {
+			Labeller labeller = new Labeller("if-statement");
+			String elseBlockLabel = labeller.newLabel("elseBlock"); 
+			String endLabel = labeller.newLabel("end");
+			
+			code.append(ifCondition); 
+			code.add(JumpFalse, elseBlockLabel); 
+			code.append(ifBlock);
+			code.add(Jump, endLabel); 
+			code.add(Label, elseBlockLabel); 
+			code.append(elseBlock);
+			code.add(Label, endLabel); 
+		}
 
 		public void visitLeave(WhileNode node) {
 			newVoidCode(node);
@@ -267,7 +302,7 @@ public class ASMCodeGenerator {
 		public void visitLeave(OperatorNode node) {
 			Lextant operator = node.getOperator();
 
-			if(operator == Punctuator.SUBTRACT || operator == Punctuator.ADD) {
+			if(operator == Punctuator.SUBTRACT || operator == Punctuator.ADD || operator == Punctuator.BOOLEAN_NOT) {
 				if(node.nChildren() == 1)
 					visitUnaryOperatorNode(node);
 				else
@@ -291,14 +326,10 @@ public class ASMCodeGenerator {
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 
 			code.append(arg1);
-			if(node.getType() == PrimitiveType.FLOAT) {
-				ASMOpcode opcode = opcodeFoUnaryFloatOperator(node.getOperator());
-				code.add(opcode);
-			}
-			else {
-				ASMOpcode opcode = opcodeFoUnaryIntegerOperator(node.getOperator());
-				code.add(opcode);
-			}
+
+			FunctionSignature sig = FunctionSignatures.signature(node.getOperator(), Arrays.asList(node.child(0).getType()));
+			ASMOpcode opcode = (ASMOpcode) (sig.getVariant());
+			code.add(opcode);
 		}
 
 		private void visitCastingOperatorNode(OperatorNode node) {

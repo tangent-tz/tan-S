@@ -30,6 +30,7 @@ public enum Punctuator implements Lextant {
 	HASH_SYMBOL("#"),
 	PERCENT_SIGN("%"),
 	CAST("<>"),
+	BOOLEAN_NOT("!"),
 	CONDITIONAL_OR("||"),
 	CONDITIONAL_AND("&&"),
 	NULL_PUNCTUATOR("");
