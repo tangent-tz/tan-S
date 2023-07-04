@@ -1,0 +1,5 @@
+main {
+	var b := true;
+	b := "howdy";
+	print b \s "#(" \n;
+}
