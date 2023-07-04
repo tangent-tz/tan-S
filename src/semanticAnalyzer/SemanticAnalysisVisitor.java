@@ -165,7 +165,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		FunctionSignature signature = FunctionSignatures.signature(operator, childTypes);
 
 		if(signature.accepts(childTypes)) {
-			node.setType(signature.resultType());
+			node.setType(signature.resultType().concreteType());
+			node.setSignature(signature); 
 		}
 		else {
 			typeCheckError(node, childTypes);

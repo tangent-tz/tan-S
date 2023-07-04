@@ -1,6 +1,9 @@
 package semanticAnalyzer.types;
 
 
+import java.util.List;
+import java.util.Set;
+
 public enum PrimitiveType implements Type {
 	BOOLEAN(1, "Boolean"),
 	CHARACTER(1, "Character"),
@@ -25,5 +28,18 @@ public enum PrimitiveType implements Type {
 	}
 	public String infoString() {
 		return infoString;
+	}
+	public boolean equivalent(Type otherType) {
+		return this == otherType; 
+		//TODO: might need promotion here???
+	}
+	public void addTypeVariables(Set<TypeVariable> typeVariables) {
+		//TODO: ???
+		
+	}
+	
+	@Override
+	public Type concreteType() {
+		return this; 
 	}
 }
