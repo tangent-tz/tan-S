@@ -77,8 +77,11 @@ public class Parser {
 		if(startsBlockStatement(nowReading)) {
 			return parseBlockStatement();
 		}
+		if(startsWhileStatement(nowReading)) {
+			return parseWhileStatement();
+		}
 		if(startsIfStatement(nowReading)) {
-			return parseIfStatement(); 
+			return parseIfStatement();
 		}
 		return syntaxErrorNode("statement");
 	}
@@ -87,7 +90,8 @@ public class Parser {
 			   	startsDeclaration(token) ||
 				startsAssignmentStatement(token) ||
 				startsBlockStatement(token) ||
-				startsIfStatement(token); 
+				startsWhileStatement(token) ||
+				startsIfStatement(token);
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
@@ -225,26 +229,44 @@ public class Parser {
 		return token.isLextant(Punctuator.OPEN_BRACE);
 	}
 
-	
+	private ParseNode parseWhileStatement() {
+		if(!startsWhileStatement(nowReading)) {
+			return syntaxErrorNode("whileStatement");
+		}
+
+		Token whileToken = nowReading; // Save the while token for creating the WhileNode later
+		readToken(); // Consume the "while" keyword
+		expect(Punctuator.OPEN_PARENTHESIS);
+		ParseNode condition = parseExpression();
+		expect(Punctuator.CLOSE_PARENTHESIS);
+
+		ParseNode whileBlock = parseBlockStatement();
+
+		return WhileNode.withChildren(whileToken, condition, whileBlock);
+	}
+	private boolean startsWhileStatement(Token token) {
+		return token.isLextant(Keyword.WHILE);
+	}
+
+
 	private ParseNode parseIfStatement() {
 		if(!startsIfStatement(nowReading)) {
 			return syntaxErrorNode("ifStatement");
 		}
 		Token ifToken = nowReading;
 		readToken();
-		ParseNode ifCondition = parseParenthesesWrappedExpression(); 
-		ParseNode ifBlock = parseBlockStatement(); 
+		ParseNode ifCondition = parseParenthesesWrappedExpression();
+		ParseNode ifBlock = parseBlockStatement();
 		if(nowReading.isLextant(Keyword.ELSE)){
 			readToken();
 			ParseNode elseBlock = parseBlockStatement();
-			return IfStatementNode.withChildren(ifToken, ifCondition, ifBlock, elseBlock); 
+			return IfStatementNode.withChildren(ifToken, ifCondition, ifBlock, elseBlock);
 		}
 		return IfStatementNode.withChildren(ifToken, ifCondition, ifBlock);
 	}
 	private boolean startsIfStatement(Token token) {
-		return token.isLextant(Keyword.IF); 
+		return token.isLextant(Keyword.IF);
 	}
-
 
 	///////////////////////////////////////////////////////////
 	// expressions

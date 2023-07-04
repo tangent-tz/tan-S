@@ -17,8 +17,9 @@ public enum Keyword implements Lextant {
 	STRING("string"),
 	INT("int"),
 	FLOAT("float"),
-	IF("if"), 
-	ELSE("else"), 
+	WHILE("while"),
+	IF("if"),
+	ELSE("else"),
 	NULL_KEYWORD("");
 
 	private String lexeme;
