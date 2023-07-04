@@ -19,6 +19,8 @@ import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
+import tokens.FloatToken;
+import tokens.IntegerToken;
 import tokens.LextantToken;
 import tokens.Token;
 
@@ -167,11 +169,74 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		if(signature.accepts(childTypes)) {
 			node.setType(signature.resultType());
 		}
+		else if(promotableTypes(childTypes) != 0) {
+			if (promotableTypes(childTypes) == 1) {
+				promoteCharacter(node);
+			} else if (promotableTypes(childTypes) == 2) {
+				promoteInteger(node);
+			}
+			visitLeave(node);
+		}
 		else {
 			typeCheckError(node, childTypes);
 			node.setType(PrimitiveType.ERROR);
 		}
 	}
+
+	public int promotableTypes(List<Type> childTypes) {
+		if(childTypes.size() != 2) {
+			return 0;
+		}
+		Type type1 = childTypes.get(0);
+		Type type2 = childTypes.get(1);
+
+		if(type1 == PrimitiveType.FLOAT && type2 == PrimitiveType.INTEGER) {
+			return 2;
+		}
+		else if(type1 == PrimitiveType.INTEGER && type2 == PrimitiveType.FLOAT) {
+			return 2;
+		}
+		else if(type1 == PrimitiveType.CHARACTER && type2 == PrimitiveType.FLOAT) {
+			return 1;
+		}
+		else if(type1 == PrimitiveType.FLOAT && type2 == PrimitiveType.CHARACTER) {
+			return 1;
+		}
+		else if(type1 == PrimitiveType.CHARACTER && type2 == PrimitiveType.INTEGER) {
+			return 1;
+		}
+		else if(type1 == PrimitiveType.INTEGER && type2 == PrimitiveType.CHARACTER) {
+			return 1;
+		}
+		return 0;
+	}
+	private void promoteInteger(OperatorNode node) {
+		for (int i = 0; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
+			if (child.getType() == PrimitiveType.INTEGER) {
+				Token test = FloatToken.make(child.getToken().getLocation(), child.getToken().getLexeme());
+				FloatConstantNode floatNode = new FloatConstantNode(test);
+				floatNode.setType(PrimitiveType.FLOAT);
+				node.replaceChild(child, floatNode);
+			}
+		}
+	}
+
+	private void promoteCharacter(OperatorNode node) {
+		for (int i = 0; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
+			if (child.getType() == PrimitiveType.CHARACTER) {
+				int test1 =((CharacterNode) child).getValue();
+				Token test = IntegerToken.make(child.getToken().getLocation(), Integer.toString(test1));
+				IntegerConstantNode integerNode = new IntegerConstantNode(test);
+				integerNode.setType(PrimitiveType.INTEGER);
+				node.replaceChild(child, integerNode);
+			}
+		}
+	}
+
+
+
 	private Lextant operatorFor(OperatorNode node) {
 		LextantToken token = (LextantToken) node.getToken();
 		return token.getLextant();
