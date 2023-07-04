@@ -127,8 +127,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitLeave(OperatorNode node) {
 		List<Type> childTypes =  new ArrayList<>();
 
-		for(int i =0; i < node.nChildren(); i++) {
-			ParseNode child  = node.child(i);
+		for(int i=0; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
 			childTypes.add(child.getType());
 		}
 		assert 1 <= node.nChildren() && node.nChildren() <= 2;

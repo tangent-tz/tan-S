@@ -37,10 +37,10 @@ public class LexicalAnalyzer extends ScannerImp implements Scanner {
 		else if(ch.getCharacter() == LexicalMacros.HASH_TAG && isPunctuatorStart(ch)) {
 			scanComment();
 			return findNextToken();
-			}
+		}
 		else if(ch.getCharacter() == LexicalMacros.PERCENT && isPunctuatorStart(ch)) {
 				return scanCharacterOct(ch);
-			}
+		}
 		else if(isPunctuatorStart(ch)) {
 			return PunctuatorScanner.scan(ch, input);
 		}

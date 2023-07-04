@@ -1,0 +1,29 @@
+main {
+    var x := true;
+    print x \n;
+    print !x \n;
+
+    var y := false;
+    print y \n;
+    print !y \n;
+
+    const v1 := true;
+    const v2 := !v1;
+    print v1 \n;
+    print v2 \n;
+
+    var v3 := 0;
+    var v4 := !<bool>(v3);
+    print v3 \n;
+    print v4 \n;
+
+    var v5 := !!true;
+    print v5 \n;
+
+    print !!false \n;
+
+    print !(3 < 4)\n;
+
+    print <bool>(-1) \n;
+    print !<bool>(-1) \n;
+}

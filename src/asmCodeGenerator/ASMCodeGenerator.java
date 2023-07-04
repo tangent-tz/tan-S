@@ -250,7 +250,7 @@ public class ASMCodeGenerator {
 		public void visitLeave(OperatorNode node) {
 			Lextant operator = node.getOperator();
 
-			if(operator == Punctuator.SUBTRACT || operator == Punctuator.ADD) {
+			if(operator == Punctuator.SUBTRACT || operator == Punctuator.ADD || operator == Punctuator.BOOLEAN_NOT) {
 				if(node.nChildren() == 1)
 					visitUnaryOperatorNode(node);
 				else
@@ -274,14 +274,10 @@ public class ASMCodeGenerator {
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 
 			code.append(arg1);
-			if(node.getType() == PrimitiveType.FLOAT) {
-				ASMOpcode opcode = opcodeFoUnaryFloatOperator(node.getOperator());
-				code.add(opcode);
-			}
-			else {
-				ASMOpcode opcode = opcodeFoUnaryIntegerOperator(node.getOperator());
-				code.add(opcode);
-			}
+
+			FunctionSignature sig = FunctionSignatures.signature(node.getOperator(), Arrays.asList(node.child(0).getType()));
+			ASMOpcode opcode = (ASMOpcode) (sig.getVariant());
+			code.add(opcode);
 		}
 
 		private void visitCastingOperatorNode(OperatorNode node) {
