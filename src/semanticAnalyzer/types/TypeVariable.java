@@ -47,6 +47,6 @@ public class TypeVariable implements Type {
     }
     
     public Type concreteType() {
-        return constraint 
+        return constraint;
     }
 }

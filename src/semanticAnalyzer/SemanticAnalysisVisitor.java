@@ -14,6 +14,7 @@ import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
+import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
@@ -177,7 +178,30 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		LextantToken token = (LextantToken) node.getToken();
 		return token.getLextant();
 	}
-
+	
+	
+	
+	///////////////////////////////////////////////////////////
+	// array
+	
+	@Override
+	public void visitLeave(ArrayNode node) {
+		List<Type> childTypes = new ArrayList<>();
+		
+		for(int i=0; i < node.nChildren(); i++) {
+			childTypes.add(node.child(i).getType());
+		}
+		
+		//todo: check child types => if different types => try promoting to one unified type
+		
+		node.setType(new Array(childTypes.get(0)));
+	}
+	
+	
+	
+	
+	
+	
 
 	///////////////////////////////////////////////////////////////////////////
 	// simple leaf nodes

@@ -4,6 +4,7 @@ import java.util.Set;
 
 public class Array implements Type {
     Type subtype;
+    static final int SIZE = 4; 
     
     public Array(Type type) {
         this.subtype = type; 
@@ -11,7 +12,7 @@ public class Array implements Type {
     
     @Override 
     public int getSize() {
-        return 0; 
+        return SIZE; 
     }
 
     @Override

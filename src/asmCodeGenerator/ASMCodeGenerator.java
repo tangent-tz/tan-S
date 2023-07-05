@@ -5,6 +5,7 @@ import java.util.*;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.SimpleCodeGenerator;
+import asmCodeGenerator.runtime.MemoryManager;
 import asmCodeGenerator.runtime.RunTime;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
@@ -12,6 +13,7 @@ import parseTree.*;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
+import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
@@ -38,8 +40,9 @@ public class ASMCodeGenerator {
 
 		code.append( RunTime.getEnvironment() );
 		code.append( globalVariableBlockASM() );
+		code.append( MemoryManager.codeForInitialization()); //todo: may need to move this line somewhere else
 		code.append( programASM() );
-//		code.append( MemoryManager.codeForAfterApplication() );
+		code.append( MemoryManager.codeForAfterApplication() );
 
 		return code;
 	}
@@ -142,6 +145,9 @@ public class ASMCodeGenerator {
 			}
 			else if(node.getType() == PrimitiveType.CHARACTER) {
 				code.add(LoadC);
+			}
+			else if(node.getType() instanceof Array) {
+				code.add(LoadI);
 			}
 			else {
 				assert false : "node " + node;
@@ -471,6 +477,34 @@ public class ASMCodeGenerator {
 			}
 			return null;
 		}
+		
+		
+		
+		///////////////////////////////////////////////////////////////////////////
+		// array 
+		public void visitLeave(ArrayNode node) {
+			Type subtype = node.child(0).getType();
+			
+			Labeller labeller = new Labeller("array");
+			String arrayStartAddress = labeller.newLabel("start");
+
+			newValueCode(node);
+			code.add(DLabel, arrayStartAddress); 
+			code.add(DataI, 5);
+			
+			if(subtype instanceof Array) {
+				code.add(DataI, 2);
+			} else {
+				code.add(DataI, 0); 
+			}
+			
+			code.add(DataI, subtype.getSize());
+			code.add(DataI, node.nChildren()); 
+			//todo:how to store array elements?
+			code.add(PushD, arrayStartAddress); 
+			
+		}
+		
 
 		///////////////////////////////////////////////////////////////////////////
 		// leaf nodes (ErrorNode not necessary)
@@ -498,7 +532,7 @@ public class ASMCodeGenerator {
 			code.add(PushI, node.getValue());
 		}
 		public void visit(StringConstantNode node) {
-			newValueCode(node);
+			newValueCode(node); 
 
 			String strAddressLabel ="_string_" + StringConstantNode.getCounter() + "_";
 			code.add(DLabel, strAddressLabel);

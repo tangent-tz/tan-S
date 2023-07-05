@@ -34,6 +34,7 @@ public enum Punctuator implements Lextant {
 	CONDITIONAL_OR("||"),
 	CONDITIONAL_AND("&&"),
 	INDEXING(":"),  
+	COMMA(","),
 	NULL_PUNCTUATOR("");
 
 	private String lexeme;
