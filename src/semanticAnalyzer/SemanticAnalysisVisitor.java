@@ -91,6 +91,12 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.ERROR);
 			return;
 		}
+		List<Type> childTypes =  new ArrayList<>();
+
+		for(int i=0; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
+			childTypes.add(child.getType());
+		}
 
 		IdentifierNode identifier = (IdentifierNode) node.child(0);
 		ParseNode expression = node.child(1);
@@ -99,15 +105,27 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Type expressionType = expression.getType();
 
 		if(!(expressionType.equals(identifierType))) {
-			logError("types do not match in AssignmentStatement");
-			return;
+			if (promotableTypesAssignment(childTypes) != 0) {
+				if (promotableTypesAssignment(childTypes) == 1) {
+					promoteCharacter(node);
+				} else if (promotableTypesAssignment(childTypes) == 2) {
+					promoteInteger(node);
+				}
+				visitLeave(node);
+			}
+			else{
+				logError("types do not match in AssignmentStatement");
+				return;
+			}
 		}
 		if(identifier.getBinding().isConstant()) {
 			logError("re-assignment to a const identifier, previously declared at location: " + identifier.getBinding().getLocation());
 			return;
 		}
+
 		node.setType(identifierType);
 	}
+
 
 	// blockStatement
 	@Override
@@ -210,7 +228,27 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 		return 0;
 	}
-	private void promoteInteger(OperatorNode node) {
+
+	public int promotableTypesAssignment(List<Type> childTypes) {
+		if(childTypes.size() != 2) {
+			return 0;
+		}
+		Type type1 = childTypes.get(0);
+		Type type2 = childTypes.get(1);
+
+		if(type1 == PrimitiveType.FLOAT && type2 == PrimitiveType.INTEGER) {
+			return 2;
+		}
+		else if(type1 == PrimitiveType.FLOAT && type2 == PrimitiveType.CHARACTER) {
+			return 1;
+		}
+		else if(type1 == PrimitiveType.INTEGER && type2 == PrimitiveType.CHARACTER) {
+			return 1;
+		}
+		return 0;
+	}
+
+	private void promoteInteger(ParseNode node) {
 		for (int i = 0; i < node.nChildren(); i++) {
 			ParseNode child = node.child(i);
 			if (child.getType() == PrimitiveType.INTEGER) {
@@ -222,7 +260,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 	}
 
-	private void promoteCharacter(OperatorNode node) {
+	private void promoteCharacter(ParseNode node) {
 		for (int i = 0; i < node.nChildren(); i++) {
 			ParseNode child = node.child(i);
 			if (child.getType() == PrimitiveType.CHARACTER) {
@@ -234,8 +272,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			}
 		}
 	}
-
-
 
 	private Lextant operatorFor(OperatorNode node) {
 		LextantToken token = (LextantToken) node.getToken();
