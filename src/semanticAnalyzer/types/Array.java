@@ -17,7 +17,7 @@ public class Array implements Type {
 
     @Override
     public String infoString() {
-        return null;
+        return "[" + subtype.concreteType() + "]";
     }
 
     @Override

@@ -298,6 +298,9 @@ public class ASMCodeGenerator {
 			else if(type == PrimitiveType.CHARACTER) {
 				return StoreC;
 			}
+			else if(type instanceof Array) {
+				return StoreI; 
+			}
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
 		}
