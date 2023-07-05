@@ -144,13 +144,6 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(ASMOpcode.BNegate, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
 		);
 
-		TypeVariable T = new TypeVariable("T"); 
-		new FunctionSignatures(Punctuator.INDEXING, 
-				new FunctionSignature(1, new Array(T), PrimitiveType.INTEGER, T)
-		); 
-
-
-
 	}
 
 }

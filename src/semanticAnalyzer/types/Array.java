@@ -2,43 +2,33 @@ package semanticAnalyzer.types;
 
 import java.util.Set;
 
-public class Array implements Type {
-    Type subtype;
-    static final int SIZE = 4; 
-    
-    public Array(Type type) {
-        this.subtype = type; 
+public enum Array implements Type {
+    INTEGER_ARRAY(4, "Integer Array"),
+    FLOAT_ARRAY(4, "Float Array");
+    // Add other array types as needed
+
+    private int sizeInBytes;
+    private String infoString;
+
+    Array(int size, String infoString) {
+        this.sizeInBytes = size;
+        this.infoString = infoString;
     }
-    
-    @Override 
     public int getSize() {
-        return SIZE; 
+        return sizeInBytes;
     }
-
-    @Override
     public String infoString() {
-        return "[" + subtype.concreteType() + "]";
+        return infoString;
     }
-
-    @Override
     public boolean equivalent(Type otherType) {
-        if(!(otherType instanceof Array)) {
-            return false; 
-        }
-        
-        return this.subtype.equivalent(otherType); 
-        
+        return this == otherType;
     }
-
     @Override
     public void addTypeVariables(Set<TypeVariable> typeVariables) {
-        
-    }
 
+    }
     @Override
     public Type concreteType() {
-        return null;
-        //todo: ??
+        return this;
     }
-
-}
+    }

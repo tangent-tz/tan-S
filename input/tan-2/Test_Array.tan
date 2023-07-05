@@ -1,5 +1,5 @@
 main {
 
-    var x:= [1, 2, 3];  
-
+    var x:= [1,2,97];
+    print x;
 }
