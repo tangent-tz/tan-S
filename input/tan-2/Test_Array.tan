@@ -5,4 +5,5 @@ main {
     var x:= [101,2,97];
     print x \n x \n "end." \n;
     
+    
 }

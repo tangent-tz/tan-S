@@ -24,6 +24,10 @@ import asmCodeGenerator.runtime.RunTime;
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
 public class PrintStatementGenerator {
+	private static final char ARRAY_FORMATTER_OPEN_BRACKET = '[';
+	private static final char ARRAY_FORMATTER_CLOSE_BRACKET = ']';
+	private static final char ARRAY_FORMATTER_DELIMITER = ',';
+	
 	ASMCodeFragment code;
 	ASMCodeGenerator.CodeVisitor visitor;
 	
@@ -81,7 +85,7 @@ public class PrintStatementGenerator {
 		code.add(Exchange); 
 		code.add(StoreI); 
 		
-		
+		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
 		for (int i = 0; i < size; i++) {
 			// calculate address to load from: baseAddress + (i * offset)
 			code.add(PushD, baseAddressHolderLabel); 
@@ -95,9 +99,37 @@ public class PrintStatementGenerator {
 			code.add(LoadI); //todo: for now only for integer
 			code.add(PushD, format);
 			code.add(Printf);
+			
+			if(i != size-1) {
+				//print a delimiter after each element in the array, except for the last element
+				appendArrayFormatterPrintCode(ARRAY_FORMATTER_DELIMITER);
+			}
 		}
+		appendArrayFormatterPrintCode(ARRAY_FORMATTER_CLOSE_BRACKET);
 		
 	}
+	private void appendArrayFormatterPrintCode(char c) {
+		String format = printFormat(PrimitiveType.CHARACTER);
+		
+		if(c == ARRAY_FORMATTER_CLOSE_BRACKET) {
+			appendArraySpacingPrintCode();
+		}
+		
+		code.add(PushI, c); 
+		code.add(PushD, format); 
+		code.add(Printf);
+		
+		appendArraySpacingPrintCode();
+	}
+	private void appendArraySpacingPrintCode() {
+		String format = printFormat(PrimitiveType.CHARACTER);
+		code.add(PushI, 32);
+		code.add(PushD, format);
+		code.add(Printf);
+	}
+	
+	
+	
 	private void convertToStringIfBoolean(ParseNode node) {
 		if(node.getType() != PrimitiveType.BOOLEAN) {
 			return;
