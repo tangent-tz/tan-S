@@ -97,10 +97,9 @@ public class PrintStatementGenerator {
 			code.add(Add);
 
 			// load the value from the calculated address
-			//code.add(LoadI); //todo: for now only for integer
 			turnAddressIntoValue(subtype);
-			convertToStringIfBoolean(node.getType());
-			convertToStringValueIfString(node.getType());
+			convertToStringIfBoolean(subtype);
+			convertToStringValueIfString(subtype);
 			code.add(PushD, format);
 			code.add(Printf);
 			
@@ -157,8 +156,8 @@ public class PrintStatementGenerator {
 	}
 	
 	
-	private void convertToStringIfBoolean(Type nodeType) {
-		if(nodeType != PrimitiveType.BOOLEAN) {
+	private void convertToStringIfBoolean(Type type) {
+		if(type != PrimitiveType.BOOLEAN) {
 			return;
 		}
 		
@@ -174,8 +173,8 @@ public class PrintStatementGenerator {
 		code.add(Label, endLabel);
 	}
 
-	private void convertToStringValueIfString(Type nodeType) {
-		if (nodeType != ReferenceType.STRING) {
+	private void convertToStringValueIfString(Type type) {
+		if (type != ReferenceType.STRING) {
 			return;
 		}
 
