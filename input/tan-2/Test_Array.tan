@@ -17,6 +17,8 @@ main {
     const bool_array := [true, false, false, true, true]; 
     print bool_array \n; 
     
+    print [1, 2, 3] \n; 
+    
     print true \n; 
     
     print "hello" \n;
