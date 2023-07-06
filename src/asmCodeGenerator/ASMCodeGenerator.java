@@ -519,31 +519,89 @@ public class ASMCodeGenerator {
 			int typeIdentifier = 4;
 			int subtypeSize = 4;
 
-			newAddressCode(node);
+			newValueCode(node);
+			int totalSize = (length+status+typeIdentifier+subtypeSize) + (size * subtypeSize);
+			
+			
+			Labeller labeller = new Labeller("array"); 
+			String baseAddressLabel = labeller.newLabel("baseAddress"); 
+			
+			
 			// Allocate memory for the array
-			code.add(PushI, size * (length+status+typeIdentifier+subtypeSize));  // memory needed = size * offset
+			code.add(PushI, totalSize);  // memory needed = size * offset
 			code.add(Call, MemoryManager.MEM_MANAGER_ALLOCATE);
+			
+			
+			//Store header data
+			code.add(DLabel, baseAddressLabel); 
+			code.add(PushD, baseAddressLabel); 
+			code.add(Exchange); 
+			code.add(StoreI); 
+			
+			
+			//storing type identifier
+			code.add(PushD, baseAddressLabel);
+			code.add(PushI, 0); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			code.add(PushI, 5); //stack: [... base-addr] -> [... addr 5]
+			code.add(StoreI); 			//store 5 into the address
+			
+			//storing status:
+			code.add(PushD, baseAddressLabel);
+			code.add(PushI, 4); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			if(node.child(0).getType() instanceof PrimitiveType) {
+				code.add(PushI, 0); 
+			}
+			else {
+				code.add(PushI, 2);
+			}
+			code.add(StoreI); 	
+			
+			//storing subtype size:
+			code.add(PushD, baseAddressLabel);
+			code.add(PushI, 8); 
+			code.add(Add); 
+			code.add(PushI, 4);  //todo:for now, size of int = 4 bytes
+			code.add(StoreI);
+
+			//storing length (number of elements)
+			code.add(PushD, baseAddressLabel);
+			code.add(PushI, 12);
+			code.add(Add);
+			code.add(PushI, (size));  //todo:for now, size of int = 4 bytes
+			code.add(StoreI);
 
 			// Store each element in the array
 			for (int i = 0; i < size; i++) {
-				// push the value to store
+				code.add(PushD, baseAddressLabel);
+				code.add(PushI, subtypeSize*i); //offset
+				code.add(Add);
 				code.append(elements.get(i));
-				code.add(PushI, subtypeSize*i);
-				code.add(Exchange);
-				// store the value at the calculated address
 				code.add(StoreI);
 			}
+			
+			
+			code.add(PushD, baseAddressLabel);
+			
+			
+			
 
-//			for (int i = 0; i < size; i++) {
-//				// calculate address to load from: baseAddress + (i * offset)
-//				code.add(PushI, i*subtypeSize);
-//				// load the value from the calculated address
-//				code.add(LoadI);
-//				// Now the loaded value is on top of the stack. Store it into the array.
-//				// might need to pop the value from the stack and store it in array in actual implementation
-//				// depending on stack design and programming language.
-//
-//			}
+			for (int i = 0; i < size; i++) {
+				// calculate address to load from: baseAddress + (i * offset)
+				code.add(PushD, baseAddressLabel);
+				code.add(PushI,  + i*subtypeSize);
+				code.add(Add); 
+				// load the value from the calculated address
+				code.add(LoadI);
+				// Now the loaded value is on top of the stack. Store it into the array.
+				// might need to pop the value from the stack and store it in array in actual implementation
+				// depending on stack design and programming language.
+
+			}
+			code.add(PStack);
+			
+			
 		}
 
 		///////////////////////////////////////////////////////////////////////////

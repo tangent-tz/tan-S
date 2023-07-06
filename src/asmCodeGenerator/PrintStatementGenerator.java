@@ -61,15 +61,15 @@ public class PrintStatementGenerator {
 			return;
 		}
 
-		code.add(PushI, 0);
-		code.add(LoadI);
-		code.add(PushI, 4);
-		code.add(LoadI);
-		code.add(PStack);
-		code.add(PushI, 8);
-		code.add(LoadI);
-		code.add(PStack);
-		code.add(Pop);
+//		code.add(PushI, 0);
+//		code.add(LoadI);
+//		code.add(PushI, 4);
+//		code.add(LoadI);
+//		code.add(PStack);
+//		code.add(PushI, 8);
+//		code.add(LoadI);
+//		code.add(PStack);
+//		code.add(Pop);
 	}
 	private void convertToStringIfBoolean(ParseNode node) {
 		if(node.getType() != PrimitiveType.BOOLEAN) {
@@ -114,7 +114,7 @@ public class PrintStatementGenerator {
 			}
 		} else if (type instanceof Array) {
 			// Assuming that all arrays will use the same print format
-			return RunTime.INTEGER_PRINT_FORMAT;
+			return "";
 		} else {
 			switch((ReferenceType)type) {
 				case STRING:    return RunTime.STRING_PRINT_FORMAT;
