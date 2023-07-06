@@ -1,5 +1,6 @@
 package parser;
 
+import java.security.Key;
 import java.util.Arrays;
 
 import logging.TanLogger;
@@ -414,6 +415,9 @@ public class Parser {
 		if(startsPopulatedArrayCreationExpression(nowReading)) {
 			return parsePopulatedArrayCreationExpression(); 
 		}
+		if(startsEmptyArrayCreationExpression(nowReading)) {
+			return parseEmptyArrayCreationExpression(); 
+		}
 		return parseLiteral();
 	}
 	private boolean startsAtomicExpression(Token token) {
@@ -421,7 +425,8 @@ public class Parser {
 				startsUnaryExpression(token) ||
 				startsParenthesesWrappedExpression(token) ||
 				startsTypeCastingExpression(token) ||
-				startsPopulatedArrayCreationExpression(token); 
+				startsPopulatedArrayCreationExpression(token) ||
+				startsEmptyArrayCreationExpression(token); 
 	}
 
 	// unaryExpression			-> UNARYOP atomicExpression
@@ -507,6 +512,49 @@ public class Parser {
 	private boolean startsArrayExpressionList(Token token) {
 		return startsExpression(token);
 	}
+	
+	
+	private ParseNode parseEmptyArrayCreationExpression() {
+		if(!startsEmptyArrayCreationExpression(nowReading)) {
+			return syntaxErrorNode("empty array creation"); 
+		}
+		
+		Token arrayToken = LextantToken.make(nowReading.getLocation(), Punctuator.OPEN_BRACKETS.getLexeme(), Punctuator.OPEN_BRACKETS); 
+		readToken();
+		
+		ParseNode arrayTypeNode = parseArrayType(); 
+		
+		
+		
+		
+		
+		
+	}
+	private boolean startsEmptyArrayCreationExpression(Token token) {
+		return token.isLextant(Keyword.NEW); 
+	}
+	
+	private ParseNode parseArrayType() {
+		if(!startsArrayType(nowReading)) {
+			return syntaxErrorNode("arrayType");
+		}
+		
+		ParseNode result = new ArrayTypeNode(nowReading); 
+		readToken();
+		
+		
+		
+		
+		
+		
+	}
+	private boolean startsArrayType(Token token) {
+		return token.isLextant(Punctuator.OPEN_BRACKETS); 
+	}
+	
+	
+	
+	
 	
 	
 	

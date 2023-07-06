@@ -23,4 +23,18 @@ main {
     
     print "hello" \n;
     
+    
+    # Test reassignment of array:
+    var a1 := [1, 22, 333]; 
+    print a1 \n; 
+    
+    a1 := [4, 5, 6, 7]; 
+    print a1 \n;
+    
+    const a2 := a1; 
+    print a1 \n; 
+    print a2 \n; 
+    
+    
+    
 }

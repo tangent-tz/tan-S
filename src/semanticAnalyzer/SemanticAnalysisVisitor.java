@@ -97,7 +97,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Type identifierType = identifier.getType();
 		Type expressionType = expression.getType();
 
-		if(!(expressionType.equals(identifierType))) {
+		if(!(expressionType.equivalent(identifierType))) {
 			logError("types do not match in AssignmentStatement");
 			return;
 		}
@@ -191,6 +191,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		for(int i=0; i < node.nChildren(); i++) {
 			childTypes.add(node.child(i).getType());
 		}
+		
+		
 		
 		//todo: check child types => if different types => try promoting to one unified type
 		

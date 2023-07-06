@@ -1,0 +1,9 @@
+main {
+    var a1 := [1, 6, 0101]; 
+    print a1 \n; 
+    
+    var a2 := []; 
+    print a2 \n; 
+    
+    # Expected: SEVERE: syntax error: (Test_Array_ZeroLength_Violation.tan line 5, character 15) expecting populated-array-creation expression list cannot be empty
+}
