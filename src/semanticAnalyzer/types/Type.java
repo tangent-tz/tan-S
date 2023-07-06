@@ -21,4 +21,6 @@ public interface Type {
 	public boolean equivalent(Type otherType); 
 	public void addTypeVariables(Set<TypeVariable> typeVariables); 
 	public Type concreteType(); 
+	public Type getSubtype();
+	public int getArrayLength(); 
 }

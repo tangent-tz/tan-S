@@ -493,14 +493,22 @@ public class ASMCodeGenerator {
 				ASMCodeFragment child = removeValueCode(node.child(i));
 				elements.add(child);
 			}
-			int size =  node.nChildren();
-			int length = 4 ;
-			int status = 4;
-			int typeIdentifier = 4;
-			int subtypeSize = 4;
+			int header_typeIdentifier_byteConsumption = 4;
+			int header_status_byteConsumption = 4;
+			int header_subtypeSize_byteConsumption = 4;
+			int header_length_byteConsumption = 4;
+			
+			
+			int numOfElements = node.nChildren();
+			Type subtype = node.getType().getSubtype();
+			int subtypeSize = subtype.getSize();
 
 			newValueCode(node);
-			int totalSize = (length+status+typeIdentifier+subtypeSize) + (size * subtypeSize);
+			int totalSize = (header_typeIdentifier_byteConsumption 
+							+ header_status_byteConsumption 
+							+ header_subtypeSize_byteConsumption 
+							+ header_length_byteConsumption) 
+							+ (numOfElements * subtypeSize);
 			
 			
 			Labeller labeller = new Labeller("array"); 
@@ -519,7 +527,7 @@ public class ASMCodeGenerator {
 			code.add(StoreI); 
 			
 			
-			//storing type identifier
+			//storing type identifier:
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
 			code.add(PushI, 0); //offset (fixed)
@@ -532,7 +540,7 @@ public class ASMCodeGenerator {
 			code.add(LoadI); 			//loads the base address of the array
 			code.add(PushI, 4); //offset (fixed)
 			code.add(Add); 				//base address + offset
-			if(node.child(0).getType() instanceof PrimitiveType) {
+			if(subtype instanceof PrimitiveType) {
 				code.add(PushI, 0); 
 			}
 			else {
@@ -545,7 +553,7 @@ public class ASMCodeGenerator {
 			code.add(LoadI); 			//loads the base address of the array
 			code.add(PushI, 8); 
 			code.add(Add); 
-			code.add(PushI, 4);  //todo:for now, size of int = 4 bytes
+			code.add(PushI, subtypeSize);
 			code.add(StoreI);
 
 			//storing length (number of elements)
@@ -553,11 +561,11 @@ public class ASMCodeGenerator {
 			code.add(LoadI); 			//loads the base address of the array
 			code.add(PushI, 12);
 			code.add(Add);
-			code.add(PushI, (size));  //todo:for now, size of int = 4 bytes
+			code.add(PushI, numOfElements);
 			code.add(StoreI);
 
 			// Store each element in the array
-			for (int i = 0; i < size; i++) {
+			for (int i = 0; i < numOfElements; i++) {
 				code.add(PushD, pointerLabel);
 				code.add(LoadI); 			//loads the base address of the array
 				code.add(PushI, 16); 
@@ -566,15 +574,13 @@ public class ASMCodeGenerator {
 				code.add(PushI, subtypeSize*i); //offset
 				code.add(Add);
 				code.append(elements.get(i));
-				code.add(StoreI);
+				code.add(opcodeForStore(subtype));
 			}
 			
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
 		}
 
-		
-		
 		
 		
 		

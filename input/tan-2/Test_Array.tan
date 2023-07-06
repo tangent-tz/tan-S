@@ -2,8 +2,23 @@ main {
     var y := 2; 
     print y \n;
     
-    var x:= [101,2,97];
-    print x \n x \n "end." \n;
+    var int_array := [101,2,97, 1+2+2];
+    print int_array \n int_array \n "end." \n;
     
+    var float_array := [1.1, -2.2222, +3.45, 0.223, -23.3, 1.0+2.2+3.3*4.4];
+    print float_array \n; 
+    
+    var char_array := ['a',  'g', 'h', 't']; 
+    print char_array \n; 
+    
+    const string_array := ["hello", "world", "it's", "me", "!"]; 
+    print string_array \n; 
+    
+    const bool_array := [true, false, false, true, true]; 
+    print bool_array \n; 
+    
+    print true \n; 
+    
+    print "hello" \n;
     
 }

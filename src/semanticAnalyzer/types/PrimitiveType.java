@@ -42,4 +42,12 @@ public enum PrimitiveType implements Type {
 	public Type concreteType() {
 		return this; 
 	}
+	
+	@Override
+	public Type getSubtype() {
+		return PrimitiveType.NO_TYPE; 
+	}
+	public int getArrayLength() {
+		return -1; 
+	}
 }

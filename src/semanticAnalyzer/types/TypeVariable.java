@@ -49,4 +49,12 @@ public class TypeVariable implements Type {
     public Type concreteType() {
         return constraint;
     }
+
+    @Override
+    public Type getSubtype() {
+        return PrimitiveType.NO_TYPE;
+    }
+    public int getArrayLength() {
+        return -1;
+    }
 }

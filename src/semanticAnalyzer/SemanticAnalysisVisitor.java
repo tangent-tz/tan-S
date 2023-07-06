@@ -194,7 +194,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 		//todo: check child types => if different types => try promoting to one unified type
 		
-		node.setType(Array.INTEGER_ARRAY);
+		node.setType(new Array(childTypes.get(0), node.nChildren()));
 	}
 	
 	

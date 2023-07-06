@@ -57,22 +57,23 @@ public class PrintStatementGenerator {
 		String format = printFormat(node.getType());
 		code.append(visitor.removeValueCode(node));
 
-		convertToStringIfBoolean(node);
-		convertToStringValueIfString(node);
+		convertToStringIfBoolean(node.getType());
+		convertToStringValueIfString(node.getType());
 		code.add(PushD, format);
-
 		code.add(Printf);
-
-
 	}
+	
 	private void appendArrayPrintCode(ParseNode node) {
 		if(!(node.getType() instanceof Array)) {
 			return;
 		}
 		
-		int size = 3; 
-		int subtypeSize = 4; 
-		String format = printFormat(PrimitiveType.INTEGER); 
+		Type subtype = node.getType().getSubtype();
+		int subtypeSize = subtype.getSize();
+		int numOfElements = node.getType().getArrayLength(); 
+		
+		
+		String format = printFormat(subtype); 
 		Labeller labeller = new Labeller("stack-temp"); 
 		String baseAddressHolderLabel = labeller.newLabel("baseAddress");
 		
@@ -86,7 +87,7 @@ public class PrintStatementGenerator {
 		code.add(StoreI); 
 		
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < numOfElements; i++) {
 			// calculate address to load from: baseAddress + (i * offset)
 			code.add(PushD, baseAddressHolderLabel); 
 			code.add(LoadI);
@@ -96,11 +97,14 @@ public class PrintStatementGenerator {
 			code.add(Add);
 
 			// load the value from the calculated address
-			code.add(LoadI); //todo: for now only for integer
+			//code.add(LoadI); //todo: for now only for integer
+			turnAddressIntoValue(subtype);
+			convertToStringIfBoolean(node.getType());
+			convertToStringValueIfString(node.getType());
 			code.add(PushD, format);
 			code.add(Printf);
 			
-			if(i != size-1) {
+			if(i != numOfElements-1) {
 				//print a delimiter after each element in the array, except for the last element
 				appendArrayFormatterPrintCode(ARRAY_FORMATTER_DELIMITER);
 			}
@@ -108,6 +112,30 @@ public class PrintStatementGenerator {
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_CLOSE_BRACKET);
 		
 	}
+	private void turnAddressIntoValue(Type type) {
+		if(type == PrimitiveType.INTEGER) {
+			code.add(LoadI);
+		}
+		else if(type == ReferenceType.STRING) {
+			code.add(LoadI);
+		}
+		else if(type == PrimitiveType.FLOAT) {
+			code.add(LoadF);
+		}
+		else if(type == PrimitiveType.BOOLEAN) {
+			code.add(LoadC);
+		}
+		else if(type == PrimitiveType.CHARACTER) {
+			code.add(LoadC);
+		}
+		else if(type instanceof Array) {
+			code.add(LoadI);
+		}
+		else {
+			assert false : "appendArrayPrintCode: cannot turn address into value."; 
+		}
+	}
+	
 	private void appendArrayFormatterPrintCode(char c) {
 		String format = printFormat(PrimitiveType.CHARACTER);
 		
@@ -129,9 +157,8 @@ public class PrintStatementGenerator {
 	}
 	
 	
-	
-	private void convertToStringIfBoolean(ParseNode node) {
-		if(node.getType() != PrimitiveType.BOOLEAN) {
+	private void convertToStringIfBoolean(Type nodeType) {
+		if(nodeType != PrimitiveType.BOOLEAN) {
 			return;
 		}
 		
@@ -147,8 +174,8 @@ public class PrintStatementGenerator {
 		code.add(Label, endLabel);
 	}
 
-	private void convertToStringValueIfString(ParseNode node) {
-		if (node.getType() != ReferenceType.STRING) {
+	private void convertToStringValueIfString(Type nodeType) {
+		if (nodeType != ReferenceType.STRING) {
 			return;
 		}
 
