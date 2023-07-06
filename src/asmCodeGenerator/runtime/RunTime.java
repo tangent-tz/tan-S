@@ -25,6 +25,7 @@ public class RunTime {
 
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
+		result.append(MemoryManager.codeForInitialization()); //todo: added this line here by trial and error. And somehow, it works. May need further investigation.
 		result.append(jumpToMain());
 		result.append(stringsForPrintf());
 		result.append(runtimeErrors());

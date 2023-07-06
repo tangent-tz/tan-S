@@ -39,9 +39,11 @@ public class ASMCodeGenerator {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 
 		code.append( RunTime.getEnvironment() );
+
 		code.append( globalVariableBlockASM() );
-		code.append( MemoryManager.codeForInitialization()); //todo: may need to move this line somewhere else
+
 		code.append( programASM() );
+
 		code.append( MemoryManager.codeForAfterApplication() );
 
 		return code;
@@ -484,29 +486,7 @@ public class ASMCodeGenerator {
 		
 		
 		///////////////////////////////////////////////////////////////////////////
-		// array 
-//		public void visitLeave(ArrayNode node) {
-//			Type subtype = node.child(0).getType();
-//
-//			Labeller labeller = new Labeller("array");
-//			String arrayStartAddress = labeller.newLabel("start");
-//
-//			newValueCode(node);
-//			code.add(DLabel, arrayStartAddress);
-//			code.add(DataI, 5);
-//
-//			if(subtype instanceof Array) {
-//				code.add(DataI, 2);
-//			} else {
-//				code.add(DataI, 0);
-//			}
-//
-//			code.add(DataI, subtype.getSize());
-//			code.add(DataI, node.nChildren());
-//			//todo:how to store array elements?
-//			code.add(PushD, arrayStartAddress);
-//
-//		}
+		// array
 		public void visitLeave(ArrayNode node) {
 			List<ASMCodeFragment> elements = new ArrayList<>();
 			for(int i = 0; i < node.nChildren(); i++) {
@@ -524,7 +504,7 @@ public class ASMCodeGenerator {
 			
 			
 			Labeller labeller = new Labeller("array"); 
-			String baseAddressLabel = labeller.newLabel("baseAddress"); 
+			String pointerLabel = labeller.newLabel("pointer"); 
 			
 			
 			// Allocate memory for the array
@@ -533,21 +513,23 @@ public class ASMCodeGenerator {
 			
 			
 			//Store header data
-			code.add(DLabel, baseAddressLabel); 
-			code.add(PushD, baseAddressLabel); 
+			code.add(DLabel, pointerLabel); 
+			code.add(PushD, pointerLabel); 
 			code.add(Exchange); 
 			code.add(StoreI); 
 			
 			
 			//storing type identifier
-			code.add(PushD, baseAddressLabel);
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
 			code.add(PushI, 0); //offset (fixed)
 			code.add(Add); 				//base address + offset
-			code.add(PushI, 5); //stack: [... base-addr] -> [... addr 5]
+			code.add(PushI, 5); //stack: [... addr] -> [... addr 5]
 			code.add(StoreI); 			//store 5 into the address
 			
 			//storing status:
-			code.add(PushD, baseAddressLabel);
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
 			code.add(PushI, 4); //offset (fixed)
 			code.add(Add); 				//base address + offset
 			if(node.child(0).getType() instanceof PrimitiveType) {
@@ -559,14 +541,16 @@ public class ASMCodeGenerator {
 			code.add(StoreI); 	
 			
 			//storing subtype size:
-			code.add(PushD, baseAddressLabel);
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
 			code.add(PushI, 8); 
 			code.add(Add); 
 			code.add(PushI, 4);  //todo:for now, size of int = 4 bytes
 			code.add(StoreI);
 
 			//storing length (number of elements)
-			code.add(PushD, baseAddressLabel);
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
 			code.add(PushI, 12);
 			code.add(Add);
 			code.add(PushI, (size));  //todo:for now, size of int = 4 bytes
@@ -574,36 +558,26 @@ public class ASMCodeGenerator {
 
 			// Store each element in the array
 			for (int i = 0; i < size; i++) {
-				code.add(PushD, baseAddressLabel);
+				code.add(PushD, pointerLabel);
+				code.add(LoadI); 			//loads the base address of the array
+				code.add(PushI, 16); 
+				code.add(Add); 
+				
 				code.add(PushI, subtypeSize*i); //offset
 				code.add(Add);
 				code.append(elements.get(i));
 				code.add(StoreI);
 			}
 			
-			
-			code.add(PushD, baseAddressLabel);
-			
-			
-			
-
-			for (int i = 0; i < size; i++) {
-				// calculate address to load from: baseAddress + (i * offset)
-				code.add(PushD, baseAddressLabel);
-				code.add(PushI,  + i*subtypeSize);
-				code.add(Add); 
-				// load the value from the calculated address
-				code.add(LoadI);
-				// Now the loaded value is on top of the stack. Store it into the array.
-				// might need to pop the value from the stack and store it in array in actual implementation
-				// depending on stack design and programming language.
-
-			}
-			code.add(PStack);
-			
-			
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
 		}
 
+		
+		
+		
+		
+		
 		///////////////////////////////////////////////////////////////////////////
 		// leaf nodes (ErrorNode not necessary)
 		public void visit(BooleanConstantNode node) {

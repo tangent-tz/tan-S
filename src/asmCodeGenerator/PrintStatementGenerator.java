@@ -40,6 +40,9 @@ public class PrintStatementGenerator {
 				ASMCodeFragment childCode = visitor.removeVoidCode(child);
 				code.append(childCode);
 			}
+			else if (child.getType() instanceof Array) {
+				appendArrayPrintCode(child);
+			}
 			else {
 				appendPrintCode(child);
 			}
@@ -49,27 +52,51 @@ public class PrintStatementGenerator {
 	private void appendPrintCode(ParseNode node) {
 		String format = printFormat(node.getType());
 		code.append(visitor.removeValueCode(node));
+
 		convertToStringIfBoolean(node);
-		appendArrayPrintCode(node);
 		convertToStringValueIfString(node);
 		code.add(PushD, format);
+
 		code.add(Printf);
+
 
 	}
 	private void appendArrayPrintCode(ParseNode node) {
 		if(!(node.getType() instanceof Array)) {
 			return;
 		}
+		
+		int size = 3; 
+		int subtypeSize = 4; 
+		String format = printFormat(PrimitiveType.INTEGER); 
+		Labeller labeller = new Labeller("stack-temp"); 
+		String baseAddressHolderLabel = labeller.newLabel("baseAddress");
+		
+		
+		code.append(visitor.removeValueCode(node));
+		
+		code.add(DLabel, baseAddressHolderLabel);
+		code.add(DataI, 0); //clear 4 bytes with all zeroes
+		code.add(PushD, baseAddressHolderLabel); 
+		code.add(Exchange); 
+		code.add(StoreI); 
+		
+		
+		for (int i = 0; i < size; i++) {
+			// calculate address to load from: baseAddress + (i * offset)
+			code.add(PushD, baseAddressHolderLabel); 
+			code.add(LoadI);
+			code.add(PushI, 16);
+			code.add(Add);
+			code.add(PushI,  + i*subtypeSize);
+			code.add(Add);
 
-//		code.add(PushI, 0);
-//		code.add(LoadI);
-//		code.add(PushI, 4);
-//		code.add(LoadI);
-//		code.add(PStack);
-//		code.add(PushI, 8);
-//		code.add(LoadI);
-//		code.add(PStack);
-//		code.add(Pop);
+			// load the value from the calculated address
+			code.add(LoadI); //todo: for now only for integer
+			code.add(PushD, format);
+			code.add(Printf);
+		}
+		
 	}
 	private void convertToStringIfBoolean(ParseNode node) {
 		if(node.getType() != PrimitiveType.BOOLEAN) {
