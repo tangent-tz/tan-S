@@ -1,5 +1,5 @@
 main {
-	imm farm := [18, 71, 52, 42];
-	imm barn := #b;
-	print barn[0] $n;
+	const farm := [18, 71, 52, 42];
+	const barn := 'b';
+	print [barn:0] \n;
 }

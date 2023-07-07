@@ -23,6 +23,7 @@ public class RunTime {
 	public static final String INTEGER_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$i-divide-by-zero";
 	public static final String FLOAT_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$f-divide-by-zero";
 	public static final String ARRAY_NEGATIVE_NUMBER_OF_ELEMENTS = "$$-array-negative-number-of-elements";
+	public static final String ARRAY_INDEX_OUT_OF_BOUNDS = "$$-array-index-out-of-bounds";
 
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
@@ -78,6 +79,7 @@ public class RunTime {
 		integerDivideByZeroError(frag);
 		floatDivideByZeroError(frag);
 		arrayNegativeNumberOfElements(frag);
+		arrayIndexOutOfBounds(frag);
 		
 		return frag;
 	}
@@ -123,6 +125,17 @@ public class RunTime {
 
 		frag.add(Label, ARRAY_NEGATIVE_NUMBER_OF_ELEMENTS);
 		frag.add(PushD, arrayNegativeNumberOfElementsMessage);
+		frag.add(Jump, GENERAL_RUNTIME_ERROR);
+	}
+
+	private void arrayIndexOutOfBounds(ASMCodeFragment frag) {
+		String arrayIndexOutOfBoundsMessage = "$errors-array-index-out-of-bounds";
+
+		frag.add(DLabel, arrayIndexOutOfBoundsMessage);
+		frag.add(DataS, "array index out of bounds");
+
+		frag.add(Label, ARRAY_INDEX_OUT_OF_BOUNDS);
+		frag.add(PushD, arrayIndexOutOfBoundsMessage);
 		frag.add(Jump, GENERAL_RUNTIME_ERROR);
 	}
 	

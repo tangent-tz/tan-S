@@ -92,9 +92,19 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.ERROR);
 			return;
 		}
-		List<Type> childTypes =  new ArrayList<>();
+		
+		if(node.child(0) instanceof IdentifierNode) {
+			typeCheckAssignment_Identifier(node);
+		}
+		else if (node.child(0) instanceof TargetableArrayReferenceNode) {
+			typeCheckAssignment_ArrayReference(node);
+		}
+	}
+	
+	private void typeCheckAssignment_Identifier(AssignmentStatementNode node) {
+		List<Type> childTypes = new ArrayList<>();
 
-		for(int i=0; i < node.nChildren(); i++) {
+		for (int i = 0; i < node.nChildren(); i++) {
 			ParseNode child = node.child(i);
 			childTypes.add(child.getType());
 		}
@@ -104,8 +114,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 		Type identifierType = identifier.getType();
 		Type expressionType = expression.getType();
-		
-		if(!(expressionType.equivalent(identifierType))) {
+
+		if (!(expressionType.equivalent(identifierType))) {
 			if (promotableTypesAssignment(childTypes) != 0) {
 				if (promotableTypesAssignment(childTypes) == 1) {
 					promoteCharacter(node);
@@ -113,19 +123,48 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 					promoteInteger(node);
 				}
 				visitLeave(node);
-			}
-			else{
+			} else {
 				logError("types do not match in AssignmentStatement");
 				return;
 			}
 		}
-		if(identifier.getBinding().isConstant()) {
+		if (identifier.getBinding().isConstant()) {
 			logError("re-assignment to a const identifier, previously declared at location: " + identifier.getBinding().getLocation());
 			return;
 		}
 
 		node.setType(identifierType);
 	}
+	
+	private void typeCheckAssignment_ArrayReference(AssignmentStatementNode node) {
+		List<Type> childTypes = Arrays.asList(node.child(0).getType(), node.child(1).getType()); 
+
+		TargetableArrayReferenceNode target = (TargetableArrayReferenceNode) (node.child(0));
+		ParseNode expression = node.child(1);
+
+		Type targetType = target.getType();
+		Type expressionType = expression.getType();
+
+		if (!(expressionType.equivalent(targetType))) {
+			if (promotableTypesAssignment(childTypes) != 0) {
+				if (promotableTypesAssignment(childTypes) == 1) {
+					promoteCharacter(node);
+				} else if (promotableTypesAssignment(childTypes) == 2) {
+					promoteInteger(node);
+				}
+				visitLeave(node);
+			} else {
+				logError("types do not match in AssignmentStatement");
+				return;
+			}
+		}
+
+		node.setType(targetType);
+	}
+	
+	
+	
+	
 
 
 	// blockStatement
@@ -150,7 +189,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Type conditionType = ifCondition.getType(); 
 		
 		if(conditionType != PrimitiveType.BOOLEAN) {
-			logError("if condition must be of BOOLEAN type, currently detecting " + conditionType);
+			logError("Condition in if-statement at " + node.getToken().getLocation() + " is not a boolean expression");
+			node.setType(PrimitiveType.ERROR);
 			return; 
 		}
 		
@@ -189,7 +229,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(signature.resultType().concreteType());
 			node.setSignature(signature); 
 		}
-		else if(promotableTypes(childTypes) != 0) {
+		else if(operator != Punctuator.INDEXING && childTypes.get(0) instanceof PrimitiveType && promotableTypes(childTypes) != 0) {
 			if (promotableTypes(childTypes) == 1) {
 				promoteCharacter(node);
 			} else if (promotableTypes(childTypes) == 2) {
@@ -335,8 +375,25 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Type innerType = node.child(0).getType(); 
 		node.setType(new Array(innerType));
 	}
-	
-	
+
+	@Override
+	public void visitLeave(TargetableArrayReferenceNode node) {
+		assert node.nChildren() == 2;
+		
+		List<Type> childTypes = Arrays.asList(node.child(0).getType(), node.child(1).getType()); 
+
+		Lextant operator = operatorFor(node);
+		FunctionSignature signature = FunctionSignatures.signature(operator, childTypes);
+
+		if(signature.accepts(childTypes)) {
+			node.setType(signature.resultType().concreteType());
+			node.setSignature(signature);
+		}
+		else {
+			typeCheckError(node, childTypes);
+			node.setType(PrimitiveType.ERROR);
+		}
+	}
 	
 	
 	
