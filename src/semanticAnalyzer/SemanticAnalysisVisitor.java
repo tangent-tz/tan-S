@@ -251,11 +251,14 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private void promoteInteger(ParseNode node) {
 		for (int i = 0; i < node.nChildren(); i++) {
 			ParseNode child = node.child(i);
-			if (child.getType() == PrimitiveType.INTEGER) {
+			if (child.getType() == PrimitiveType.INTEGER && child.nChildren() == 0) {
 				Token test = FloatToken.make(child.getToken().getLocation(), child.getToken().getLexeme());
 				FloatConstantNode floatNode = new FloatConstantNode(test);
 				floatNode.setType(PrimitiveType.FLOAT);
+				node.setType(PrimitiveType.FLOAT);
 				node.replaceChild(child, floatNode);
+			} else if (child.nChildren() > 0) { // If the child has its own children, recursively promote integers within it.
+				promoteInteger(child);
 			}
 		}
 	}
@@ -263,12 +266,15 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private void promoteCharacter(ParseNode node) {
 		for (int i = 0; i < node.nChildren(); i++) {
 			ParseNode child = node.child(i);
-			if (child.getType() == PrimitiveType.CHARACTER) {
+			if (child.getType() == PrimitiveType.CHARACTER  && child.nChildren() == 0) {
 				int test1 =((CharacterNode) child).getValue();
 				Token test = IntegerToken.make(child.getToken().getLocation(), Integer.toString(test1));
 				IntegerConstantNode integerNode = new IntegerConstantNode(test);
 				integerNode.setType(PrimitiveType.INTEGER);
+				node.setType(PrimitiveType.INTEGER);
 				node.replaceChild(child, integerNode);
+			} else if (child.nChildren() > 0) { // If the child has its own children, recursively promote integers within it.
+				promoteCharacter(child);
 			}
 		}
 	}
