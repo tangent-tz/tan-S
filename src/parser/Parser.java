@@ -481,6 +481,8 @@ public class Parser {
 	}
 	
 	
+	
+	// array: populated creation ==========================================================================
 	private ParseNode parsePopulatedArrayCreationExpression() {
 		if(!startsPopulatedArrayCreationExpression(nowReading)) {
 			return syntaxErrorNode("populated-array-creation expression");
@@ -502,6 +504,14 @@ public class Parser {
 			return syntaxErrorNode("populated-array-creation expression list cannot be empty");
 		}
 		parent.appendChild(parseExpression());
+		
+		//------------------------------------------------------------
+		if(startsArrayIndexingExpression(nowReading)) {
+			return parseArrayIndexingExpression(nowReading, parent.child(0)); 
+		}
+
+		//------------------------------------------------------------
+		
 		while(nowReading.isLextant(Punctuator.COMMA)) {
 			readToken();
 			parent.appendChild(parseExpression());
@@ -511,8 +521,27 @@ public class Parser {
 	private boolean startsArrayExpressionList(Token token) {
 		return startsExpression(token);
 	}
+
+	
+
+
+	// array: indexing ==========================================================================
+	private ParseNode parseArrayIndexingExpression(Token token, ParseNode leftChild) {
+		Token indexingToken = LextantToken.make(token.getLocation(), Punctuator.INDEXING.getLexeme(), Punctuator.INDEXING);
+		readToken();
+		
+		ParseNode rightChild = parseExpression();
+		return OperatorNode.withChildren(indexingToken, leftChild, rightChild);
+	}
+	
+	private boolean startsArrayIndexingExpression(Token token) {
+		return token.isLextant(Punctuator.INDEXING);
+	}
 	
 	
+	
+	
+	// array: empty creation ==========================================================================
 	private ParseNode parseEmptyArrayCreationExpression() {
 		if(!startsEmptyArrayCreationExpression(nowReading)) {
 			return syntaxErrorNode("empty array creation"); 
@@ -560,14 +589,13 @@ public class Parser {
 	private boolean startsPrimitiveType(Token token) {
 		return Keyword.isATypeKeyword(token.getLexeme()); 
 	}
+
+
+ 
 	
+
 	
-	
-	
-	
-	
-	
-	
+
 	
 	// literal -> number | character | identifier | booleanConstant | string
 	private ParseNode parseLiteral() {

@@ -206,6 +206,10 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		new FunctionSignatures(Punctuator.BOOLEAN_NOT,
 				new FunctionSignature(ASMOpcode.BNegate, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
 		);
+		new FunctionSignatures(Punctuator.INDEXING, 
+				new FunctionSignature(1, new Array(PrimitiveType.INTEGER), PrimitiveType.INTEGER, PrimitiveType.INTEGER), 
+				new FunctionSignature(1, new Array(PrimitiveType.FLOAT), PrimitiveType.INTEGER, PrimitiveType.FLOAT)
+		);
 
 	}
 
