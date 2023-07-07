@@ -471,7 +471,7 @@ public class ASMCodeGenerator {
 			code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
 			turnAddressIntoValue(subType);
 		}
-		
+
 		
 		
 		private void visitNormalBinaryOperatorNode(OperatorNode node) {
@@ -847,6 +847,78 @@ public class ASMCodeGenerator {
 			else {
 				assert false : "setting zeroes for empty array creation: cannot turn address into value.";
 			}
+		}
+
+
+
+		@Override
+		public void visitLeave(TargetableArrayReferenceNode node) {
+			Type subType = node.child(0).getType().getSubtype();
+
+			Labeller labeller = new Labeller("array-indexing");
+			String baseAddressLabel = labeller.newLabel("baseAddress");
+			String indexLabel = labeller.newLabel("index");
+
+
+			newAddressCode(node);
+			ASMCodeFragment arg1 = removeValueCode(node.child(0));
+			ASMCodeFragment arg2 = removeValueCode(node.child(1));
+
+
+			// storing array base address into a temp memory location:
+			code.append(arg1); 			// [... baseAddress]
+			code.add(DLabel, baseAddressLabel);
+			code.add(DataI, 0); //clear 4 bytes with all zeroes
+			code.add(PushD, baseAddressLabel);
+			code.add(Exchange);
+			code.add(StoreI); 			// [...]
+
+
+			//storing index i into a temp memory location:
+			code.append(arg2);			// [... i]
+			code.add(DLabel, indexLabel);
+			code.add(DataI, 0); //clear 4 bytes with all zeroes
+			code.add(PushD, indexLabel);
+			code.add(Exchange);
+			code.add(StoreI); 			// [...]
+
+
+			// start: index validation -------------------------------------------------------------
+			//first, check if i < 0. If yes, throw runtime error. 
+			loadIFrom(code, indexLabel);		// [... i]
+			code.add(JumpNeg, RunTime.ARRAY_INDEX_OUT_OF_BOUNDS);
+
+			//second, check if i >= arrayLength. If yes, throw runtime error.
+			loadIFrom(code, indexLabel);		// [... i]
+
+			code.add(PushD, baseAddressLabel);
+			code.add(LoadI); 					// [... i, baseAddress]
+			code.add(PushI, 12);
+			code.add(Add);						// [... i, baseAddress+12]
+			code.add(LoadI); 					// [... i, arrayLength]
+
+			code.add(Subtract); 				// [... i - arrayLength]
+			code.add(Duplicate); 				// [... i - arrayLength, 	i - arrayLength]
+			code.add(JumpFalse, RunTime.ARRAY_INDEX_OUT_OF_BOUNDS); 	// [... i - arrayLength]	
+			code.add(JumpPos, RunTime.ARRAY_INDEX_OUT_OF_BOUNDS); 		// [...]
+			// end : index validation ---------------------------------------------------------------
+
+
+			//start accessing the indexed location:
+			code.add(PushD, baseAddressLabel);
+			code.add(LoadI); 			// [... baseAddress]
+			code.add(PushI, ARRAY_HEADER_SIZE);
+			code.add(Add);				// [... baseAddress+headerSize]
+			loadIFrom(code, indexLabel); 			// [... baseAddress+headerSize, i]
+
+			code.add(PushD, baseAddressLabel);
+			code.add(LoadI); 			// [... baseAddress+headerSize,   i,	baseAddress]
+			code.add(PushI, 8);
+			code.add(Add);
+			code.add(LoadI); 		// [... baseAddress+headerSize,   i,   subtypeSize]
+
+			code.add(Multiply); 	// [... baseAddress+headerSize,   i*subtypeSize]
+			code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
 		}
 
 		

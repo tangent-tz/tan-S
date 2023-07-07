@@ -197,17 +197,77 @@ public class Parser {
 		if(!startsAssignmentStatement(nowReading)) {
 			return syntaxErrorNode("assignmentStatement");
 		}
-		ParseNode identifier = parseIdentifier();
+		ParseNode target = parseTargetableExpression();
 		expect(Punctuator.ASSIGN);
 		ParseNode newInitializer = parseExpression();
 		expect(Punctuator.TERMINATOR);
 
 		Token assignmentNodeToken = Punctuator.ASSIGN.prototype();
-		return AssignmentStatementNode.withChildren(assignmentNodeToken, identifier, newInitializer);
+		return AssignmentStatementNode.withChildren(assignmentNodeToken, target, newInitializer);
 	}
 	private boolean startsAssignmentStatement(Token token) {
-		return startsIdentifier(token);
+		return startsTargetableExpression(token); 
 	}
+	
+	
+	private ParseNode parseTargetableExpression() {
+		if(!startsTargetableExpression(nowReading)) {
+			return syntaxErrorNode("targetable-expression"); 
+		}
+		
+		if(startsIdentifier(nowReading)) {
+			return parseIdentifier();
+		}
+		if(startsTargetableArrayReferenceExpression(nowReading)) {
+			return parseTargetableArrayReferenceExpression(); 
+		}
+		return parseTargetableParenthesesWrappedExpression();
+	}
+	private boolean startsTargetableExpression(Token token){
+		return startsIdentifier(token) ||
+				startsTargetableArrayReferenceExpression(token) ||
+				startsTargetableParenthesesWrappedExpression(token); 
+	}
+	
+	
+	private ParseNode parseTargetableArrayReferenceExpression() {
+		if(!startsTargetableArrayReferenceExpression(nowReading)) {
+			return syntaxErrorNode("targetable array-reference expression"); 
+		}
+		readToken();
+		
+		ParseNode left = parseExpression();
+		expect(Punctuator.INDEXING);
+		ParseNode right = parseExpression(); 
+		expect(Punctuator.CLOSE_BRACKETS);
+		
+		Token arrayRefToken = Punctuator.INDEXING.prototype();
+		return TargetableArrayReferenceNode.withChildren(arrayRefToken, left, right);
+		
+	}
+	private boolean startsTargetableArrayReferenceExpression(Token token) {
+		return token.isLextant(Punctuator.OPEN_BRACKETS); 
+	}
+	
+	
+	private ParseNode parseTargetableParenthesesWrappedExpression() {
+		if(!startsTargetableParenthesesWrappedExpression(nowReading)){
+			return syntaxErrorNode("targetable parenthesized expression"); 
+		}
+		
+		readToken();
+		ParseNode target = parseTargetableExpression(); 
+		expect(Punctuator.CLOSE_PARENTHESIS);
+		
+		return target; 
+	}
+	private boolean startsTargetableParenthesesWrappedExpression(Token token) {
+		return token.isLextant(Punctuator.OPEN_PARENTHESIS);  
+	}
+	
+	
+	
+	
 
 
 	// block statement -> { statement* }
