@@ -124,7 +124,13 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		new FunctionSignatures(Punctuator.LESSER,
 				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
-				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
 		);
 		new FunctionSignatures(Punctuator.GREATEREQUAL,
 				new FunctionSignature(new GreaterEqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),

@@ -66,10 +66,30 @@ public class LesserEqualCodeGenerator implements SimpleCodeGenerator {
             code.add(Jump, joinLabel);
             code.add(Label, joinLabel);
         }
+        else if(node.child(0).getType() == PrimitiveType.FLOAT || node.child(1).getType() == PrimitiveType.FLOAT)
+        {
+            code.add(FSubtract);
+
+            code.add(JumpFPos, falseLabel);
+            code.add(Jump, trueLabel);
+
+            code.add(Label, trueLabel);
+            code.add(PushI, 1);
+            code.add(Jump, joinLabel);
+            code.add(Label, falseLabel);
+            code.add(PushI, 0);
+            code.add(Jump, joinLabel);
+            code.add(Label, joinLabel);
+        }
     }
 
     @Override
     public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2) {
+
+    }
+
+    @Override
+    public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2, OperatorNode node) {
 
     }
 }

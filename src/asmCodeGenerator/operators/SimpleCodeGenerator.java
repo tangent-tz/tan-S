@@ -13,4 +13,6 @@ public interface SimpleCodeGenerator {
 	public void generate(OperatorNode node, ASMCodeFragment code);
 
 	void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2);
+
+    void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2, OperatorNode node);
 }

@@ -4,6 +4,7 @@ import asmCodeGenerator.Labeller;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import parseTree.ParseNode;
 import parseTree.nodeTypes.OperatorNode;
+import semanticAnalyzer.types.PrimitiveType;
 
 import java.util.List;
 
@@ -23,9 +24,14 @@ public class ConditionalOrCodeGenerator implements SimpleCodeGenerator {
     public void generate(OperatorNode node, ASMCodeFragment code) {
 
     }
-    
+
     @Override
     public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2) {
+
+    }
+
+    @Override
+    public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2, OperatorNode node) {
         Labeller labeller = new Labeller("conditional-OR");
         String startLabel = labeller.newLabel("arg1");
         String arg2Label  = labeller.newLabel("arg2");
@@ -33,12 +39,29 @@ public class ConditionalOrCodeGenerator implements SimpleCodeGenerator {
         String trueLabel = labeller.newLabel("true");
         String joinLabel = labeller.newLabel("join");
 
+
+
         code.add(Label, startLabel);
         code.append(arg1);
+        if((node.child(0).getType() == PrimitiveType.INTEGER ||node.child(0).getType() == PrimitiveType.CHARACTER) && node.child(1).getType()== PrimitiveType.FLOAT) {
+            code.add(ConvertF);
+        }
+        code.append(arg2);
+        if(node.child(0).getType() == PrimitiveType.FLOAT && (node.child(1).getType()== PrimitiveType.INTEGER||node.child(1).getType() == PrimitiveType.CHARACTER)) {
+            code.add(ConvertF);
+        }
+
         code.add(JumpTrue, trueLabel);
 
         code.add(Label, arg2Label);
+        code.append(arg1);
+        if((node.child(0).getType() == PrimitiveType.INTEGER ||node.child(0).getType() == PrimitiveType.CHARACTER) && node.child(1).getType()== PrimitiveType.FLOAT) {
+            code.add(ConvertF);
+        }
         code.append(arg2);
+        if(node.child(0).getType() == PrimitiveType.FLOAT && (node.child(1).getType()== PrimitiveType.INTEGER||node.child(1).getType() == PrimitiveType.CHARACTER)) {
+            code.add(ConvertF);
+        }
         code.add(JumpTrue, trueLabel);
 
         code.add(Label, falseLabel);

@@ -75,4 +75,9 @@ public class EqualCodeGenerator implements SimpleCodeGenerator {
     public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2) {
 
     }
+
+    @Override
+    public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2, OperatorNode node) {
+
+    }
 }
