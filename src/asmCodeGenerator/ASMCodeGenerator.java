@@ -575,6 +575,27 @@ public class ASMCodeGenerator {
 			return null;
 		}
 
+		public int checkHighestPromotableArray(ParseNode node)
+		{
+			int promoteFlag = 0;
+
+			for(int i =0; i < node.nChildren(); i++){
+				ParseNode child = node.child(i);
+				if()
+			}
+		}
+
+		public boolean isFloat(ParseNode node){
+			return node.getType() == PrimitiveType.FLOAT;
+		}
+		public boolean isCharacter(ParseNode node){
+			return node.getType() == PrimitiveType.CHARACTER;
+		}
+		public boolean isInteger(ParseNode node){
+			return node.getType() == PrimitiveType.INTEGER;
+		}
+
+
 		///////////////////////////////////////////////////////////////////////////
 		// array
 		public void visitLeave(ArrayNode node) {
