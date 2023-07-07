@@ -4,6 +4,7 @@ import asmCodeGenerator.Labeller;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import parseTree.ParseNode;
 import parseTree.nodeTypes.OperatorNode;
+import semanticAnalyzer.types.PrimitiveType;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class ConditionalAndCodeGenerator implements SimpleCodeGenerator {
         String trueLabel  = labeller.newLabel("true");
         String falseLabel = labeller.newLabel("false");
         String joinLabel  = labeller.newLabel("join");
-        
+
         code.add(Label, startLabel);
         code.append(arg1);
         code.add(JumpFalse, falseLabel);
@@ -48,6 +49,11 @@ public class ConditionalAndCodeGenerator implements SimpleCodeGenerator {
         code.add(PushI, 1);
         code.add(Label, joinLabel);
         
+    }
+
+    @Override
+    public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2, OperatorNode node) {
+
     }
 
 }

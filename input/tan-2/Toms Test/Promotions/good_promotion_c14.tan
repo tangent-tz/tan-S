@@ -1,3 +1,0 @@
-main {
-	print 'n' <= 40.33 \s false \n;
-}

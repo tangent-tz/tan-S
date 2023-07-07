@@ -1,0 +1,155 @@
+main {
+    # Test 1: Promotion from integer to float
+    var x1 := 10;  # an integer
+    var y1 := 2.5;  # a float
+    var z1 := x1 + y1;  # x1 should be promoted to a float for this operation
+    print z1 \n;  # should print 12.5
+
+    # Test 2: Multiple promotions in a single expression
+    var x2 := 10;  # an integer
+    var y2 := 2.5;  # a float
+    var result2 := x2 * y2 + y2;  # x2 is promoted to float for this operation
+    print result2 \n;  # should print 27.5 (10*2.5 + 2.5)
+
+    # Test 3: Promotions involving variables and literals
+    var a3 := 5;  # an integer
+    var b3 := 2.0;  # a float
+    var result3 := a3 * b3 + 10;  # a3 is promoted to float for this operation
+    print result3 \n;  # should print 20.0 (5*2.0 + 10)
+
+    # Test 4: Promotions in nested expressions
+    var x4 := 10;  # an integer
+    var y4 := 2.5;  # a float
+    var result4 := x4 * (x4 + y4);  # x4 and y4 are promoted to floats
+    print result4 \n;  # should print 125.0 (10*(10+2.5))
+
+     # Test 5: Promotion from integer to float during division
+     var x5 := 10;  # an integer
+     var y5 := 4.5;  # another integer
+     var z5 := 2.0;  # a float
+     var result5 := x5 / y5 / z5;  # x5 and y5 are promoted to float for this operation
+     print result5 \n;  # should print 1.111111
+
+     # Test 1: Greater than operator
+     var x62 := 4;
+     var y62 := 5;
+     print x62 > y62 \n;  # should print false
+
+     # Test 1: And and Or operators
+     var x17 := true;
+     var y17 := false;
+     var z17 := x17 && y17 || x17;
+     print z17 \n;  # should print true
+
+     # Test 2: Nested And and Or operators
+     var x28 := true;
+     var y28 := false;
+     var z28 := (x28 && y28) || (x28 && x28);
+     print z28 \n;  # should print true
+
+     # Test 3: Negation operator
+     var x39 := false;
+     var y39 := !x39;
+     print y39 \n;  # should print true
+
+     # Test 4: Complex expression with And, Or, and Negation
+     var x41 := true;
+     var y41 := false;
+     var z41 := !y41 && x41 || y41;
+     print z41 \n;  # should print true
+
+     # Test 5: Parentheses changing the precedence
+     var a51 := true;
+     var b51 := false;
+     var c51 := true;
+     var result51 := a51 && (b51 || c51);
+     print result51 \n;  # should print true
+
+
+      # Test 1: Arithmetic with integer and float
+      var x19 := 10;  # an integer
+      var y19 := 2.5;  # a float
+      print x19 + y19 \n;  # should print 12.5
+      print x19 - y19 \n;  # should print 7.5
+      print x19 * y19 \n;  # should print 25.0
+      print x19 / y19 \n;  # should print 4.0
+
+      # Test 2: Arithmetic with integer and char
+      var x222 := 5;  # an integer
+      var y222 := 'b';  # a char
+      print x222 + y222 \n;  # should print 103 (98+5 ASCII value of 'b' is 98)
+      print x222 * y222 \n;  # should print 490 (98*5)
+
+      # Test 3: Arithmetic with float and char
+      var x333 := 5.5;  # a float
+      var y333 := 'a';  # a char
+      print x333 + y333 \n;  # should print 102.5 (97+5.5 ASCII value of 'a' is 97)
+      print x333 * y333 \n;  # should print 533.5 (97*5.5)
+
+       # Test 4: Arithmetic with integer, float, and char (with parentheses)
+       var x444 := 10;  # an integer
+       var y444 := 2.5;  # a float
+       var z444 := 'a';  # a char
+       print (x444 + y444) * z444 \n;  # should print 1212.500000 (12 * 100 ASCII value of 'a' is 97, 10+2.5 = 12.5 -> 12 due to truncation)
+       print x444 / (y444 * z444) \n;  # should print 0.041 (10 / (2.5 * 97))
+
+       # Test 5: Arithmetic with float, char, and parentheses
+       var x555 := 5.5;  # a float
+       var y555 := 'a';  # a char
+       print (x555 + y555) * y555 \n;  # should print 9942.500000((5.5+97) * 97)
+       print x555 / (x555 * y555) \n;  # should print 0.000057 ((5.5 / (5.5 * 97)))
+
+       # Test 6: Arithmetic with integer, float, and char (with subtraction)
+       var x666 := 10;  # an integer
+       var y666 := 2.5;  # a float
+       var z666 := 'a';  # a char
+       print (x666 - y666) * z666 \n;  # should print 712.5 ((10-2.5)*97)
+       print x666 / (y666 - z666) \n;  # should print -0.103 ((10 / (2.5 - 97)))
+
+       # Test 7: Arithmetic with float, char, and subtraction
+       var x777 := 5.5;  # a float
+       var y777 := 'a';  # a char
+       print (x777 - y777) * y777 \n;  # should print -8908 ((5.5-97)*97)
+       print x777 / (x777 - y777) \n;  # should print -0.056 ((5.5 / (5.5 - 97)))
+
+
+        # Test 1: Less than, Greater than, Less than or Equal to, Greater than or Equal to operators with integer and float
+         var x155 := 10;  # an integer
+         var y155 := 2.5;  # a float
+         print x155 < y155 \n;  # should print false
+         print x155 > y155 \n;  # should print true
+         print x155 <= y155 \n;  # should print false
+         print x155 >= y155 \n;  # should print true
+
+         # Test 2: Equality and Inequality operators with integer and float
+         print x155 == y155 \n;  # should print false
+         print x155 != y155 \n;  # should print true
+
+         # Test 3: AND, OR, NOT operators with boolean values
+         var x355 := true;
+         var y355 := false;
+         print x355 && y355 \n;  # should print false
+         print x355 || y355 \n;  # should print true
+         print ! x355 \n;  # should print false
+
+         # Test 4: Less than, Greater than, Less than or Equal to, Greater than or Equal to operators with char and float
+         var x455 := 'b';  # a char
+         var y455 := 2.5;  # a float
+         print x455 < y455 \n;  # should print false
+         print x455 > y455 \n;  # should print true
+         print x455 <= y455 \n;  # should print false
+         print x455 >= y455 \n;  # should print true
+
+         # Test 5: Equality and Inequality operators with char and float
+         print x455 == y455 \n;  # should print false
+         print x455 != y455 \n;  # should print true
+
+         # Test 6: Combination of comparison and logical operators
+         var x655 := 10;  # an integer
+         var y655 := 2.5;  # a float
+         var z655 := true;
+         print (x655 > y655) && z655 \n;  # should print true
+         print (x655 < y655) || z655 \n;  # should print true
+         print ! (x655 == y655) \n;  # should print true
+
+}

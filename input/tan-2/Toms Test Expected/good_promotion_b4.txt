@@ -1,1 +1,0 @@
-Expected output: 'd' - 8 = ']' (ascii value 93), followed by a space, followed by 92, and then a new line. So the expected output is: ] 92

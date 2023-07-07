@@ -1,3 +1,0 @@
-The expected output of the code is:
-
-n <= 403 : true
