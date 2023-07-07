@@ -1,0 +1,30 @@
+start
+[ 1, 2, 33, 4, 5, 6, 777777 ] 
+1	2	33	4	5	6	777777	
+true
+true
+false
+
+[ 1.340000, 1.000000, 33.200000, 4.400000, 5.567000, -6.545600, -0.200000 ] 
+1.340000	1.000000	33.200000	4.400000	5.567000	-6.545600	-0.200000	
+true
+true
+
+[ hello, world, monday, tuesday, wednesday, thursday, friday ] 
+hello	world	monday	tuesday	wednesday	thursday	friday	
+false
+true
+
+[ a, b, @, R, t, ~, < ] 
+a	b	@	R	t	~	<	
+true
+true
+false
+
+[ true, false, true, true, true, false, true ] 
+true	false	true	true	true	false	true	
+true
+false
+true
+false
+
