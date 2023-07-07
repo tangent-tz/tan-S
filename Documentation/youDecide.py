@@ -111,14 +111,16 @@ def terminal_output_to_list(filesASM):
 def java_file_execute_orchestrator():
     files = find_files(TAN_PATH)
     bad_file = []
+    good_file = []
     bad_file_names = []
     for i in range(len(files)):
         response = run_java_file(BIN_PATH, 'applications.TanCompiler', files[i])
         if response == False:
             bad_file.append(i)
             bad_file_names.append(files[i])
-    result = list(set(files) ^ set(bad_file_names))
-    return result, bad_file, bad_file_names
+        else:
+            good_file.append(files[i])
+    return good_file, bad_file, bad_file_names
 
 
 def ASM_file_execute_orchestrator(badFile):
@@ -136,9 +138,8 @@ def expected_file_orchestrator(bad_file_names):
     #     filesExpected.pop(badFile[i])
 
     temp_set = {x.replace(".tan", ".txt") for x in bad_file_names}
-    result = list(set(filesExpected) ^ set(temp_set))
-    for i in range(len(result)):
-        expectedOutputs.append(read_lines(f"{EXPECTED_PATH}\{result[i]}"))
+    for i in range(len(filesExpected)):
+        expectedOutputs.append(read_lines(f"{EXPECTED_PATH}\{filesExpected[i]}"))
     return expectedOutputs
 
 
