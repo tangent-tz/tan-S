@@ -1,6 +1,5 @@
 package parser;
 
-import java.security.Key;
 import java.util.Arrays;
 
 import logging.TanLogger;

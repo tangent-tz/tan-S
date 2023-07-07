@@ -1,3 +1,0 @@
-The expected output of the code is:
-
-o != 113.00   true

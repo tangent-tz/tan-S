@@ -1,3 +1,0 @@
-The expected output of the code is:
-
-65 / 103 = 0.6310679611650485

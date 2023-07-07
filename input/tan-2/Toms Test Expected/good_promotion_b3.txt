@@ -1,9 +1,0 @@
-The expected output of the code is:
-
-4 - 'c' = 4 - 99 = -95
-
--95 (ascii value) = %045
-
-So, the expected output is:
-
--95 %045

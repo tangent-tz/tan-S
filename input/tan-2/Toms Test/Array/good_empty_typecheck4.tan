@@ -1,5 +1,5 @@
 main {
-	var farm := new[bool](4);
+	mut farm := alloc[bool](4);
 	farm := [true, false];
-	print "ok" \n;
+	print "ok" $n;
 }

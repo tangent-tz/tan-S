@@ -1,5 +1,5 @@
 main {
-	const aVariable := [2, 3, 5];
-	const bVariable := [aVariable as [int]];
-	print bVariable \n;
+	imm aVariable := [2, 3, 5];
+	imm bVariable := [aVariable as [int]];
+	print bVariable $n;
 }

@@ -1,4 +1,4 @@
 main {
-	var farm := new[int]('a');
-	print length(farm) \n;
+	mut farm := alloc[int](#a);
+	print length farm $n;
 }

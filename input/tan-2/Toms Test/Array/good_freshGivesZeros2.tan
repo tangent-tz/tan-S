@@ -1,4 +1,4 @@
 main {
-	var DD := new[float](12);
-	print DD \n;
+	imm DD := alloc [float](12);
+	print DD $n;
 }

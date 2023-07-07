@@ -3,7 +3,7 @@ package semanticAnalyzer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+
 
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
@@ -20,6 +20,8 @@ import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
+import tokens.FloatToken;
+import tokens.IntegerToken;
 import tokens.LextantToken;
 import tokens.Token;
 
@@ -90,23 +92,41 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.ERROR);
 			return;
 		}
+		List<Type> childTypes =  new ArrayList<>();
+
+		for(int i=0; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
+			childTypes.add(child.getType());
+		}
 
 		IdentifierNode identifier = (IdentifierNode) node.child(0);
 		ParseNode expression = node.child(1);
 
 		Type identifierType = identifier.getType();
 		Type expressionType = expression.getType();
-
+		
 		if(!(expressionType.equivalent(identifierType))) {
-			logError("types do not match in AssignmentStatement");
-			return;
+			if (promotableTypesAssignment(childTypes) != 0) {
+				if (promotableTypesAssignment(childTypes) == 1) {
+					promoteCharacter(node);
+				} else if (promotableTypesAssignment(childTypes) == 2) {
+					promoteInteger(node);
+				}
+				visitLeave(node);
+			}
+			else{
+				logError("types do not match in AssignmentStatement");
+				return;
+			}
 		}
 		if(identifier.getBinding().isConstant()) {
 			logError("re-assignment to a const identifier, previously declared at location: " + identifier.getBinding().getLocation());
 			return;
 		}
+
 		node.setType(identifierType);
 	}
+
 
 	// blockStatement
 	@Override
@@ -169,11 +189,98 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(signature.resultType().concreteType());
 			node.setSignature(signature); 
 		}
+		else if(promotableTypes(childTypes) != 0) {
+			if (promotableTypes(childTypes) == 1) {
+				promoteCharacter(node);
+			} else if (promotableTypes(childTypes) == 2) {
+				promoteInteger(node);
+			}
+			visitLeave(node);
+		}
 		else {
 			typeCheckError(node, childTypes);
 			node.setType(PrimitiveType.ERROR);
 		}
 	}
+
+	public int promotableTypes(List<Type> childTypes) {
+		if(childTypes.size() != 2) {
+			return 0;
+		}
+		Type type1 = childTypes.get(0);
+		Type type2 = childTypes.get(1);
+
+		if(type1 == PrimitiveType.FLOAT && type2 == PrimitiveType.INTEGER) {
+			return 2;
+		}
+		else if(type1 == PrimitiveType.INTEGER && type2 == PrimitiveType.FLOAT) {
+			return 2;
+		}
+		else if(type1 == PrimitiveType.CHARACTER && type2 == PrimitiveType.FLOAT) {
+			return 1;
+		}
+		else if(type1 == PrimitiveType.FLOAT && type2 == PrimitiveType.CHARACTER) {
+			return 1;
+		}
+		else if(type1 == PrimitiveType.CHARACTER && type2 == PrimitiveType.INTEGER) {
+			return 1;
+		}
+		else if(type1 == PrimitiveType.INTEGER && type2 == PrimitiveType.CHARACTER) {
+			return 1;
+		}
+		return 0;
+	}
+
+	public int promotableTypesAssignment(List<Type> childTypes) {
+		if(childTypes.size() != 2) {
+			return 0;
+		}
+		Type type1 = childTypes.get(0);
+		Type type2 = childTypes.get(1);
+
+		if(type1 == PrimitiveType.FLOAT && type2 == PrimitiveType.INTEGER) {
+			return 2;
+		}
+		else if(type1 == PrimitiveType.FLOAT && type2 == PrimitiveType.CHARACTER) {
+			return 1;
+		}
+		else if(type1 == PrimitiveType.INTEGER && type2 == PrimitiveType.CHARACTER) {
+			return 1;
+		}
+		return 0;
+	}
+
+	private void promoteInteger(ParseNode node) {
+		for (int i = 0; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
+			if (child.getType() == PrimitiveType.INTEGER && child.nChildren() == 0) {
+				Token test = FloatToken.make(child.getToken().getLocation(), child.getToken().getLexeme());
+				FloatConstantNode floatNode = new FloatConstantNode(test);
+				floatNode.setType(PrimitiveType.FLOAT);
+				node.setType(PrimitiveType.FLOAT);
+				node.replaceChild(child, floatNode);
+			} else if (child.nChildren() > 0) { // If the child has its own children, recursively promote integers within it.
+				promoteInteger(child);
+			}
+		}
+	}
+
+	private void promoteCharacter(ParseNode node) {
+		for (int i = 0; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
+			if (child.getType() == PrimitiveType.CHARACTER  && child.nChildren() == 0) {
+				int test1 =((CharacterNode) child).getValue();
+				Token test = IntegerToken.make(child.getToken().getLocation(), Integer.toString(test1));
+				IntegerConstantNode integerNode = new IntegerConstantNode(test);
+				integerNode.setType(PrimitiveType.INTEGER);
+				node.setType(PrimitiveType.INTEGER);
+				node.replaceChild(child, integerNode);
+			} else if (child.nChildren() > 0) { // If the child has its own children, recursively promote integers within it.
+				promoteCharacter(child);
+			}
+		}
+	}
+
 	private Lextant operatorFor(OperatorNode node) {
 		LextantToken token = (LextantToken) node.getToken();
 		return token.getLextant();

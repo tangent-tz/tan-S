@@ -70,56 +70,119 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		new FunctionSignatures(Punctuator.ADD,
 		    new FunctionSignature(ASMOpcode.Add, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
 		    new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+			new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+			new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+			new FunctionSignature(ASMOpcode.Add, PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
+			new FunctionSignature(ASMOpcode.Add, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER),
+			new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+			new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.FLOAT),
 			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
 			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.INTEGER)
 		);
 		new FunctionSignatures(Punctuator.MULTIPLY,
 				new FunctionSignature(ASMOpcode.Multiply, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
-				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT)
+				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.Multiply, PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.Multiply, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.FLOAT)
 		);
 		new FunctionSignatures(Punctuator.SUBTRACT,
 				new FunctionSignature(ASMOpcode.Subtract, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
 				new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.Subtract, PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.Subtract, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.FLOAT),
 				new FunctionSignature(ASMOpcode.FNegate, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
 				new FunctionSignature(ASMOpcode.Negate, PrimitiveType.INTEGER, PrimitiveType.INTEGER)
 		);
 		new FunctionSignatures(Punctuator.DIVIDE,
 				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
-				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT)
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.FLOAT)
 		);
 		new FunctionSignatures(Punctuator.GREATER,
 				new FunctionSignature(new GreaterThanCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new GreaterThanCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
-				new FunctionSignature(new GreaterThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
+				new FunctionSignature(new GreaterThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterThanCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterThanCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterThanCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterThanCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
+
 		);
 		new FunctionSignatures(Punctuator.LESSER,
 				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
-				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserThanCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
 		);
 		new FunctionSignatures(Punctuator.GREATEREQUAL,
 				new FunctionSignature(new GreaterEqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new GreaterEqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
-				new FunctionSignature(new GreaterEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
+				new FunctionSignature(new GreaterEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterEqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterEqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterEqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new GreaterEqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
 		);
 		new FunctionSignatures(Punctuator.LESSEREQUAL,
 				new FunctionSignature(new LesserEqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new LesserEqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
-				new FunctionSignature(new LesserEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
+				new FunctionSignature(new LesserEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserEqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserEqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserEqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new LesserEqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
 		);
 		new FunctionSignatures(Punctuator.EQUALS,
 				new FunctionSignature(new EqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new EqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new EqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new EqualCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
-				new FunctionSignature(new EqualCodeGenerator(), ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN)
+				new FunctionSignature(new EqualCodeGenerator(), ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new EqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new EqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new EqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new EqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new EqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new EqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
+
 		);
 		new FunctionSignatures(Punctuator.NOTEQUALS,
 				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
 				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN),
-				new FunctionSignature(new NotEqualCodeGenerator(), ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN)
+				new FunctionSignature(new NotEqualCodeGenerator(), ReferenceType.STRING, ReferenceType.STRING, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.BOOLEAN),
+				new FunctionSignature(new NotEqualCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.BOOLEAN)
 		);
 		new FunctionSignatures(Punctuator.CONDITIONAL_AND,
 				new FunctionSignature(new ConditionalAndCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)

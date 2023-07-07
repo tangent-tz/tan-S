@@ -1,5 +1,5 @@
 main {
-	var farm := new[[int]](4);
+	mut farm := alloc[[int]](4);
 	farm[0] := [3, 4, 5];
-	print "ok" \n;
+	print "ok" $n;
 }
