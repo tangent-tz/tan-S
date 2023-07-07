@@ -140,17 +140,26 @@ public class PrintStatementGenerator {
 		
 		if(c == ARRAY_FORMATTER_CLOSE_BRACKET) {
 			appendArraySpacingPrintCode();
+
 		}
 		
 		code.add(PushI, c); 
 		code.add(PushD, format); 
 		code.add(Printf);
-		
-		appendArraySpacingPrintCode();
+		if(c != ARRAY_FORMATTER_CLOSE_BRACKET) {
+			appendArraySpacingPrintCode();
+
+		}
 	}
 	private void appendArraySpacingPrintCode() {
 		String format = printFormat(PrimitiveType.CHARACTER);
 		code.add(PushI, 32);
+		code.add(PushD, format);
+		code.add(Printf);
+	}
+	private void appendArrayBackSpacePrintCode() {
+		String format = printFormat(PrimitiveType.CHARACTER);
+		code.add(PushI, 8);
 		code.add(PushD, format);
 		code.add(Printf);
 	}
