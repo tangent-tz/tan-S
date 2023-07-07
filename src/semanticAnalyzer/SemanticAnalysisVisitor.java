@@ -104,20 +104,21 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 		Type identifierType = identifier.getType();
 		Type expressionType = expression.getType();
-		
-		if(!(expressionType.equivalent(identifierType))) {
-			if (promotableTypesAssignment(childTypes) != 0) {
-				if (promotableTypesAssignment(childTypes) == 1) {
-					promoteCharacter(node);
-				} else if (promotableTypesAssignment(childTypes) == 2) {
-					promoteInteger(node);
-				}
+
+		int isPromotable = promotableTypesAssignment(childTypes); // check if we can promote
+
+		if(!(expressionType.equivalent(identifierType)) && isPromotable !=0 && !isIdentifier(expression)) { // are lvalue and rvalue not same type, is it promotable, is rValue not identifier node,
+			if (isPromotable == 1) { // promote char to int
+				promoteCharacter(node);
+				visitLeave(node);
+			} else if (isPromotable == 2) { //promote int to float
+				promoteInteger(node);
 				visitLeave(node);
 			}
-			else{
-				logError("types do not match in AssignmentStatement");
-				return;
-			}
+		}
+		else if (isPromotable == 0){ //
+			logError("types do not match in AssignmentStatement"); //
+			return;
 		}
 		if(identifier.getBinding().isConstant()) {
 			logError("re-assignment to a const identifier, previously declared at location: " + identifier.getBinding().getLocation());
@@ -423,5 +424,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private void logError(String message) {
 		TanLogger log = TanLogger.getLogger("compiler.semanticAnalyzer");
 		log.severe(message);
+	}
+
+	private boolean isIdentifier(ParseNode node){
+		return node instanceof IdentifierNode;
 	}
 }
