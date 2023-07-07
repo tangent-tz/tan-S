@@ -215,7 +215,12 @@ public class ASMCodeGenerator {
 
 			code.append(lvalue);
 			code.append(rvalue);
-
+			if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.INTEGER) {
+				code.add(ConvertF);
+			}
+			if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.CHARACTER) {
+				code.add(ConvertF);
+			}
 			Type type = node.getType();
 			code.add(opcodeForStore(type));
 		}
@@ -501,7 +506,6 @@ public class ASMCodeGenerator {
 				generateCodeForEmptyArrayCreation(node);
 				return; 
 			}
-			
 			
 			List<ASMCodeFragment> elements = new ArrayList<>();
 			for(int i = 0; i < node.nChildren(); i++) {
