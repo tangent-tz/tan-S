@@ -1,0 +1,7 @@
+main {
+    const a := new [int](2); 
+    print a \n; 
+    
+    const b := new [int](-1); 
+    
+}

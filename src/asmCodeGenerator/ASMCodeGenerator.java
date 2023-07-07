@@ -623,6 +623,13 @@ public class ASMCodeGenerator {
 			String endLoopLabel = labeller.newLabel("endLoop"); 
 			String zeroesDataLabel = labeller.newLabel("zeroesData");
 
+			
+			// check if number of elements is negative. If negative, throw a runtime error. 
+			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
+			code.add(JumpNeg, RunTime.ARRAY_NEGATIVE_NUMBER_OF_ELEMENTS); 
+			
+			
+			
 			// Allocate memory for the array
 			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
 			code.add(PushI, subtypeSize);
