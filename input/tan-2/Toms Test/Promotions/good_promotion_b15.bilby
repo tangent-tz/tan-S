@@ -1,3 +1,0 @@
-main {
-	print 'o' != 113 \s true \n;
-}

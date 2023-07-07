@@ -1,0 +1,2 @@
+The expected output of the code is:
+AA = [#a, 14.17, #c, #d, #e]

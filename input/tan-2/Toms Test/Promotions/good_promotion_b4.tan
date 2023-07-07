@@ -1,3 +1,0 @@
-main {
-	print 'd' - 8 \s 92 \n;
-}

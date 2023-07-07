@@ -1,0 +1,4 @@
+main {
+	const hogslop := [""];
+	print 'h' \s 'i' \s hogslop \s 'b' \s 'u' \s 'd' \n;
+}

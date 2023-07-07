@@ -1,0 +1,6 @@
+The expected output of the code is:
+
+17
+22
+3.14
+10

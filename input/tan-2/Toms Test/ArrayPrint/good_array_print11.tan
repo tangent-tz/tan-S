@@ -1,0 +1,3 @@
+main {
+	print 'h' \s 'i' \s new int(0) \s 'b' \s 'u' \s 'd' \n;
+}
