@@ -33,7 +33,7 @@ main {
      # Test 1: Greater than operator
      var x62 := 4;
      var y62 := 5;
-     print x62 > y62 \n;  # should print true
+     print x62 > y62 \n;  # should print false
 
      # Test 1: And and Or operators
      var x17 := true;
@@ -64,4 +64,53 @@ main {
      var c51 := true;
      var result51 := a51 && (b51 || c51);
      print result51 \n;  # should print true
+
+
+      # Test 1: Arithmetic with integer and float
+      var x19 := 10;  # an integer
+      var y19 := 2.5;  # a float
+      print x19 + y19 \n;  # should print 12.5
+      print x19 - y19 \n;  # should print 7.5
+      print x19 * y19 \n;  # should print 25.0
+      print x19 / y19 \n;  # should print 4.0
+
+      # Test 2: Arithmetic with integer and char
+      var x222 := 5;  # an integer
+      var y222 := 'b';  # a char
+      print x222 + y222 \n;  # should print 103 (98+5 ASCII value of 'b' is 98)
+      print x222 * y222 \n;  # should print 490 (98*5)
+
+      # Test 3: Arithmetic with float and char
+      var x333 := 5.5;  # a float
+      var y333 := 'a';  # a char
+      print x333 + y333 \n;  # should print 102.5 (97+5.5 ASCII value of 'a' is 97)
+      print x333 * y333 \n;  # should print 533.5 (97*5.5)
+
+       # Test 4: Arithmetic with integer, float, and char (with parentheses)
+       var x444 := 10;  # an integer
+       var y444 := 2.5;  # a float
+       var z444 := 'a';  # a char
+       print (x444 + y444) * z444 \n;  # should print 1212.500000 (12 * 100 ASCII value of 'a' is 97, 10+2.5 = 12.5 -> 12 due to truncation)
+       print x444 / (y444 * z444) \n;  # should print 0.041 (10 / (2.5 * 97))
+
+       # Test 5: Arithmetic with float, char, and parentheses
+       var x555 := 5.5;  # a float
+       var y555 := 'a';  # a char
+       print (x555 + y555) * y555 \n;  # should print 9945.5 ((5.5+97) * 97)
+       print x555 / (x555 * y555) \n;  # should print 0.000057 ((5.5 / (5.5 * 97)))
+
+       # Test 6: Arithmetic with integer, float, and char (with subtraction)
+       var x666 := 10;  # an integer
+       var y666 := 2.5;  # a float
+       var z666 := 'a';  # a char
+       print (x666 - y666) * z666 \n;  # should print 712.5 ((10-2.5)*97)
+       print x666 / (y666 - z666) \n;  # should print -0.103 ((10 / (2.5 - 97)))
+
+       # Test 7: Arithmetic with float, char, and subtraction
+       var x777 := 5.5;  # a float
+       var y777 := 'a';  # a char
+       print (x777 - y777) * y777 \n;  # should print -8908 ((5.5-97)*97)
+       print x777 / (x777 - y777) \n;  # should print -0.056 ((5.5 / (5.5 - 97)))
+
+
 }

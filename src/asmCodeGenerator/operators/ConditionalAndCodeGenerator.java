@@ -53,40 +53,7 @@ public class ConditionalAndCodeGenerator implements SimpleCodeGenerator {
 
     @Override
     public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2, OperatorNode node) {
-        Labeller labeller = new Labeller("conditional-AND");
-        String startLabel = labeller.newLabel("arg1");
-        String arg2Label  = labeller.newLabel("arg2");
-        String trueLabel  = labeller.newLabel("true");
-        String falseLabel = labeller.newLabel("false");
-        String joinLabel  = labeller.newLabel("join");
 
-        code.add(Label, startLabel);
-        code.append(arg1);
-        if(node.child(0).getType() == PrimitiveType.FLOAT && (node.child(1).getType()== PrimitiveType.INTEGER||node.child(1).getType() == PrimitiveType.CHARACTER)) {
-            code.add(ConvertF);
-            code.add(JumpFZero, falseLabel);
-        }
-        else{
-            code.add(JumpFalse, falseLabel);
-        }
-
-        code.add(Label, arg2Label);
-        code.append(arg2);
-        if(node.child(0).getType() == PrimitiveType.FLOAT && (node.child(1).getType()== PrimitiveType.INTEGER||node.child(1).getType() == PrimitiveType.CHARACTER)) {
-            code.add(ConvertF);
-            code.add(JumpPos, trueLabel);
-        }
-        else{
-            code.add(JumpTrue, trueLabel);
-        }
-
-        code.add(Label, falseLabel);
-        code.add(PushI, 0);
-        code.add(Jump, joinLabel);
-
-        code.add(Label, trueLabel);
-        code.add(PushI, 1);
-        code.add(Label, joinLabel);
     }
 
 }
