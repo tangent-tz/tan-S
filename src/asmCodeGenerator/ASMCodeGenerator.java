@@ -388,7 +388,13 @@ public class ASMCodeGenerator {
 			ASMCodeFragment arg2 = removeValueCode(node.child(1));
 
 			code.append(arg1);
+			if(node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType()== PrimitiveType.FLOAT) {
+				code.add(ConvertF);
+			}
 			code.append(arg2);
+			if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType()== PrimitiveType.INTEGER) {
+				code.add(ConvertF);
+			}
 
 			if(node.getType() == PrimitiveType.FLOAT) {
 				if(node.getOperator() == Punctuator.DIVIDE) {
