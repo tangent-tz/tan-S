@@ -51,7 +51,7 @@ public class LesserEqualCodeGenerator implements SimpleCodeGenerator {
             code.add(Jump, joinLabel);
             code.add(Label, joinLabel);
         }
-        else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT)
+        else
         {
             code.add(FSubtract);
 

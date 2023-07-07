@@ -113,4 +113,43 @@ main {
        print x777 / (x777 - y777) \n;  # should print -0.056 ((5.5 / (5.5 - 97)))
 
 
+        # Test 1: Less than, Greater than, Less than or Equal to, Greater than or Equal to operators with integer and float
+         var x155 := 10;  # an integer
+         var y155 := 2.5;  # a float
+         print x155 < y155 \n;  # should print false
+         print x155 > y155 \n;  # should print true
+         print x155 <= y155 \n;  # should print false
+         print x155 >= y155 \n;  # should print true
+
+         # Test 2: Equality and Inequality operators with integer and float
+         print x155 == y155 \n;  # should print false
+         print x155 != y155 \n;  # should print true
+
+         # Test 3: AND, OR, NOT operators with boolean values
+         var x355 := true;
+         var y355 := false;
+         print x355 && y355 \n;  # should print false
+         print x355 || y355 \n;  # should print true
+         print ! x355 \n;  # should print false
+
+         # Test 4: Less than, Greater than, Less than or Equal to, Greater than or Equal to operators with char and float
+         var x455 := 'b';  # a char
+         var y455 := 2.5;  # a float
+         print x455 < y455 \n;  # should print false
+         print x455 > y455 \n;  # should print true
+         print x455 <= y455 \n;  # should print false
+         print x455 >= y455 \n;  # should print true
+
+         # Test 5: Equality and Inequality operators with char and float
+         print x455 == y455 \n;  # should print false
+         print x455 != y455 \n;  # should print true
+
+         # Test 6: Combination of comparison and logical operators
+         var x655 := 10;  # an integer
+         var y655 := 2.5;  # a float
+         var z655 := true;
+         print (x655 > y655) && z655 \n;  # should print true
+         print (x655 < y655) || z655 \n;  # should print true
+         print ! (x655 == y655) \n;  # should print true
+
 }
