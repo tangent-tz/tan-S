@@ -152,21 +152,21 @@ main {
          print (x655 < y655) || z655 \n;  # should print true
          print ! (x655 == y655) \n;  # should print true
 
-         ##Assignment Promotion test setup
-         var AssignmentVar1 := 1 #interger
-         var AssignmentVar2 := 4.3 #float
-         var AssignmentVar0 := 'a' #character
+         #Assignment Promotion test setup
+         var AssignmentVar1 := 1; #interger
+         var AssignmentVar2 := 4.3; #float
+         var AssignmentVar0 := 'a'; #character
 
          # Assignment Test 1: Assignment integer variable to float variable
-         AssignmentVar2 := AssignmentVar1
-         print AssignmentVar0 # print 1.000000
+         AssignmentVar2 := AssignmentVar1;
+         print AssignmentVar2 \n; # print 1.000000
 
          # Assignment Test 1: Assignment char variable to float variable
-         AssignmentVar2 := AssignmentVar0
-         print AssignmentVar0 # print 97.000000
+         AssignmentVar2 := AssignmentVar0;
+         print AssignmentVar2 \n; # print 97.000000
 
          # Assignment Test 1: Assignment char variable to integer variable
-         AssignmentVar1 := AssignmentVar0
-         print AssignmentVar1 # print 97
+         AssignmentVar1 := AssignmentVar0;
+         print AssignmentVar1 \n; # print 97
 
 }
