@@ -189,7 +189,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Type conditionType = ifCondition.getType(); 
 		
 		if(conditionType != PrimitiveType.BOOLEAN) {
-			logError("if condition must be of BOOLEAN type, currently detecting " + conditionType);
+			logError("Condition in if-statement at " + node.getToken().getLocation() + " is not a boolean expression");
+			node.setType(PrimitiveType.ERROR);
 			return; 
 		}
 		
@@ -228,7 +229,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(signature.resultType().concreteType());
 			node.setSignature(signature); 
 		}
-		else if(promotableTypes(childTypes) != 0) {
+		else if(operator != Punctuator.INDEXING && childTypes.get(0) instanceof PrimitiveType && promotableTypes(childTypes) != 0) {
 			if (promotableTypes(childTypes) == 1) {
 				promoteCharacter(node);
 			} else if (promotableTypes(childTypes) == 2) {

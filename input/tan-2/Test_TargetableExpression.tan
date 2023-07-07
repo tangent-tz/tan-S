@@ -2,8 +2,15 @@ main {
     var a := new [int](5); 
     print a \n; 
     
-    [a:1] := 120; 
+    [a:1] := 120;
     print a \n; 
+    
+    [a:4] := 1; 
+    print a\n; 
+    
+    ([a:2]) := 345; 
+    print a \n; 
+    
     
     var b:= 'a'; 
     print b \n; 
@@ -11,8 +18,44 @@ main {
     b := 'b'; 
     print b \n; 
     
+    (b) := 'h'; 
+    print b \n; 
     
-    [1+1 : 3-2] := true; 
-        
-
+    
+    var str_arr := ["hi", "hello"]; 
+    print str_arr \n; 
+    
+    (([str_arr:0])) := "what"; 
+    print str_arr \n;
+    
+    
+    ([["hi", "hello"] : 0]) := "striing"; 
+    
+    
+    
+    var c_arr := ['i', 't']; 
+    print c_arr \n; 
+    
+    (([c_arr:0])) := 'w'; 
+    print c_arr \n;
+    
+    
+    
+    
+    var f_arr := [1.2, 4.644]; 
+    print f_arr \n; 
+    
+    (([f_arr:0])) := 546.64; 
+    print f_arr \n;
+    
+    
+    
+    
+    
+    var b_arr := [false, true]; 
+    print b_arr \n; 
+    
+    (([b_arr:0])) := true; 
+    print b_arr \n;    
+    
 }
