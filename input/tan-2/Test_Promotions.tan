@@ -1,0 +1,67 @@
+main {
+    # Test 1: Promotion from integer to float
+    var x1 := 10;  # an integer
+    var y1 := 2.5;  # a float
+    var z1 := x1 + y1;  # x1 should be promoted to a float for this operation
+    print z1 \n;  # should print 12.5
+
+    # Test 2: Multiple promotions in a single expression
+    var x2 := 10;  # an integer
+    var y2 := 2.5;  # a float
+    var result2 := x2 * y2 + y2;  # x2 is promoted to float for this operation
+    print result2 \n;  # should print 27.5 (10*2.5 + 2.5)
+
+    # Test 3: Promotions involving variables and literals
+    var a3 := 5;  # an integer
+    var b3 := 2.0;  # a float
+    var result3 := a3 * b3 + 10;  # a3 is promoted to float for this operation
+    print result3 \n;  # should print 20.0 (5*2.0 + 10)
+
+    # Test 4: Promotions in nested expressions
+    var x4 := 10;  # an integer
+    var y4 := 2.5;  # a float
+    var result4 := x4 * (x4 + y4);  # x4 and y4 are promoted to floats
+    print result4 \n;  # should print 125.0 (10*(10+2.5))
+
+     # Test 5: Promotion from integer to float during division
+     var x5 := 10;  # an integer
+     var y5 := 4.5;  # another integer
+     var z5 := 2.0;  # a float
+     var result5 := x5 / y5 / z5;  # x5 and y5 are promoted to float for this operation
+     print result5 \n;  # should print 1.111111
+
+     # Test 1: Greater than operator
+     var x62 := 4;
+     var y62 := 5;
+     print x62 > y62 \n;  # should print true
+
+     # Test 1: And and Or operators
+     var x17 := true;
+     var y17 := false;
+     var z17 := x17 && y17 || x17;
+     print z17 \n;  # should print true
+
+     # Test 2: Nested And and Or operators
+     var x28 := true;
+     var y28 := false;
+     var z28 := (x28 && y28) || (x28 && x28);
+     print z28 \n;  # should print true
+
+     # Test 3: Negation operator
+     var x39 := false;
+     var y39 := !x39;
+     print y39 \n;  # should print true
+
+     # Test 4: Complex expression with And, Or, and Negation
+     var x41 := true;
+     var y41 := false;
+     var z41 := !y41 && x41 || y41;
+     print z41 \n;  # should print true
+
+     # Test 5: Parentheses changing the precedence
+     var a51 := true;
+     var b51 := false;
+     var c51 := true;
+     var result51 := a51 && (b51 || c51);
+     print result51 \n;  # should print true
+}
