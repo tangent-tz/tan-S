@@ -7,6 +7,7 @@ import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.SimpleCodeGenerator;
 import asmCodeGenerator.runtime.MemoryManager;
 import asmCodeGenerator.runtime.RunTime;
+import static asmCodeGenerator.Macros.*;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
 import parseTree.*;
@@ -37,15 +38,10 @@ public class ASMCodeGenerator {
 
 	public ASMCodeFragment makeASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
-
 		code.append( RunTime.getEnvironment() );
-
 		code.append( globalVariableBlockASM() );
-
 		code.append( programASM() );
-
 		code.append( MemoryManager.codeForAfterApplication() );
-
 		return code;
 	}
 	private ASMCodeFragment globalVariableBlockASM() {
@@ -488,73 +484,33 @@ public class ASMCodeGenerator {
 		///////////////////////////////////////////////////////////////////////////
 		// array
 		public void visitLeave(ArrayNode node) {
+			assert(node.nChildren() >= 1);
+			
+			if(emptyArrayCreation(node)) {
+				handleEmptyArrayCreation(node); 
+				return;
+			}
+			
 			List<ASMCodeFragment> elements = new ArrayList<>();
 			for(int i = 0; i < node.nChildren(); i++) {
 				ASMCodeFragment child = removeValueCode(node.child(i));
 				elements.add(child);
 			}
-			int header_typeIdentifier_byteConsumption = 4;
-			int header_status_byteConsumption = 4;
-			int header_subtypeSize_byteConsumption = 4;
-			int header_length_byteConsumption = 4;
-			
 			
 			int numOfElements = node.nChildren();
 			Type subtype = node.getType().getSubtype();
 			int subtypeSize = subtype.getSize();
-
-			newValueCode(node);
-			int totalSize = (header_typeIdentifier_byteConsumption 
-							+ header_status_byteConsumption 
-							+ header_subtypeSize_byteConsumption 
-							+ header_length_byteConsumption) 
-							+ (numOfElements * subtypeSize);
-			
+			int totalSize = getArrayHeaderTotalByteConsumption() + (numOfElements * subtypeSize);
 			
 			Labeller labeller = new Labeller("array"); 
-			String pointerLabel = labeller.newLabel("pointer"); 
+			String pointerLabel = labeller.newLabel("pointer");
 			
-			
+			newValueCode(node);
 			// Allocate memory for the array
-			code.add(PushI, totalSize);  // memory needed = size * offset
+			code.add(PushI, totalSize);
 			code.add(Call, MemoryManager.MEM_MANAGER_ALLOCATE);
 			
-			
-			//Store header data
-			code.add(DLabel, pointerLabel); 
-			code.add(PushD, pointerLabel); 
-			code.add(Exchange); 
-			code.add(StoreI); 
-			
-			
-			//storing type identifier:
-			code.add(PushD, pointerLabel);
-			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 0); //offset (fixed)
-			code.add(Add); 				//base address + offset
-			code.add(PushI, 5); //stack: [... addr] -> [... addr 5]
-			code.add(StoreI); 			//store 5 into the address
-			
-			//storing status:
-			code.add(PushD, pointerLabel);
-			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 4); //offset (fixed)
-			code.add(Add); 				//base address + offset
-			if(subtype instanceof PrimitiveType) {
-				code.add(PushI, 0); 
-			}
-			else {
-				code.add(PushI, 2);
-			}
-			code.add(StoreI); 	
-			
-			//storing subtype size:
-			code.add(PushD, pointerLabel);
-			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 8); 
-			code.add(Add); 
-			code.add(PushI, subtypeSize);
-			code.add(StoreI);
+			generateCodeForStoringHeaderData(pointerLabel, subtype);
 
 			//storing length (number of elements)
 			code.add(PushD, pointerLabel);
@@ -579,6 +535,151 @@ public class ASMCodeGenerator {
 			
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
+		}
+		
+		private void generateCodeForStoringHeaderData(String pointerLabel, Type subtype) {
+			//Store header data
+			code.add(DLabel, pointerLabel);
+			code.add(PushD, pointerLabel);
+			code.add(Exchange);
+			code.add(StoreI);
+
+			//storing type identifier:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 0); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			code.add(PushI, 5); //stack: [... addr] -> [... addr 5]
+			code.add(StoreI); 			//store 5 into the address
+
+			//storing status:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 4); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			if(subtype instanceof PrimitiveType) {
+				code.add(PushI, 0);
+			}
+			else {
+				code.add(PushI, 2);
+			}
+			code.add(StoreI);
+
+			//storing subtype size:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 8);
+			code.add(Add);
+			code.add(PushI, subtype.getSize());
+			code.add(StoreI);
+		}
+
+		private boolean emptyArrayCreation(ArrayNode node) {
+			return node.child(0) instanceof ArrayTypeNode;
+		}
+		
+		private int getArrayHeaderTotalByteConsumption() {
+			int header_typeIdentifier_byteConsumption = 4;
+			int header_status_byteConsumption = 4;
+			int header_subtypeSize_byteConsumption = 4;
+			int header_length_byteConsumption = 4;
+
+			return header_typeIdentifier_byteConsumption
+					+ header_status_byteConsumption
+					+ header_subtypeSize_byteConsumption
+					+ header_length_byteConsumption; 
+		}
+		private void handleEmptyArrayCreation(ArrayNode node) {
+			ASMCodeFragment arrayLengthCodeFragment = removeValueCode(node.child(1));
+
+			int header_byteConsumption = getArrayHeaderTotalByteConsumption();
+			Type subtype = node.getType().getSubtype();
+			int subtypeSize = subtype.getSize();
+
+			Labeller labeller = new Labeller("array");
+			String pointerLabel = labeller.newLabel("pointer");
+			String iLabel = labeller.newLabel("i"); 
+			String whileConditionLabel = labeller.newLabel("whileCondition");
+			String endLabel = labeller.newLabel("end");
+			
+			newValueCode(node);
+			// Allocate memory for the array:
+			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
+			code.add(PushI, subtypeSize); 
+			code.add(Multiply);
+			code.add(PushI, header_byteConsumption); 
+			code.add(Add);
+			code.add(Call, MemoryManager.MEM_MANAGER_ALLOCATE);
+			
+			generateCodeForStoringHeaderData(pointerLabel, subtype);
+			
+			//storing length (number of elements)
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 12);
+			code.add(Add);
+			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
+			code.add(StoreI);
+
+			// Store each element in the array (using loop)
+			//declare int i=0:
+			declareArrayIndexTraverser(code, iLabel);
+			
+			code.add(Label, whileConditionLabel); 
+			loadIFrom(code, iLabel);
+			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
+			code.add(Subtract);
+			code.add(JumpFalse, endLabel);
+			
+			//entering while body:
+			code.add(PushD, pointerLabel);		//loads the base address of the array
+			code.add(LoadI); 			
+			code.add(PushI, 16);
+			code.add(Add);
+			loadIFrom(code, iLabel);
+			code.add(PushI, subtypeSize); 
+			code.add(Multiply);
+			code.add(Add);
+			
+			code.add(Duplicate);
+			turnAddressIntoValue(subtype);
+			code.add(Duplicate);
+			code.add(Xor);
+			
+			code.add(opcodeForStore(subtype));
+			
+			incrementInteger(code, iLabel);
+			code.add(Jump, whileConditionLabel);
+			
+			code.add(Label, endLabel);
+			
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			
+		}
+		
+		private void turnAddressIntoValue(Type type) {
+			if(type == PrimitiveType.INTEGER) {
+				code.add(LoadI);
+			}
+			else if(type == ReferenceType.STRING) {
+				code.add(LoadI);
+			}
+			else if(type == PrimitiveType.FLOAT) {
+				code.add(LoadF);
+			}
+			else if(type == PrimitiveType.BOOLEAN) {
+				code.add(LoadC);
+			}
+			else if(type == PrimitiveType.CHARACTER) {
+				code.add(LoadC);
+			}
+			else if(type instanceof Array) {
+				code.add(LoadI);
+			}
+			else {
+				assert false : "setting zeroes for empty array creation: cannot turn address into value.";
+			}
 		}
 
 		

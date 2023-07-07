@@ -24,7 +24,7 @@ main {
     print "hello" \n;
     
     
-    # Test reassignment of array:
+
     var a1 := [1, 22, 333]; 
     print a1 \n; 
     
@@ -35,6 +35,7 @@ main {
     print a1 \n; 
     print a2 \n; 
     
+
     
     
 }

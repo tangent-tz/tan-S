@@ -1,0 +1,8 @@
+main {
+    print 456 \n; 
+    
+    var x := new [int] (9);
+
+    
+    print 123 \n;
+}

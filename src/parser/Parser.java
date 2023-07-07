@@ -523,12 +523,13 @@ public class Parser {
 		readToken();
 		
 		ParseNode arrayTypeNode = parseArrayType(); 
+		ParseNode arraySizeExpression = parseParenthesesWrappedExpression(); 
 		
+		ParseNode arrayNode = new ArrayNode(arrayToken); 
+		arrayNode.appendChild(arrayTypeNode);
+		arrayNode.appendChild(arraySizeExpression);
 		
-		
-		
-		
-		
+		return arrayNode;
 	}
 	private boolean startsEmptyArrayCreationExpression(Token token) {
 		return token.isLextant(Keyword.NEW); 
@@ -542,15 +543,26 @@ public class Parser {
 		ParseNode result = new ArrayTypeNode(nowReading); 
 		readToken();
 		
+		ParseNode innerType; 
+		if(startsPrimitiveType(nowReading)) {
+			innerType = new TypeIndicatorNode(nowReading);
+		} else {
+			innerType = parseArrayType();
+		}
+		result.appendChild(innerType);
 		
-		
-		
-		
-		
+		readToken();
+		expect(Punctuator.CLOSE_BRACKETS);
+		return result;
 	}
 	private boolean startsArrayType(Token token) {
 		return token.isLextant(Punctuator.OPEN_BRACKETS); 
 	}
+	private boolean startsPrimitiveType(Token token) {
+		return Keyword.isATypeKeyword(token.getLexeme()); 
+	}
+	
+	
 	
 	
 	

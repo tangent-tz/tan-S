@@ -73,6 +73,13 @@ public class Macros {
 		frag.add(StoreC);			// []
 	}
 	
+	public static void declareArrayIndexTraverser(ASMCodeFragment frag, String iLabel) {
+		frag.add(DLabel, iLabel);
+		frag.add(PushD, iLabel);
+		frag.add(PushI, 0);
+		frag.add(StoreI);
+	}
+	
 	
 	////////////////////////////////////////////////////////////////////
     // debugging aids

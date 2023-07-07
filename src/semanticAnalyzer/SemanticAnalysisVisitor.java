@@ -186,19 +186,48 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	
 	@Override
 	public void visitLeave(ArrayNode node) {
+		assert(node.nChildren() >= 1); 
+
+		if(emptyArrayCreation(node)) {
+			handleEmptyArrayCreation(node);
+			return;
+		}
+		
+		
 		List<Type> childTypes = new ArrayList<>();
 		
 		for(int i=0; i < node.nChildren(); i++) {
 			childTypes.add(node.child(i).getType());
 		}
 		
-		
-		
 		//todo: check child types => if different types => try promoting to one unified type
 		
 		node.setType(new Array(childTypes.get(0), node.nChildren()));
 	}
 	
+	private boolean emptyArrayCreation(ArrayNode node) {
+		return node.child(0) instanceof ArrayTypeNode; 
+	}
+	private void handleEmptyArrayCreation(ArrayNode node) {
+		Array arrayType = (Array) (node.child(0).getType());
+		Type sizeType = node.child(1).getType();
+
+		if(sizeType != PrimitiveType.INTEGER) {
+			typeCheckError(node, Arrays.asList(arrayType, sizeType));
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
+		node.setType(arrayType);		
+	}
+	
+	
+	@Override
+	public void visitLeave(ArrayTypeNode node) {
+		assert(node.nChildren() == 1); 
+		
+		Type innerType = node.child(0).getType(); 
+		node.setType(new Array(innerType));
+	}
 	
 	
 	
@@ -274,6 +303,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Token token = node.getToken();
 		if (token.isLextant(Punctuator.CAST)) {
 			logError("casting from " + operandTypes.get(1) + " to " + operandTypes.get(0) + " is not allowed, at " + token.getLocation());
+			return;
+		}
+		if(token.isLextant(Punctuator.OPEN_BRACKETS)) {
+			logError("empty array creation: array length specification needs to be of type INTEGER, but currently having type " + operandTypes.get(1) + ", at: " + token.getLocation());
 			return;
 		}
 
