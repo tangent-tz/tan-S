@@ -1,5 +1,5 @@
 main {
-	mut farm := alloc[string](4);
+	mut farm := new[string](4);
 	farm[0] := "hello";
-	print "ok" $n;
+	print "ok" \n;
 }

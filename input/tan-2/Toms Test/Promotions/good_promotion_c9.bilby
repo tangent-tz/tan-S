@@ -1,3 +1,0 @@
-main {
-	print 'h' < 4.3 \s false \n;
-}

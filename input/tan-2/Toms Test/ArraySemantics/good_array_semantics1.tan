@@ -1,0 +1,7 @@
+main {
+	const farm := alloc int(2);
+	const cow := farm;
+	cow[0] := 40;
+	farm[1] := 41;
+	print farm \s cow \n;
+}

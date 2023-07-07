@@ -1,5 +1,5 @@
 main {
-	mut farm := alloc[char](4);
-	farm := [#x, #Y];
-	print "ok" $n;
+	var farm := new[char](4);
+	farm := ['x', 'Y'];
+	print "ok" \n;
 }

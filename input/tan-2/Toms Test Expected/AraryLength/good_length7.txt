@@ -1,0 +1,11 @@
+The expected output of the code is:
+
+12
+
+Explanation:
+- The code defines a 2-dimensional immutable array `gram` with three rows.
+- The first row contains the result of the calculation `32*10` and `44*11`, which evaluates to `[320, 484]`.
+- The second row contains the numbers `[18, 41, 52]`.
+- The third row contains the numbers `[33, 11, 42, 48]`.
+- The `length` function is used to calculate the length of the third row, which is `4`.
+- The `print` statement outputs the result, which is `12` followed by a new line.

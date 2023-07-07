@@ -1,0 +1,16 @@
+The expected output of the code is:
+
+main {
+	print length [14 + 21, 77] $n;
+}
+
+The code is calculating the length of an array and printing the result. The array contains two elements: the sum of 14 and 21, and the number 77. The variable $n is used to store the result of the length calculation.
+
+To calculate the length of the array, we need to evaluate the expression [14 + 21, 77]. 
+
+14 + 21 = 35
+So, the array becomes [35, 77].
+
+The length of the array is 2, so the expected output is:
+
+2

@@ -1,0 +1,4 @@
+The expected output of the code would be:
+
+cde
+c

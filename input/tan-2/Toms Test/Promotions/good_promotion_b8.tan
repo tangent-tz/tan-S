@@ -1,3 +1,0 @@
-main {
-	print 'h' / 11 \s 9 \n;
-}

@@ -1,0 +1,3 @@
+The expected output of the code is:
+
+42

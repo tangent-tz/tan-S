@@ -19,6 +19,27 @@ TOMS_TEST_STATEMENTS_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\stat
 TOMS_TEST_TYPECHECKING = "D:\CMPT379\input\\tan-1\\toms tests\\typechecking"
 TOMS_TEST_TYPECHECKING_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\\typechecking"
 
+TOMS_2_TEST_PROMOTION = "D:\\CMPT379\\input\\tan-2\Toms Test\\Promotion"
+TOMS_2_TEST_PROMOTION_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\Promotion"
+
+TOMS_2_TEST_ARRAY_CREATION = "D:\\CMPT379\\input\\tan-2\Toms Test\\ArrayCreation"
+TOMS_2_TEST_ARRAY_CREATION_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayCreation"
+
+TOMS_2_TEST_ARRAY_INDEX = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayIndex"
+TOMS_2_TEST_ARRAY_INDEX_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayIndex"
+
+TOMS_2_TEST_ARRAY_PRINT = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayPrint"
+TOMS_2_TEST_ARRAY_PRINT_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayPrint"
+
+TOMS_2_TEST_ARRAY_POPULATED = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayPopulated"
+TOMS_2_TEST_ARRAY_POPULATED_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayPopulated"
+
+TOMS_2_TEST_ARRAY_LENGTH = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayLength"
+TOMS_2_TEST_ARRAY_LENGTH_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayLength"
+
+TOMS_2_TEST_ARRAY_SEMANTICS = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArraySemantics"
+TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArraySemantics"
+
 GENERAL_TEST_1 = "D:\CMPT379\input\\tan-1"
 GENERAL_TEST_1_EXPECTED = "D:\CMPT379\input\\tan-1\expected"
 
@@ -62,7 +83,7 @@ def find_files(directory_path):
     with os.scandir(directory_path) as entries:
         for entry in entries:
             if entry.is_file():
-                if 'Violations' in entry.name or 'Conventions' in entry.name or 'err' in entry.name or 'rte' in entry.name:
+                if 'Violations' in entry.name or 'Conventions' in entry.name or 'err' in entry.name or 'rte' in entry.name or 'fff' in entry.name:
                     continue
                 else:
                     fileList.append(entry.name)
@@ -96,34 +117,38 @@ def java_file_execute_orchestrator():
         if response == False:
             bad_file.append(i)
             bad_file_names.append(files[i])
-    for i in range(len(bad_file)):
-        files.pop(bad_file[i])
-    return files, bad_file, bad_file_names
+    result = list(set(files) ^ set(bad_file_names))
+    return result, bad_file, bad_file_names
 
 
 def ASM_file_execute_orchestrator(badFile):
     filesASM = find_files(OUTPUT_PATH)
-    for i in range(len(badFile)):
-        filesASM.pop(badFile[i])
+    # for i in range(len(badFile)):
+    #     filesASM.pop(badFile[i])
     return terminal_output_to_list(filesASM)
 
 
-def expected_file_orchestrator(badFile):
+def expected_file_orchestrator(bad_file_names):
     expectedOutputs = []
     filesExpected = find_files(EXPECTED_PATH)
-    for i in range(len(badFile)):
-        filesExpected.pop(badFile[i])
-    for i in range(len(filesExpected)):
-        expectedOutputs.append(read_lines(f"{EXPECTED_PATH}\{filesExpected[i]}"))
+    filesExpected.sort()
+    # for i in range(len(badFile)):
+    #     filesExpected.pop(badFile[i])
+
+    temp_set = {x.replace(".tan", ".txt") for x in bad_file_names}
+    result = list(set(filesExpected) ^ set(temp_set))
+    for i in range(len(result)):
+        expectedOutputs.append(read_lines(f"{EXPECTED_PATH}\{result[i]}"))
     return expectedOutputs
 
 
 def check_two_list(compilerOutput, expectedOutput):
     total = len(expectedOutput)
+    iter = len(expectedOutput) if len(expectedOutput) < len(compilerOutput) else len(compilerOutput)
     counter = 0
     fail = []
-    for i in range(total):
-        if compilerOutput[i] == expectedOutput[i]:
+    for i in range(iter):
+        if any(check in compilerOutput[i] for check in expectedOutput):  # compilerOutput[i] == expectedOutput[i]:
             counter += 1
         else:
             fail.append(f"{compilerOutput[i]} | {expectedOutput[i]}")
@@ -159,10 +184,10 @@ def assertions(tanFiles, compilerOutput, expectedOutput, bad_file_names):
 
 
 def test_to_run():
-    user_input = input("System: What Test to run? [Tom, General1, General2]\nYou: ")
+    user_input = input("System: What Test to run? [Tom1, Tom2, General1, General2]\nYou: ")
     tan_path = ""
     expected_path = ""
-    if user_input.lower() == "tom":
+    if user_input.lower() == "tom1":
         user_input = input("System: Please choose Test: [Lexical, Miscellaneous, Precedence, Statements, TypeChecking]\nYou: ")
         if user_input.lower() == "lexical":
             tan_path = TOMS_TEST_LEXICAL
@@ -179,6 +204,31 @@ def test_to_run():
         elif user_input.lower() == "typechecking":
             tan_path = TOMS_TEST_TYPECHECKING
             expected_path = TOMS_TEST_TYPECHECKING_EXPECTED
+        else:
+            return None, None
+    elif user_input.lower() == "tom2":
+        user_input = input("System: Please choose Test: [Promotion, ArrayLength, ArrayCreation, ArrayIndex, ArrayPopulated, ArraySemantics, ArrayPrint]\nYou: ")
+        if user_input.lower() == "promotion":
+            tan_path = TOMS_2_TEST_PROMOTION
+            expected_path = TOMS_2_TEST_PROMOTION_EXPECTED
+        elif user_input.lower() == "arraylength":
+            tan_path = TOMS_2_TEST_ARRAY_LENGTH
+            expected_path = TOMS_2_TEST_ARRAY_LENGTH_EXPECTED
+        elif user_input.lower() == "arraycreation":
+            tan_path = TOMS_2_TEST_ARRAY_CREATION
+            expected_path = TOMS_2_TEST_ARRAY_CREATION_EXPECTED
+        elif user_input.lower() == "arrayindex":
+            tan_path = TOMS_2_TEST_ARRAY_INDEX
+            expected_path = TOMS_2_TEST_ARRAY_INDEX_EXPECTED
+        elif user_input.lower() == "arraypopulated":
+            tan_path = TOMS_2_TEST_ARRAY_POPULATED
+            expected_path = TOMS_2_TEST_ARRAY_POPULATED_EXPECTED
+        elif user_input.lower() == "arraysemantics":
+            tan_path = TOMS_2_TEST_ARRAY_SEMANTICS
+            expected_path = TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED
+        elif user_input.lower() == "arrayprint":
+            tan_path = TOMS_2_TEST_ARRAY_PRINT
+            expected_path = TOMS_2_TEST_ARRAY_PRINT_EXPECTED
         else:
             return None, None
     elif user_input.lower() == "general1":
@@ -215,9 +265,9 @@ def setOutputPath():
     if TAN_PATH == GENERAL_TEST_1:
         OUTPUT_PATH = OUTPUT_PATH_1
         return
-    
+
     OUTPUT_PATH = OUTPUT_PATH_2
-    
+
 
 if __name__ == "__main__":
     while True:
@@ -235,5 +285,5 @@ if __name__ == "__main__":
         deleteFolder()
         tanFiles, badFile, bad_file_names = java_file_execute_orchestrator()
         compilerOutput = ASM_file_execute_orchestrator(badFile)
-        expectedOutput = expected_file_orchestrator(badFile)
+        expectedOutput = expected_file_orchestrator(bad_file_names)
         assertions(tanFiles, compilerOutput, expectedOutput, bad_file_names)

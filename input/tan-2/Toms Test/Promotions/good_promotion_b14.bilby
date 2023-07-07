@@ -1,3 +1,0 @@
-main {
-	print 'n' <= 403 \s true \n;
-}

@@ -1,5 +1,0 @@
-main {
-	var b := true;
-	b := #@;
-	print b \s #@ \n;
-}

@@ -1,3 +1,0 @@
-main {
-	print 104.7 >= 'm' \s false \n;
-}

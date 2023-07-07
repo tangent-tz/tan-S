@@ -1,3 +1,0 @@
-main {
-	print [[#a, #b, #c, #d], [#c, #d]] $s "bees" $n;
-}

@@ -1,5 +1,0 @@
-main {
-	var f := 1.41;
-	f := true;
-	print f \s true \n;
-}
