@@ -35,8 +35,8 @@ public class LesserThanCodeGenerator implements SimpleCodeGenerator {
         code.add(Label, arg2Label);
         code.add(Label, subLabel);
 
-        if(node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER ||
-                node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER)
+        if((node.child(0).getType() == PrimitiveType.INTEGER || node.child(0).getType() == PrimitiveType.CHARACTER)
+                && (node.child(1).getType() == PrimitiveType.INTEGER || node.child(1).getType() == PrimitiveType.CHARACTER) )
         {
             code.add(Subtract);
 
@@ -51,7 +51,8 @@ public class LesserThanCodeGenerator implements SimpleCodeGenerator {
             code.add(Jump, joinLabel);
             code.add(Label, joinLabel);
         }
-        else
+        else if(((node.child(0).getType() == PrimitiveType.FLOAT) && (node.child(1).getType() == PrimitiveType.FLOAT || node.child(1).getType() == PrimitiveType.CHARACTER || node.child(1).getType() == PrimitiveType.INTEGER))
+                || (((node.child(1).getType() == PrimitiveType.FLOAT || node.child(0).getType() == PrimitiveType.CHARACTER || node.child(1).getType() == PrimitiveType.INTEGER)) && node.child(1).getType() == PrimitiveType.FLOAT))
         {
             code.add(FSubtract);
 
