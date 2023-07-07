@@ -1,8 +1,20 @@
 main {
-    print 456 \n; 
+    print 45644 \n; 
     
-    var x := new [int] (9);
-
+    var x1 := new [int] (2*5 - 2);
+    print x1 \n; 
+    
+    var x2 := new [float] (2*5 - 2);
+    print x2 \n;
+    
+    var x3 := new [string] (2*5 - 2);
+    print x3 \n;
+    
+    var x4 := new [char] (2*5 - 2);
+    print x4 \n;
+    
+    var x5 := new [bool] (2*5 - 2);
+    print x5 \n;
     
     print 123 \n;
 }

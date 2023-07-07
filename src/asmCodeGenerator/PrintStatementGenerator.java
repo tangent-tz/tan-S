@@ -1,5 +1,7 @@
 package asmCodeGenerator;
 
+import static asmCodeGenerator.Macros.incrementInteger;
+import static asmCodeGenerator.Macros.loadIFrom;
 import static asmCodeGenerator.codeStorage.ASMOpcode.Jump;
 import static asmCodeGenerator.codeStorage.ASMOpcode.JumpTrue;
 import static asmCodeGenerator.codeStorage.ASMOpcode.Label;
@@ -69,45 +71,114 @@ public class PrintStatementGenerator {
 		}
 		
 		Type subtype = node.getType().getSubtype();
-		int subtypeSize = subtype.getSize();
-		int numOfElements = node.getType().getArrayLength(); 
 		
+
+		int header_typeIdentifier_byteConsumption = 4;
+		int header_status_byteConsumption = 4;
+		int header_subtypeSize_byteConsumption = 4;
+		int header_length_byteConsumption = 4;
+		
+		int headerSize = header_typeIdentifier_byteConsumption
+				+ header_status_byteConsumption
+				+ header_subtypeSize_byteConsumption
+				+ header_length_byteConsumption;
 		
 		String format = printFormat(subtype); 
-		Labeller labeller = new Labeller("stack-temp"); 
-		String baseAddressHolderLabel = labeller.newLabel("baseAddress");
+		Labeller labeller = new Labeller("tempHolder"); 
+		String pointerLabel = labeller.newLabel("pointer");
+		String indexLabel = labeller.newLabel("index");
+		String loopConditionLabel = labeller.newLabel("loopCondition");
+		String noNeedDelimiterLabel = labeller.newLabel("noNeedDelimiter");
+		String endLoopLabel = labeller.newLabel("endLoop");
 		
 		
 		code.append(visitor.removeValueCode(node));
 		
-		code.add(DLabel, baseAddressHolderLabel);
+		code.add(DLabel, pointerLabel);
 		code.add(DataI, 0); //clear 4 bytes with all zeroes
-		code.add(PushD, baseAddressHolderLabel); 
+		code.add(PushD, pointerLabel); 
 		code.add(Exchange); 
 		code.add(StoreI); 
 		
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
-		for (int i = 0; i < numOfElements; i++) {
-			// calculate address to load from: baseAddress + (i * offset)
-			code.add(PushD, baseAddressHolderLabel); 
-			code.add(LoadI);
-			code.add(PushI, 16);
-			code.add(Add);
-			code.add(PushI,  + i*subtypeSize);
-			code.add(Add);
 
-			// load the value from the calculated address
-			turnAddressIntoValue(subtype);
-			convertToStringIfBoolean(subtype);
-			convertToStringValueIfString(subtype);
-			code.add(PushD, format);
-			code.add(Printf);
-			
-			if(i != numOfElements-1) {
-				//print a delimiter after each element in the array, except for the last element
-				appendArrayFormatterPrintCode(ARRAY_FORMATTER_DELIMITER);
-			}
-		}
+		
+		// START LOOP ////////////////////////////////////////////////////////////
+		// print each element in the array:
+		// declare int i=0:
+		code.add(DLabel, indexLabel);
+		code.add(DataZ, 4);
+
+
+		// while condition: i < arrayLength
+		code.add(Label, loopConditionLabel);
+		code.add(PushD, indexLabel);
+		code.add(LoadI); 		// [... i]
+
+		code.add(PushD, pointerLabel);
+		code.add(LoadI); 			//loads the base address of the array
+		code.add(PushI, 12);
+		code.add(Add);
+		code.add(LoadI); 		// [... i arrayLength]
+
+		code.add(Subtract);		// [... i - arrayLength]
+		code.add(JumpFalse, endLoopLabel);  // [...]
+
+		//entering while loop body:
+		code.add(PushD, pointerLabel);
+		code.add(LoadI); 			//loads the base address of the array
+		code.add(PushI, headerSize);
+		code.add(Add);				// [... baseAddress+headerSize]
+
+
+		code.add(PushD, indexLabel);
+		code.add(LoadI); 		// [... baseAddress+headerSize   i]
+
+
+		code.add(PushD, pointerLabel);
+		code.add(LoadI); 			//loads the base address of the array
+		code.add(PushI, 8);
+		code.add(Add);
+		code.add(LoadI); 		// [... baseAddress+headerSize   i   subtypeSize]
+
+		code.add(Multiply);		// [... baseAddress+headerSize   i*subtypeSize]
+		code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
+		
+		turnAddressIntoValue(subtype);	// [... value]
+		convertToStringIfBoolean(subtype);
+		convertToStringValueIfString(subtype);
+		code.add(PushD, format);
+		code.add(Printf);
+
+
+		// START : IF CONDITION FOR DELIMITER /////////////////////////////////////////////////////
+		// print a delimiter after each element in the array, except for the last element:
+		// if condition: (i != arrayLength-1)
+		loadIFrom(code, indexLabel);  // [... i]
+
+		code.add(PushD, pointerLabel);
+		code.add(LoadI); 			//loads the base address of the array
+		code.add(PushI, 12);
+		code.add(Add);
+		code.add(LoadI); 		// [... i arrayLength]
+		
+		code.add(PushI, 1);  	// [... i, arrayLength, 1]
+		code.add(Subtract); 			// [... i, arrayLength - 1]
+		
+		code.add(Subtract); 			// [... i - (arrayLength - 1)]
+		code.add(JumpFalse, noNeedDelimiterLabel);
+		appendArrayFormatterPrintCode(ARRAY_FORMATTER_DELIMITER);
+		
+		code.add(Label, noNeedDelimiterLabel);
+		// END : IF CONDITION FOR DELIMITER /////////////////////////////////////////////////////
+		
+		
+		//increment i:
+		incrementInteger(code, indexLabel);
+		code.add(Jump, loopConditionLabel);
+		code.add(Label, endLoopLabel);
+		// END LOOP ////////////////////////////////////////////////////////////
+		
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_CLOSE_BRACKET);
 		
 	}

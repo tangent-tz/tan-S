@@ -478,71 +478,57 @@ public class ASMCodeGenerator {
 			}
 			return null;
 		}
-		
-		
-		
+
 		///////////////////////////////////////////////////////////////////////////
 		// array
 		public void visitLeave(ArrayNode node) {
-			assert(node.nChildren() >= 1);
+			assert(node.nChildren() >= 1); 
 			
-			if(emptyArrayCreation(node)) {
-				handleEmptyArrayCreation(node); 
-				return;
+			if(node.child(0) instanceof ArrayTypeNode) {
+				generateCodeForEmptyArrayCreation(node);
+				return; 
 			}
+			
 			
 			List<ASMCodeFragment> elements = new ArrayList<>();
 			for(int i = 0; i < node.nChildren(); i++) {
 				ASMCodeFragment child = removeValueCode(node.child(i));
 				elements.add(child);
 			}
-			
+			int header_typeIdentifier_byteConsumption = 4;
+			int header_status_byteConsumption = 4;
+			int header_subtypeSize_byteConsumption = 4;
+			int header_length_byteConsumption = 4;
+
+
 			int numOfElements = node.nChildren();
 			Type subtype = node.getType().getSubtype();
 			int subtypeSize = subtype.getSize();
-			int totalSize = getArrayHeaderTotalByteConsumption() + (numOfElements * subtypeSize);
-			
-			Labeller labeller = new Labeller("array"); 
-			String pointerLabel = labeller.newLabel("pointer");
-			
+
 			newValueCode(node);
+			int totalSize = (header_typeIdentifier_byteConsumption
+					+ header_status_byteConsumption
+					+ header_subtypeSize_byteConsumption
+					+ header_length_byteConsumption)
+					+ (numOfElements * subtypeSize);
+
+
+			Labeller labeller = new Labeller("array");
+			String pointerLabel = labeller.newLabel("pointer");
+
+
 			// Allocate memory for the array
-			code.add(PushI, totalSize);
+			code.add(PushI, totalSize);  // memory needed = size * offset
 			code.add(Call, MemoryManager.MEM_MANAGER_ALLOCATE);
-			
-			generateCodeForStoringHeaderData(pointerLabel, subtype);
 
-			//storing length (number of elements)
-			code.add(PushD, pointerLabel);
-			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 12);
-			code.add(Add);
-			code.add(PushI, numOfElements);
-			code.add(StoreI);
 
-			// Store each element in the array
-			for (int i = 0; i < numOfElements; i++) {
-				code.add(PushD, pointerLabel);
-				code.add(LoadI); 			//loads the base address of the array
-				code.add(PushI, 16); 
-				code.add(Add); 
-				
-				code.add(PushI, subtypeSize*i); //offset
-				code.add(Add);
-				code.append(elements.get(i));
-				code.add(opcodeForStore(subtype));
-			}
-			
-			code.add(PushD, pointerLabel);
-			code.add(LoadI); 			//loads the base address of the array
-		}
-		
-		private void generateCodeForStoringHeaderData(String pointerLabel, Type subtype) {
 			//Store header data
 			code.add(DLabel, pointerLabel);
+			code.add(DataZ, 4);
 			code.add(PushD, pointerLabel);
 			code.add(Exchange);
 			code.add(StoreI);
+
 
 			//storing type identifier:
 			code.add(PushD, pointerLabel);
@@ -570,49 +556,106 @@ public class ASMCodeGenerator {
 			code.add(LoadI); 			//loads the base address of the array
 			code.add(PushI, 8);
 			code.add(Add);
-			code.add(PushI, subtype.getSize());
+			code.add(PushI, subtypeSize);
 			code.add(StoreI);
-		}
 
-		private boolean emptyArrayCreation(ArrayNode node) {
-			return node.child(0) instanceof ArrayTypeNode;
+			//storing length (number of elements)
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 12);
+			code.add(Add);
+			code.add(PushI, numOfElements);
+			code.add(StoreI);
+
+			// Store each element in the array
+			for (int i = 0; i < numOfElements; i++) {
+				code.add(PushD, pointerLabel);
+				code.add(LoadI); 			//loads the base address of the array
+				code.add(PushI, 16);
+				code.add(Add);
+
+				code.add(PushI, subtypeSize*i); //offset
+				code.add(Add);
+				code.append(elements.get(i));
+				code.add(opcodeForStore(subtype));
+			}
+
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
 		}
 		
-		private int getArrayHeaderTotalByteConsumption() {
+		
+		private void generateCodeForEmptyArrayCreation(ArrayNode node) {
+			ASMCodeFragment arrayLengthCodeFragment = removeValueCode(node.child(1));
+
 			int header_typeIdentifier_byteConsumption = 4;
 			int header_status_byteConsumption = 4;
 			int header_subtypeSize_byteConsumption = 4;
 			int header_length_byteConsumption = 4;
 
-			return header_typeIdentifier_byteConsumption
-					+ header_status_byteConsumption
-					+ header_subtypeSize_byteConsumption
-					+ header_length_byteConsumption; 
-		}
-		private void handleEmptyArrayCreation(ArrayNode node) {
-			ASMCodeFragment arrayLengthCodeFragment = removeValueCode(node.child(1));
-
-			int header_byteConsumption = getArrayHeaderTotalByteConsumption();
 			Type subtype = node.getType().getSubtype();
 			int subtypeSize = subtype.getSize();
 
+			newValueCode(node);
+			int headerSize = header_typeIdentifier_byteConsumption
+					+ header_status_byteConsumption
+					+ header_subtypeSize_byteConsumption
+					+ header_length_byteConsumption;
+
+			
 			Labeller labeller = new Labeller("array");
 			String pointerLabel = labeller.newLabel("pointer");
-			String iLabel = labeller.newLabel("i"); 
-			String whileConditionLabel = labeller.newLabel("whileCondition");
-			String endLabel = labeller.newLabel("end");
-			
-			newValueCode(node);
-			// Allocate memory for the array:
+			String indexLabel = labeller.newLabel("index");
+			String loopConditionLabel = labeller.newLabel("loopCondition");
+			String endLoopLabel = labeller.newLabel("endLoop"); 
+			String zeroesDataLabel = labeller.newLabel("zeroesData");
+
+			// Allocate memory for the array
 			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
-			code.add(PushI, subtypeSize); 
+			code.add(PushI, subtypeSize);
 			code.add(Multiply);
-			code.add(PushI, header_byteConsumption); 
-			code.add(Add);
+			code.add(PushI, headerSize); 
+			code.add(Add); 
 			code.add(Call, MemoryManager.MEM_MANAGER_ALLOCATE);
 			
-			generateCodeForStoringHeaderData(pointerLabel, subtype);
 			
+			//Store header data
+			code.add(DLabel, pointerLabel);
+			code.add(DataZ, 4);
+			code.add(PushD, pointerLabel);
+			code.add(Exchange);
+			code.add(StoreI);
+
+			//storing type identifier:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 0); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			code.add(PushI, 5); //stack: [... addr] -> [... addr 5]
+			code.add(StoreI); 			//store 5 into the address
+			
+			//storing status:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 4); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			if(subtype instanceof PrimitiveType) {
+				code.add(PushI, 0);
+			}
+			else {
+				code.add(PushI, 2);
+			}
+			code.add(StoreI);
+
+			//storing subtype size:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 8);
+			code.add(Add);
+			code.add(PushI, subtypeSize);
+			code.add(StoreI);
+
+
 			//storing length (number of elements)
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
@@ -621,42 +664,68 @@ public class ASMCodeGenerator {
 			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
 			code.add(StoreI);
 
-			// Store each element in the array (using loop)
-			//declare int i=0:
-			declareArrayIndexTraverser(code, iLabel);
+
+			// LOOP: Store all 0's bits in the array ///////////////////////////////////////////////
+			// make zeroes data in memory:
+			code.add(DLabel, zeroesDataLabel);
+			code.add(DataZ, subtypeSize); 
 			
-			code.add(Label, whileConditionLabel); 
-			loadIFrom(code, iLabel);
-			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
-			code.add(Subtract);
-			code.add(JumpFalse, endLabel);
 			
-			//entering while body:
-			code.add(PushD, pointerLabel);		//loads the base address of the array
-			code.add(LoadI); 			
-			code.add(PushI, 16);
-			code.add(Add);
-			loadIFrom(code, iLabel);
-			code.add(PushI, subtypeSize); 
-			code.add(Multiply);
-			code.add(Add);
+			// declare int i=0:
+			code.add(DLabel, indexLabel);
+			code.add(DataZ, PrimitiveType.INTEGER.getSize());
 			
-			code.add(Duplicate);
-			turnAddressIntoValue(subtype);
-			code.add(Duplicate);
-			code.add(Xor);
 			
-			code.add(opcodeForStore(subtype));
-			
-			incrementInteger(code, iLabel);
-			code.add(Jump, whileConditionLabel);
-			
-			code.add(Label, endLabel);
-			
+			// while condition: i < arrayLength
+			code.add(Label, loopConditionLabel);
+			code.add(PushD, indexLabel);
+			code.add(LoadI); 		// [... i]
+
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 12);
+			code.add(Add);
+			code.add(LoadI); 		// [... i arrayLength]
 			
+			code.add(Subtract);		// [... i - arrayLength]
+			code.add(JumpFalse, endLoopLabel);  // [...]
+			
+			//entering while loop body:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, headerSize);
+			code.add(Add);				// [... baseAddress+headerSize]
+
+
+			code.add(PushD, indexLabel);
+			code.add(LoadI); 		// [... baseAddress+headerSize   i]
+
+
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 8);
+			code.add(Add);
+			code.add(LoadI); 		// [... baseAddress+headerSize   i   subtypeSize]
+			
+			code.add(Multiply);		// [... baseAddress+headerSize   i*subtypeSize]
+			code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
+			
+			code.add(PushD, zeroesDataLabel); 
+			turnAddressIntoValue(subtype); 	// [... baseAddress+headerSize + i*subtypeSize   0]
+			code.add(opcodeForStore(subtype));
+			
+			
+			//increment i:
+			incrementInteger(code, indexLabel);
+			code.add(Jump, loopConditionLabel);
+			code.add(Label, endLoopLabel);
+			
+			
+			//final step ////////////////
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
 		}
+		
 		
 		private void turnAddressIntoValue(Type type) {
 			if(type == PrimitiveType.INTEGER) {
