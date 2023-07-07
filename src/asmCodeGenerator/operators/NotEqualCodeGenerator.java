@@ -40,8 +40,8 @@ public class NotEqualCodeGenerator implements SimpleCodeGenerator {
                 node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER ||
                 node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN ||
                 node.child(0).getType() == ReferenceType.STRING && node.child(1).getType() == ReferenceType.STRING ||
-                (node.child(0).getType() == PrimitiveType.INTEGER || node.child(0).getType() == PrimitiveType.CHARACTER
-                && (node.child(1).getType() == PrimitiveType.INTEGER || node.child(1).getType() == PrimitiveType.CHARACTER)))
+                node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.CHARACTER ||
+                node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.INTEGER )
         {
             code.add(Subtract);
 

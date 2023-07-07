@@ -21,7 +21,7 @@ true
 0.041237
 9942.500000
 0.010309
-712.500000
+727.500000
 -0.105820
 -8875.500000
 -0.060109
@@ -34,10 +34,12 @@ true
 false
 true
 false
-true
 false
 true
 false
+true
+false
+true
 true
 true
 true

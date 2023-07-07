@@ -96,7 +96,7 @@ main {
        # Test 5: Arithmetic with float, char, and parentheses
        var x555 := 5.5;  # a float
        var y555 := 'a';  # a char
-       print (x555 + y555) * y555 \n;  # should print 9945.5 ((5.5+97) * 97)
+       print (x555 + y555) * y555 \n;  # should print 9942.500000((5.5+97) * 97)
        print x555 / (x555 * y555) \n;  # should print 0.000057 ((5.5 / (5.5 * 97)))
 
        # Test 6: Arithmetic with integer, float, and char (with subtraction)
