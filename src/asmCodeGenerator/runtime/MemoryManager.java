@@ -333,12 +333,16 @@ public class MemoryManager {
 		frag.add(Label, MMGR_ALLOC_NO_BLOCK_WORKS);
 			if(DEBUGGING2) {
 				printString(frag, "--NO BLOCK WORKS\n");
+				debugPeekI(frag, "alloc ");
+				debugPrint(frag, "alloc " );
+				debugPrintI(frag, "alloc ", MMGR_ALLOC_SIZE);
 			}
 			loadIFrom(frag, MMGR_ALLOC_SIZE);			// [... size]
 //			debugPrintI(frag, "alloc ", MEM_MANAGER_HEAP_END_PTR);
 			newBlock(frag);								// [... block]
 //			debugPrintI(frag, "alloc ", MEM_MANAGER_HEAP_END_PTR);
 			storeITo(frag, MMGR_ALLOC_CURRENT_BLOCK);
+
 		
 		// [... ] -> [... userBlock] & return
 		frag.add(Label, MMGR_ALLOC_RETURN_USERBLOCK);

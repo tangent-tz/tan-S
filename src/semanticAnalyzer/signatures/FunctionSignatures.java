@@ -8,10 +8,7 @@ import java.util.Map;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.*;
 import lexicalAnalyzer.Punctuator;
-import semanticAnalyzer.types.PrimitiveType;
-import semanticAnalyzer.types.ReferenceType;
-import semanticAnalyzer.types.Type;
-
+import semanticAnalyzer.types.*;
 
 
 public class FunctionSignatures extends ArrayList<FunctionSignature> {
@@ -209,8 +206,6 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		new FunctionSignatures(Punctuator.BOOLEAN_NOT,
 				new FunctionSignature(ASMOpcode.BNegate, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
 		);
-
-
 
 	}
 

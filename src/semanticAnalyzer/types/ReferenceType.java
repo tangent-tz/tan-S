@@ -1,5 +1,7 @@
 package semanticAnalyzer.types;
 
+import java.util.Set;
+
 public enum ReferenceType implements Type {
     STRING(4);
 
@@ -19,5 +21,27 @@ public enum ReferenceType implements Type {
     }
     public String infoString() {
         return infoString;
+    }
+    public boolean equivalent(Type otherType) {
+        return this == otherType;
+        //TODO: might need promotion here???
+    }
+
+    @Override
+    public void addTypeVariables(Set<TypeVariable> typeVariables) {
+        
+    }
+
+    @Override
+    public Type concreteType() {
+        return this;
+    }
+
+    @Override
+    public Type getSubtype() {
+        return PrimitiveType.NO_TYPE;
+    }
+    public int getArrayLength() {
+        return -1; 
     }
 }

@@ -5,6 +5,7 @@ import java.util.*;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.SimpleCodeGenerator;
+import asmCodeGenerator.runtime.MemoryManager;
 import asmCodeGenerator.runtime.RunTime;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
@@ -12,6 +13,7 @@ import parseTree.*;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
+import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
@@ -37,9 +39,12 @@ public class ASMCodeGenerator {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 
 		code.append( RunTime.getEnvironment() );
+
 		code.append( globalVariableBlockASM() );
+
 		code.append( programASM() );
-//		code.append( MemoryManager.codeForAfterApplication() );
+
+		code.append( MemoryManager.codeForAfterApplication() );
 
 		return code;
 	}
@@ -142,6 +147,9 @@ public class ASMCodeGenerator {
 			}
 			else if(node.getType() == PrimitiveType.CHARACTER) {
 				code.add(LoadC);
+			}
+			else if(node.getType() instanceof Array) {
+				code.add(LoadI);
 			}
 			else {
 				assert false : "node " + node;
@@ -291,6 +299,9 @@ public class ASMCodeGenerator {
 			}
 			else if(type == PrimitiveType.CHARACTER) {
 				return StoreC;
+			}
+			else if(type instanceof Array) {
+				return StoreI; 
 			}
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
@@ -484,7 +495,108 @@ public class ASMCodeGenerator {
 			}
 			return null;
 		}
+		
+		
+		
+		///////////////////////////////////////////////////////////////////////////
+		// array
+		public void visitLeave(ArrayNode node) {
+			List<ASMCodeFragment> elements = new ArrayList<>();
+			for(int i = 0; i < node.nChildren(); i++) {
+				ASMCodeFragment child = removeValueCode(node.child(i));
+				elements.add(child);
+			}
+			int header_typeIdentifier_byteConsumption = 4;
+			int header_status_byteConsumption = 4;
+			int header_subtypeSize_byteConsumption = 4;
+			int header_length_byteConsumption = 4;
+			
+			
+			int numOfElements = node.nChildren();
+			Type subtype = node.getType().getSubtype();
+			int subtypeSize = subtype.getSize();
 
+			newValueCode(node);
+			int totalSize = (header_typeIdentifier_byteConsumption 
+							+ header_status_byteConsumption 
+							+ header_subtypeSize_byteConsumption 
+							+ header_length_byteConsumption) 
+							+ (numOfElements * subtypeSize);
+			
+			
+			Labeller labeller = new Labeller("array"); 
+			String pointerLabel = labeller.newLabel("pointer"); 
+			
+			
+			// Allocate memory for the array
+			code.add(PushI, totalSize);  // memory needed = size * offset
+			code.add(Call, MemoryManager.MEM_MANAGER_ALLOCATE);
+			
+			
+			//Store header data
+			code.add(DLabel, pointerLabel); 
+			code.add(PushD, pointerLabel); 
+			code.add(Exchange); 
+			code.add(StoreI); 
+			
+			
+			//storing type identifier:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 0); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			code.add(PushI, 5); //stack: [... addr] -> [... addr 5]
+			code.add(StoreI); 			//store 5 into the address
+			
+			//storing status:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 4); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			if(subtype instanceof PrimitiveType) {
+				code.add(PushI, 0); 
+			}
+			else {
+				code.add(PushI, 2);
+			}
+			code.add(StoreI); 	
+			
+			//storing subtype size:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 8); 
+			code.add(Add); 
+			code.add(PushI, subtypeSize);
+			code.add(StoreI);
+
+			//storing length (number of elements)
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 12);
+			code.add(Add);
+			code.add(PushI, numOfElements);
+			code.add(StoreI);
+
+			// Store each element in the array
+			for (int i = 0; i < numOfElements; i++) {
+				code.add(PushD, pointerLabel);
+				code.add(LoadI); 			//loads the base address of the array
+				code.add(PushI, 16); 
+				code.add(Add); 
+				
+				code.add(PushI, subtypeSize*i); //offset
+				code.add(Add);
+				code.append(elements.get(i));
+				code.add(opcodeForStore(subtype));
+			}
+			
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+		}
+
+		
+		
+		
 		///////////////////////////////////////////////////////////////////////////
 		// leaf nodes (ErrorNode not necessary)
 		public void visit(BooleanConstantNode node) {
@@ -511,7 +623,7 @@ public class ASMCodeGenerator {
 			code.add(PushI, node.getValue());
 		}
 		public void visit(StringConstantNode node) {
-			newValueCode(node);
+			newValueCode(node); 
 
 			String strAddressLabel ="_string_" + StringConstantNode.getCounter() + "_";
 			code.add(DLabel, strAddressLabel);

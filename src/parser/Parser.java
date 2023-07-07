@@ -411,13 +411,17 @@ public class Parser {
 		if(startsTypeCastingExpression(nowReading)) {
 			return parseTypeCastingExpression();
 		}
+		if(startsPopulatedArrayCreationExpression(nowReading)) {
+			return parsePopulatedArrayCreationExpression(); 
+		}
 		return parseLiteral();
 	}
 	private boolean startsAtomicExpression(Token token) {
 		return startsLiteral(token) ||
 				startsUnaryExpression(token) ||
 				startsParenthesesWrappedExpression(token) ||
-				startsTypeCastingExpression(token);
+				startsTypeCastingExpression(token) ||
+				startsPopulatedArrayCreationExpression(token); 
 	}
 
 	// unaryExpression			-> UNARYOP atomicExpression
@@ -471,6 +475,40 @@ public class Parser {
 	private boolean startsTypeCastingExpression(Token token) {
 		return token.isLextant(Punctuator.LESSER);
 	}
+	
+	
+	private ParseNode parsePopulatedArrayCreationExpression() {
+		if(!startsPopulatedArrayCreationExpression(nowReading)) {
+			return syntaxErrorNode("populated-array-creation expression");
+		}
+		Token arrayToken = nowReading; 
+		readToken();
+		
+		ParseNode arrayNode = new ArrayNode(arrayToken); 
+		arrayNode = parseArrayExpressionList(arrayNode);
+		expect(Punctuator.CLOSE_BRACKETS);
+		return arrayNode;
+	}
+	private boolean startsPopulatedArrayCreationExpression(Token token) {
+		return token.isLextant(Punctuator.OPEN_BRACKETS);
+	}
+	
+	private ParseNode parseArrayExpressionList(ParseNode parent) {
+		if(!startsArrayExpressionList(nowReading)) {
+			return syntaxErrorNode("populated-array-creation expression list cannot be empty");
+		}
+		parent.appendChild(parseExpression());
+		while(nowReading.isLextant(Punctuator.COMMA)) {
+			readToken();
+			parent.appendChild(parseExpression());
+		}
+		return parent; 
+	}
+	private boolean startsArrayExpressionList(Token token) {
+		return startsExpression(token);
+	}
+	
+	
 	
 	// literal -> number | character | identifier | booleanConstant | string
 	private ParseNode parseLiteral() {

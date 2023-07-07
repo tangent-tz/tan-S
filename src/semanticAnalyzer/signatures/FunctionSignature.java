@@ -1,12 +1,16 @@
 package semanticAnalyzer.signatures;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
+import semanticAnalyzer.types.TypeVariable;
 
 //immutable
 public class FunctionSignature {
@@ -14,6 +18,7 @@ public class FunctionSignature {
 	private Type resultType;
 	private Type[] paramTypes;
 	Object whichVariant;
+	private Set<TypeVariable> typeVariables; 
 
 	///////////////////////////////////////////////////////////////
 	// construction
@@ -23,6 +28,7 @@ public class FunctionSignature {
 		storeParamTypes(types);
 		resultType = types[types.length-1];
 		this.whichVariant = whichVariant;
+		findTypeVariables();
 	}
 	private void storeParamTypes(Type[] types) {
 		paramTypes = new Type[types.length-1];
@@ -61,11 +67,25 @@ public class FunctionSignature {
 		}		
 		return true;
 	}
-	private boolean assignableTo(Type variableType, Type valueType) {
-		if(valueType == PrimitiveType.ERROR && ALL_TYPES_ACCEPT_ERROR_TYPES) {
+	private boolean assignableTo(Type formalType, Type actualType) {
+		if(actualType == PrimitiveType.ERROR && ALL_TYPES_ACCEPT_ERROR_TYPES) {
 			return true;
 		}	
-		return variableType.equals(valueType);
+		return formalType.equivalent(actualType); 
+	}
+	
+	private void resetTypeVariables() {
+		for(TypeVariable var : typeVariables) {
+			var.reset();
+		}
+	}
+	
+	private void findTypeVariables() {
+		typeVariables = new HashSet<>(); 
+		for(Type type : paramTypes) {
+			type.addTypeVariables(typeVariables); 
+		}
+		resultType.addTypeVariables(typeVariables);
 	}
 	
 	// Null object pattern
