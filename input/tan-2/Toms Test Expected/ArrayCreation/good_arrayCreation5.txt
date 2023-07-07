@@ -1,0 +1,3 @@
+The expected output of the code is:
+
+AA = ['a', 14, 'c', 3.14, 'e']

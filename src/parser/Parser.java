@@ -414,6 +414,9 @@ public class Parser {
 		if(startsPopulatedArrayCreationExpression(nowReading)) {
 			return parsePopulatedArrayCreationExpression(); 
 		}
+		if(startsEmptyArrayCreationExpression(nowReading)) {
+			return parseEmptyArrayCreationExpression(); 
+		}
 		return parseLiteral();
 	}
 	private boolean startsAtomicExpression(Token token) {
@@ -421,7 +424,8 @@ public class Parser {
 				startsUnaryExpression(token) ||
 				startsParenthesesWrappedExpression(token) ||
 				startsTypeCastingExpression(token) ||
-				startsPopulatedArrayCreationExpression(token); 
+				startsPopulatedArrayCreationExpression(token) ||
+				startsEmptyArrayCreationExpression(token); 
 	}
 
 	// unaryExpression			-> UNARYOP atomicExpression
@@ -507,6 +511,61 @@ public class Parser {
 	private boolean startsArrayExpressionList(Token token) {
 		return startsExpression(token);
 	}
+	
+	
+	private ParseNode parseEmptyArrayCreationExpression() {
+		if(!startsEmptyArrayCreationExpression(nowReading)) {
+			return syntaxErrorNode("empty array creation"); 
+		}
+		
+		Token arrayToken = LextantToken.make(nowReading.getLocation(), Punctuator.OPEN_BRACKETS.getLexeme(), Punctuator.OPEN_BRACKETS); 
+		readToken();
+		
+		ParseNode arrayTypeNode = parseArrayType(); 
+		ParseNode arraySizeExpression = parseParenthesesWrappedExpression(); 
+		
+		ParseNode arrayNode = new ArrayNode(arrayToken); 
+		arrayNode.appendChild(arrayTypeNode);
+		arrayNode.appendChild(arraySizeExpression);
+		
+		return arrayNode;
+	}
+	private boolean startsEmptyArrayCreationExpression(Token token) {
+		return token.isLextant(Keyword.NEW); 
+	}
+	
+	private ParseNode parseArrayType() {
+		if(!startsArrayType(nowReading)) {
+			return syntaxErrorNode("arrayType");
+		}
+		
+		ParseNode result = new ArrayTypeNode(nowReading); 
+		readToken();
+		
+		ParseNode innerType; 
+		if(startsPrimitiveType(nowReading)) {
+			innerType = new TypeIndicatorNode(nowReading);
+		} else {
+			innerType = parseArrayType();
+		}
+		result.appendChild(innerType);
+		
+		readToken();
+		expect(Punctuator.CLOSE_BRACKETS);
+		return result;
+	}
+	private boolean startsArrayType(Token token) {
+		return token.isLextant(Punctuator.OPEN_BRACKETS); 
+	}
+	private boolean startsPrimitiveType(Token token) {
+		return Keyword.isATypeKeyword(token.getLexeme()); 
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	

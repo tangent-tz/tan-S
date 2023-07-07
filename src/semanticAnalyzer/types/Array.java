@@ -12,6 +12,10 @@ public class Array implements Type {
         this.subtype = type;
         this.arrayLength = length; 
     }
+    public Array(Type type) {
+        this.subtype = type; 
+        this.arrayLength = -1; 
+    }
 
     @Override
     public int getSize() {

@@ -1,0 +1,5 @@
+The expected output of the code would be:
+
+5 17 57
+24 13 7
+13 10 9

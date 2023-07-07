@@ -1,0 +1,11 @@
+main {
+	const barn := new [float](5);
+	var i := 0;
+	while (i < length barn) {
+		barn[i] := [(3 * i * i + i + 1) as float];
+		print barn[i] \n;
+		i := i + 1;
+	}
+	print \n;
+	print barn[2 * 2 - 2] \n;
+}
