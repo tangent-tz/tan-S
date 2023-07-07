@@ -75,6 +75,10 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		    new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
 			new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
 			new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+			new FunctionSignature(ASMOpcode.Add, PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
+			new FunctionSignature(ASMOpcode.Add, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER),
+			new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+			new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.FLOAT),
 			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
 			new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.INTEGER)
 		);
@@ -82,13 +86,22 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(ASMOpcode.Multiply, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
 				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
 				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
-				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT)
+				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.Multiply, PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.Multiply, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.FLOAT)
 		);
 		new FunctionSignatures(Punctuator.SUBTRACT,
 				new FunctionSignature(ASMOpcode.Subtract, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
 				new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
 				new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
 				new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.FMultiply, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.Subtract, PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.Subtract, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.FLOAT),
 				new FunctionSignature(ASMOpcode.FNegate, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
 				new FunctionSignature(ASMOpcode.Negate, PrimitiveType.INTEGER, PrimitiveType.INTEGER)
 		);
@@ -96,7 +109,11 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
 				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
 				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
-				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT)
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.CHARACTER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.INTEGER, PrimitiveType.CHARACTER, PrimitiveType.INTEGER),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.CHARACTER, PrimitiveType.FLOAT, PrimitiveType.FLOAT),
+				new FunctionSignature(ASMOpcode.Nop, PrimitiveType.FLOAT, PrimitiveType.CHARACTER, PrimitiveType.FLOAT)
 		);
 		new FunctionSignatures(Punctuator.GREATER,
 				new FunctionSignature(new GreaterThanCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.BOOLEAN),
