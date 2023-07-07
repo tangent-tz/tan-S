@@ -1,0 +1,95 @@
+main {
+    var x1 := "start";  
+    print x1 \n; 
+    
+    const arrayLen := 7;
+    
+    # TEST INT ARRAY =========================================================
+    var x2 := [1, 2, 33, 4, 5, 6, 777777]; 
+    print x2 \n; 
+    
+    var i := 0;
+    while (i < arrayLen) {
+        print [x2:i] \t; 
+        i := i + 1; 
+    }
+    print \n; 
+    
+    print [x2:arrayLen-1] != 5 \n; 
+    print [x2:arrayLen-1] <= 1000000 \n; 
+    print [x2:arrayLen-1] >= 1000000 \n;
+    print \n; 
+    
+    
+    
+    # TEST FLOAT ARRAY =========================================================
+    var x3 := [1.34, 1.0 , 33.2, 4.4, 5.567, -6.5456, -0.20]; 
+    print x3 \n; 
+    
+    i := 0;
+    while (i < arrayLen) {
+        print [x3:i] \t; 
+        i := i + 1; 
+    }
+    print \n;  
+    
+    print [x3:1] == 0.5 + 0.5 \n; 
+    print [x3:1] > -1 \n; 
+    print \n; 
+    
+    
+    
+    # TEST STRING ARRAY =========================================================
+    var x4 := ["hello", "world" , "monday", "tuesday", "wednesday", "thursday", "friday"]; 
+    print x4 \n; 
+    
+    i := 0;
+    while (i < arrayLen) {
+        print [x4:i] \t; 
+        i := i + 1; 
+    }
+    print \n; 
+    
+    print [x4:(arrayLen-1)] == "friday" \n;
+    print [x4:(arrayLen-1)] == [x4:(arrayLen-1)] \n; 
+    print \n; 
+       
+    
+    
+    # TEST CHAR ARRAY =========================================================
+    var x5 := ['a', 'b' , %100, %122, 't', %176, '<']; 
+    print x5 \n; 
+    
+    i := 0;
+    while (i < arrayLen) {
+        print [x5:i] \t; 
+        i := i + 1; 
+    }
+    print \n; 
+    
+    print [x5:3] == %122 \n; 
+    print [x5:3] == 'R' \n;
+    print [x5:1] == %122 \n; 
+    print \n;   
+    
+    
+    # TEST BOOL ARRAY =========================================================
+    var x6 := [true, false , true, true, true, false, true]; 
+    print x6 \n; 
+    
+    i := 0;
+    while (i < arrayLen) {
+        print [x6:i] \t; 
+        i := i + 1; 
+    }
+    print \n;  
+    
+    print [x6:0] && true \n; 
+    print [x6:1] && true \n; 
+    
+    print [x6:0] || false \n; 
+    print [x6:1] || false \n;
+    print \n; 
+    
+   
+}

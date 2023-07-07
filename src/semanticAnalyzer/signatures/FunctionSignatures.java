@@ -208,7 +208,10 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		);
 		new FunctionSignatures(Punctuator.INDEXING, 
 				new FunctionSignature(1, new Array(PrimitiveType.INTEGER), PrimitiveType.INTEGER, PrimitiveType.INTEGER), 
-				new FunctionSignature(1, new Array(PrimitiveType.FLOAT), PrimitiveType.INTEGER, PrimitiveType.FLOAT)
+				new FunctionSignature(1, new Array(PrimitiveType.FLOAT), PrimitiveType.INTEGER, PrimitiveType.FLOAT),
+				new FunctionSignature(1, new Array(ReferenceType.STRING), PrimitiveType.INTEGER, ReferenceType.STRING),
+				new FunctionSignature(1, new Array(PrimitiveType.CHARACTER), PrimitiveType.INTEGER, PrimitiveType.CHARACTER),
+				new FunctionSignature(1, new Array(PrimitiveType.BOOLEAN), PrimitiveType.INTEGER, PrimitiveType.BOOLEAN)
 		);
 
 	}
