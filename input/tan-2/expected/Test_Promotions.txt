@@ -43,3 +43,6 @@ true
 true
 true
 true
+1.000000
+97.000000
+97
