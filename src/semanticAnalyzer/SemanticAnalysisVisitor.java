@@ -229,7 +229,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(signature.resultType().concreteType());
 			node.setSignature(signature); 
 		}
-		else if(operator != Punctuator.INDEXING && childTypes.get(0) instanceof PrimitiveType && promotableTypes(childTypes) != 0) {
+		else if(operator != Punctuator.INDEXING && operator != Keyword.LENGTH && childTypes.get(0) instanceof PrimitiveType && promotableTypes(childTypes) != 0) {
 			if (promotableTypes(childTypes) == 1) {
 				promoteCharacter(node);
 			} else if (promotableTypes(childTypes) == 2) {

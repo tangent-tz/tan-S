@@ -7,6 +7,7 @@ import java.util.Map;
 
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.*;
+import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Punctuator;
 import semanticAnalyzer.types.*;
 
@@ -213,6 +214,14 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(1, new Array(PrimitiveType.CHARACTER), PrimitiveType.INTEGER, PrimitiveType.CHARACTER),
 				new FunctionSignature(1, new Array(PrimitiveType.BOOLEAN), PrimitiveType.INTEGER, PrimitiveType.BOOLEAN)
 		);
+		new FunctionSignatures(Keyword.LENGTH,
+				new FunctionSignature(new ArrayLengthCodeGenerator(), new Array(PrimitiveType.INTEGER), PrimitiveType.INTEGER),
+				new FunctionSignature(new ArrayLengthCodeGenerator(), new Array(PrimitiveType.FLOAT), PrimitiveType.INTEGER),
+				new FunctionSignature(new ArrayLengthCodeGenerator(), new Array(ReferenceType.STRING), PrimitiveType.INTEGER), 
+				new FunctionSignature(new ArrayLengthCodeGenerator(), new Array(PrimitiveType.CHARACTER), PrimitiveType.INTEGER),
+				new FunctionSignature(new ArrayLengthCodeGenerator(), new Array(PrimitiveType.BOOLEAN), PrimitiveType.INTEGER)
+		);
+		
 
 	}
 

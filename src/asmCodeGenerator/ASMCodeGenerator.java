@@ -8,6 +8,8 @@ import asmCodeGenerator.operators.SimpleCodeGenerator;
 import asmCodeGenerator.runtime.MemoryManager;
 import asmCodeGenerator.runtime.RunTime;
 import static asmCodeGenerator.Macros.*;
+
+import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
 import parseTree.*;
@@ -310,7 +312,7 @@ public class ASMCodeGenerator {
 		public void visitLeave(OperatorNode node) {
 			Lextant operator = node.getOperator();
 
-			if(operator == Punctuator.SUBTRACT || operator == Punctuator.ADD || operator == Punctuator.BOOLEAN_NOT) {
+			if(operator == Punctuator.SUBTRACT || operator == Punctuator.ADD || operator == Punctuator.BOOLEAN_NOT || operator == Keyword.LENGTH) {
 				if(node.nChildren() == 1)
 					visitUnaryOperatorNode(node);
 				else
@@ -339,8 +341,13 @@ public class ASMCodeGenerator {
 			code.append(arg1);
 
 			FunctionSignature sig = FunctionSignatures.signature(node.getOperator(), Arrays.asList(node.child(0).getType()));
-			ASMOpcode opcode = (ASMOpcode) (sig.getVariant());
-			code.add(opcode);
+			Object variant = sig.getVariant();
+			if(variant instanceof ASMOpcode) {
+				code.add((ASMOpcode) variant); 
+				return; 
+			}
+
+			((SimpleCodeGenerator) variant).generate(code);
 		}
 
 		private void visitCastingOperatorNode(OperatorNode node) {
@@ -471,7 +478,6 @@ public class ASMCodeGenerator {
 			code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
 			turnAddressIntoValue(subType);
 		}
-
 		
 		
 		private void visitNormalBinaryOperatorNode(OperatorNode node) {
