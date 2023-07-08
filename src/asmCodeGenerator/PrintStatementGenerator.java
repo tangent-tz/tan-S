@@ -216,8 +216,10 @@ public class PrintStatementGenerator {
 		code.add(PushI, c); 
 		code.add(PushD, format); 
 		code.add(Printf);
-		
-		appendArraySpacingPrintCode();
+
+		if(c != ARRAY_FORMATTER_CLOSE_BRACKET) {
+			appendArraySpacingPrintCode();
+		}
 	}
 	private void appendArraySpacingPrintCode() {
 		String format = printFormat(PrimitiveType.CHARACTER);

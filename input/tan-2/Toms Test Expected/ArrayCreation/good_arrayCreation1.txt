@@ -1,4 +1,2 @@
-The expected output of the code would be:
-
-AA: %097 %098 %099 %100 %101
-BB: 10.2 7.3 6.4
+[ a, b, c, d, e ]
+[ 10.200000, 7.300000, 6.400000 ]
