@@ -1,4 +1,0 @@
-main {
-    const result := 96 + "I^rl";
-    print result \n;
-}

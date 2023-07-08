@@ -1,3 +1,0 @@
-The expected output of the code is:
-
-6, 20, 3, 47

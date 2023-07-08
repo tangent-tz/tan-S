@@ -1,4 +1,0 @@
-main {
-	const farm := [18, 71, 52, 42];
-	print farm[3] \n;
-}

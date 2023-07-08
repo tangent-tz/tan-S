@@ -1,4 +1,0 @@
-main {
-    const result := 3.5 < 23;
-    print result \n;
-}

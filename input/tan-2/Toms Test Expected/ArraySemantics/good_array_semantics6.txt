@@ -1,3 +1,0 @@
-Expected Output:
-18 71
-29 -25 36

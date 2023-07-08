@@ -1,4 +1,0 @@
-main {
-    const result := "D8N47" > "/W";
-    print result \n;
-}

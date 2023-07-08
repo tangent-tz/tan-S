@@ -1,4 +1,0 @@
-main {
-    const result := "7%x}L" < '!';
-    print result \n;
-}

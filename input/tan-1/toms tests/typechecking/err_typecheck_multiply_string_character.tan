@@ -1,4 +1,0 @@
-main {
-    const result := "G\" * 'w';
-    print result \n;
-}

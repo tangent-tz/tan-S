@@ -1,5 +1,0 @@
-The expected output of the code is:
-
-1 2 3
-4 5
-6

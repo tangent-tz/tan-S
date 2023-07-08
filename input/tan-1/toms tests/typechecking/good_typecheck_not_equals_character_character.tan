@@ -1,6 +1,0 @@
-main {
-    const result := '5' != 'v';
-    var knownType := false;
-    knownType := result;
-    print result \n;
-}

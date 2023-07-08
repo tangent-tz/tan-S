@@ -1,4 +1,0 @@
-main {
-    const result := 7.0 < true;
-    print result \n;
-}

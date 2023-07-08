@@ -1,4 +1,0 @@
-main {
-	const _bcd := 3;
-	print _bcd \n;
-}

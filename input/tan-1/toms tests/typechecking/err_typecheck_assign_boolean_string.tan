@@ -1,5 +1,0 @@
-main {
-    var result := true;
-    result := "T?\xLqt";
-    print result \n;
-}

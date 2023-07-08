@@ -1,3 +1,0 @@
-main {
-	print  true == 3 == 4 \n;
-}

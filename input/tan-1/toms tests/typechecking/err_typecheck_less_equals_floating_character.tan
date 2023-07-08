@@ -1,4 +1,0 @@
-main {
-    const result := 4.1 <= 'K';
-    print result \n;
-}

@@ -1,4 +1,0 @@
-main {
-	const divisor := 0;
-	print 35 / divisor \n;
-}

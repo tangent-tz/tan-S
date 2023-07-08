@@ -1,4 +1,0 @@
-main {
-    const result := "g4`U$" > 59;
-    print result \n;
-}

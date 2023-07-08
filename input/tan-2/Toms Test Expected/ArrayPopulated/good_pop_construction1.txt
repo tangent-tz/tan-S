@@ -1,2 +1,0 @@
-The expected output of the code is:
-1 4 7 9

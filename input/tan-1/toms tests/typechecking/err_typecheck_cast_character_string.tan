@@ -1,4 +1,0 @@
-main {
-    const result := <string>('f');
-    print result \n;
-}

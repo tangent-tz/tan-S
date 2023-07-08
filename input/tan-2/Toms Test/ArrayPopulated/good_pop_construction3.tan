@@ -1,4 +1,0 @@
-main {
-	var harp := [true, true, false];
-	print harp \n;
-}

@@ -1,4 +1,0 @@
-main {
-    const result := "t+W" / '(';
-    print result \n;
-}

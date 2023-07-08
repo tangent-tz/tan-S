@@ -1,6 +1,0 @@
-main {
-	imm barb := alloc[int](4);
-	print #o $s #k $n;
-	barb := alloc[int](8);
-	print barb $n;
-}

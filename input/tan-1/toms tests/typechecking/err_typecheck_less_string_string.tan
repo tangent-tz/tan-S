@@ -1,4 +1,0 @@
-main {
-    const result := "C>" < "]o8Q";
-    print result \n;
-}

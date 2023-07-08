@@ -1,4 +1,0 @@
-main {
-	const abcd := 0;
-	print abcd \n;
-}

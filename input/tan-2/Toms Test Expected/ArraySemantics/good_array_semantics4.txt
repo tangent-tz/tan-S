@@ -1,3 +1,0 @@
-Expected output:
-18 71
-18 70 22 44

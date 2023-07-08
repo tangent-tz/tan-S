@@ -1,5 +1,0 @@
-main {
-	const AA := ['a', 14.17, 'c', 'd', 'e'];
-
-	print AA \n;
-}
