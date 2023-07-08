@@ -35,7 +35,7 @@ TOMS_2_TEST_ARRAY_POPULATED = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayPopula
 TOMS_2_TEST_ARRAY_POPULATED_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayPopulated"
 
 TOMS_2_TEST_ARRAY_LENGTH = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayLength"
-TOMS_2_TEST_ARRAY_LENGTH_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayLength"
+TOMS_2_TEST_ARRAY_LENGTH_EXPECTED = "D:\CMPT379\input\\tan-2\Toms Test Expected\AraryLength"
 
 TOMS_2_TEST_ARRAY_SEMANTICS = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArraySemantics"
 TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArraySemantics"
