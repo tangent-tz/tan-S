@@ -348,7 +348,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		for (int i = 0; i < node.nChildren(); i++){
 			ParseNode child = node.child(i);
 			if (isBoolean(child)) {
-				promoteLevelFlag = 0;
+				promoteLevelFlag = -1;
 			}
 		}
 		return promoteLevelFlag;
@@ -402,6 +402,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 		else if(highestLevel == 1 && isPromotable){
 			node.setType(new Array(PrimitiveType.INTEGER, node.nChildren()));
+		}
+		else if(highestLevel == -1){
+			logError("types do not match in array creation");
 		}
 		else{
 			node.setType(new Array(childTypes.get(0), node.nChildren()));
