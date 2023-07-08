@@ -109,6 +109,64 @@ public class ASMCodeGenerator {
 			makeFragmentValueCode(frag, node);
 			return frag;
 		}
+
+		private ASMCodeFragment getAndRemoveCodeArray(ParseNode node, int level) {
+			ASMCodeFragment result = codeMap.get(node);
+			codeMap.remove(node);
+			if(node.getType() ==PrimitiveType.INTEGER && level == 2 && !(node instanceof IdentifierNode)){
+				result.add(ConvertF);
+			}
+			else if(node.getType() ==PrimitiveType.CHARACTER && level == 2 && !(node instanceof IdentifierNode)){
+				result.add(ConvertF);
+			}
+			return result;
+		}
+
+		ASMCodeFragment removeValueCodeArray(ParseNode node, int level) {
+			ASMCodeFragment frag = getAndRemoveCodeArray(node, level);
+			makeFragmentValueCodeArray(frag, node, level);
+			return frag;
+		}
+
+		private void makeFragmentValueCodeArray(ASMCodeFragment code, ParseNode node, int level) {
+			assert !code.isVoid();
+
+			if(code.isAddress()) {
+				turnAddressIntoValueArray(code, node, level);
+			}
+		}
+
+		private void turnAddressIntoValueArray(ASMCodeFragment code, ParseNode node, int level) {
+			if(node.getType() == PrimitiveType.INTEGER) {
+				code.add(LoadI);
+				if(level == 2){
+					code.add(ConvertF);
+				}
+			}
+			else if(node.getType() == ReferenceType.STRING) {
+				code.add(LoadI);
+			}
+			else if(node.getType() == PrimitiveType.FLOAT) {
+				code.add(LoadF);
+			}
+			else if(node.getType() == PrimitiveType.BOOLEAN) {
+				code.add(LoadC);
+			}
+			else if(node.getType() == PrimitiveType.CHARACTER) {
+				code.add(LoadC);
+				if(level == 2){
+					code.add(ConvertF);
+				}
+			}
+			else if(node.getType() instanceof Array) {
+				code.add(LoadI);
+			}
+			else {
+				assert false : "node " + node;
+			}
+			code.markAsValue();
+		}
+
 		private ASMCodeFragment removeAddressCode(ParseNode node) {
 			ASMCodeFragment frag = getAndRemoveCode(node);
 			assert frag.isAddress();
@@ -575,14 +633,45 @@ public class ASMCodeGenerator {
 			return null;
 		}
 
-		public int checkHighestPromotableArray(ParseNode node)
-		{
-			int promoteFlag = 0;
+		public int checkHighestPromotableArray(ParseNode node) {
+			int promoteLevelFlag = 0;
 
-			for(int i =0; i < node.nChildren(); i++){
+			for (int i = 0; i < node.nChildren(); i++) {
 				ParseNode child = node.child(i);
-				if()
+				if (isFloat(child)) {
+					promoteLevelFlag = 2;
+				} else if (isInteger(child)) {
+					promoteLevelFlag = Math.max(promoteLevelFlag, 1);
+				} else if (isCharacter(child)) {
+					promoteLevelFlag = Math.max(promoteLevelFlag, 0);
+				}
 			}
+			for (int i = 0; i < node.nChildren(); i++){
+				ParseNode child = node.child(i);
+				if (isBoolean(child)) {
+					promoteLevelFlag = 0;
+				}
+			}
+			return promoteLevelFlag;
+		}
+
+		public boolean promoteCandidateArray(ParseNode node){
+			Type type = node.child(0).getType();
+			for (int i = 1; i < node.nChildren(); i++) {
+				ParseNode child = node.child(i);
+				if(type != child.getType()) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public void updateSubType(ParseNode node, int level){
+			for (int i = 0; i < node.nChildren(); i++) {
+				ParseNode child = node.child(i);
+				if(level == 2)
+					child.setType(PrimitiveType.FLOAT);
+				}
 		}
 
 		public boolean isFloat(ParseNode node){
@@ -594,12 +683,23 @@ public class ASMCodeGenerator {
 		public boolean isInteger(ParseNode node){
 			return node.getType() == PrimitiveType.INTEGER;
 		}
+		public boolean isBoolean(ParseNode node){
+			return node.getType() == PrimitiveType.BOOLEAN;
+		}
 
 
 		///////////////////////////////////////////////////////////////////////////
 		// array
 		public void visitLeave(ArrayNode node) {
-			assert(node.nChildren() >= 1); 
+			boolean promoteCandidate = promoteCandidateArray(node);
+			int promoteLevel =0;
+			if(promoteCandidate){
+				promoteLevel = checkHighestPromotableArray(node);
+			}
+
+
+
+			assert(node.nChildren() >= 1);
 			
 			if(node.child(0) instanceof ArrayTypeNode) {
 				generateCodeForEmptyArrayCreation(node);
@@ -608,7 +708,7 @@ public class ASMCodeGenerator {
 			
 			List<ASMCodeFragment> elements = new ArrayList<>();
 			for(int i = 0; i < node.nChildren(); i++) {
-				ASMCodeFragment child = removeValueCode(node.child(i));
+				ASMCodeFragment child = removeValueCodeArray(node.child(i), promoteLevel);
 				elements.add(child);
 			}
 			int header_typeIdentifier_byteConsumption = 4;
@@ -682,7 +782,7 @@ public class ASMCodeGenerator {
 			code.add(Add);
 			code.add(PushI, numOfElements);
 			code.add(StoreI);
-
+			updateSubType(node, promoteLevel);
 			// Store each element in the array
 			for (int i = 0; i < numOfElements; i++) {
 				code.add(PushD, pointerLabel);

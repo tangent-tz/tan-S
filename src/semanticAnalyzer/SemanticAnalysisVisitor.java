@@ -332,7 +332,53 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	
 	///////////////////////////////////////////////////////////
 	// array
-	
+	public int checkHighestPromotableArray(ParseNode node) {
+		int promoteLevelFlag = 0;
+
+		for (int i = 0; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
+			if (isFloat(child)) {
+				promoteLevelFlag = 2;
+			} else if (isInteger(child)) {
+				promoteLevelFlag = Math.max(promoteLevelFlag, 1);
+			} else if (isCharacter(child)) {
+				promoteLevelFlag = Math.max(promoteLevelFlag, 0);
+			}
+		}
+		for (int i = 0; i < node.nChildren(); i++){
+			ParseNode child = node.child(i);
+			if (isBoolean(child)) {
+				promoteLevelFlag = 0;
+			}
+		}
+		return promoteLevelFlag;
+	}
+
+	public boolean promoteCandidateArray(ParseNode node){
+		Type type = node.child(0).getType();
+		for (int i = 1; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
+			if(type != child.getType()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isFloat(ParseNode node){
+		return node.getType() == PrimitiveType.FLOAT;
+	}
+	public boolean isCharacter(ParseNode node){
+		return node.getType() == PrimitiveType.CHARACTER;
+	}
+	public boolean isInteger(ParseNode node){
+		return node.getType() == PrimitiveType.INTEGER;
+	}
+	public boolean isBoolean(ParseNode node){
+		return node.getType() == PrimitiveType.BOOLEAN;
+	}
+
+
 	@Override
 	public void visitLeave(ArrayNode node) {
 		assert(node.nChildren() >= 1); 
@@ -348,10 +394,21 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		for(int i=0; i < node.nChildren(); i++) {
 			childTypes.add(node.child(i).getType());
 		}
+		boolean isPromotable = promoteCandidateArray(node);
+		int highestLevel = checkHighestPromotableArray(node);
+
+		if(highestLevel == 2 && isPromotable){
+			node.setType(new Array(PrimitiveType.FLOAT, node.nChildren()));
+		}
+		else if(highestLevel == 1 && isPromotable){
+			node.setType(new Array(PrimitiveType.INTEGER, node.nChildren()));
+		}
+		else{
+			node.setType(new Array(childTypes.get(0), node.nChildren()));
+		}
+
 		
 		//todo: check child types => if different types => try promoting to one unified type
-		
-		node.setType(new Array(childTypes.get(0), node.nChildren()));
 	}
 	
 	private boolean emptyArrayCreation(ArrayNode node) {
