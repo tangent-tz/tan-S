@@ -5,6 +5,8 @@ import java.util.List;
 
 import inputHandler.Locator;
 import inputHandler.TextLocation;
+import semanticAnalyzer.signatures.FunctionSignature;
+import semanticAnalyzer.signatures.FunctionSignatures;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
@@ -21,12 +23,14 @@ public class ParseNode implements Locator {
 	protected Token token;
 	Type type;					// used for expressions
 	private Scope scope;		// the scope created by this node, if any.
+	private FunctionSignature signature; 
 
 	public ParseNode(Token token) {
 		this.token = token;
 		this.type = PrimitiveType.NO_TYPE;
 		this.scope = null;
 		this.parent = NO_PARENT;
+		this.signature = FunctionSignature.nullInstance(); 
 		initChildren();
 	}
 	// "detached" copy constructor.  Copies all info except tree info (parent and children)
@@ -34,6 +38,7 @@ public class ParseNode implements Locator {
 		this.token = node.token;
 		this.type = node.type;
 		this.scope = node.scope;
+		this.signature = node.signature; 
 	}
 	public Token getToken() {
 		return token;
@@ -52,6 +57,13 @@ public class ParseNode implements Locator {
 	@Override
 	public TextLocation getLocation() {
 		return token.getLocation();
+	}
+	
+	public void setSignature(FunctionSignature sig) {
+		signature = sig; 
+	}
+	public FunctionSignature getSignature() {
+		return this.signature; 
 	}
 	
 ////////////////////////////////////////////////////////////////////////////////////

@@ -39,7 +39,9 @@ public class EqualCodeGenerator implements SimpleCodeGenerator {
         if(node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.INTEGER ||
                 node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.CHARACTER ||
                 node.child(0).getType() == PrimitiveType.BOOLEAN && node.child(1).getType() == PrimitiveType.BOOLEAN ||
-                node.child(0).getType() == ReferenceType.STRING && node.child(1).getType() == ReferenceType.STRING)
+                node.child(0).getType() == ReferenceType.STRING && node.child(1).getType() == ReferenceType.STRING ||
+                node.child(0).getType() == PrimitiveType.INTEGER && node.child(1).getType() == PrimitiveType.CHARACTER ||
+                node.child(0).getType() == PrimitiveType.CHARACTER && node.child(1).getType() == PrimitiveType.INTEGER )
         {
             code.add(Subtract);
 
@@ -54,7 +56,7 @@ public class EqualCodeGenerator implements SimpleCodeGenerator {
             code.add(Jump, joinLabel);
             code.add(Label, joinLabel);
         }
-        else if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.FLOAT)
+        else if(!( node.child(0).getType() == ReferenceType.STRING && node.child(1).getType() == ReferenceType.STRING))
         {
             code.add(FSubtract);
 
@@ -73,6 +75,11 @@ public class EqualCodeGenerator implements SimpleCodeGenerator {
 
     @Override
     public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2) {
+
+    }
+
+    @Override
+    public void generate(ASMCodeFragment code, ASMCodeFragment arg1, ASMCodeFragment arg2, OperatorNode node) {
 
     }
 }

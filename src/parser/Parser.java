@@ -197,17 +197,77 @@ public class Parser {
 		if(!startsAssignmentStatement(nowReading)) {
 			return syntaxErrorNode("assignmentStatement");
 		}
-		ParseNode identifier = parseIdentifier();
+		ParseNode target = parseTargetableExpression();
 		expect(Punctuator.ASSIGN);
 		ParseNode newInitializer = parseExpression();
 		expect(Punctuator.TERMINATOR);
 
 		Token assignmentNodeToken = Punctuator.ASSIGN.prototype();
-		return AssignmentStatementNode.withChildren(assignmentNodeToken, identifier, newInitializer);
+		return AssignmentStatementNode.withChildren(assignmentNodeToken, target, newInitializer);
 	}
 	private boolean startsAssignmentStatement(Token token) {
-		return startsIdentifier(token);
+		return startsTargetableExpression(token); 
 	}
+	
+	
+	private ParseNode parseTargetableExpression() {
+		if(!startsTargetableExpression(nowReading)) {
+			return syntaxErrorNode("targetable-expression"); 
+		}
+		
+		if(startsIdentifier(nowReading)) {
+			return parseIdentifier();
+		}
+		if(startsTargetableArrayReferenceExpression(nowReading)) {
+			return parseTargetableArrayReferenceExpression(); 
+		}
+		return parseTargetableParenthesesWrappedExpression();
+	}
+	private boolean startsTargetableExpression(Token token){
+		return startsIdentifier(token) ||
+				startsTargetableArrayReferenceExpression(token) ||
+				startsTargetableParenthesesWrappedExpression(token); 
+	}
+	
+	
+	private ParseNode parseTargetableArrayReferenceExpression() {
+		if(!startsTargetableArrayReferenceExpression(nowReading)) {
+			return syntaxErrorNode("targetable array-reference expression"); 
+		}
+		readToken();
+		
+		ParseNode left = parseExpression();
+		expect(Punctuator.INDEXING);
+		ParseNode right = parseExpression(); 
+		expect(Punctuator.CLOSE_BRACKETS);
+		
+		Token arrayRefToken = Punctuator.INDEXING.prototype();
+		return TargetableArrayReferenceNode.withChildren(arrayRefToken, left, right);
+		
+	}
+	private boolean startsTargetableArrayReferenceExpression(Token token) {
+		return token.isLextant(Punctuator.OPEN_BRACKETS); 
+	}
+	
+	
+	private ParseNode parseTargetableParenthesesWrappedExpression() {
+		if(!startsTargetableParenthesesWrappedExpression(nowReading)){
+			return syntaxErrorNode("targetable parenthesized expression"); 
+		}
+		
+		readToken();
+		ParseNode target = parseTargetableExpression(); 
+		expect(Punctuator.CLOSE_PARENTHESIS);
+		
+		return target; 
+	}
+	private boolean startsTargetableParenthesesWrappedExpression(Token token) {
+		return token.isLextant(Punctuator.OPEN_PARENTHESIS);  
+	}
+	
+	
+	
+	
 
 
 	// block statement -> { statement* }
@@ -411,13 +471,21 @@ public class Parser {
 		if(startsTypeCastingExpression(nowReading)) {
 			return parseTypeCastingExpression();
 		}
+		if(startsPopulatedArrayCreationExpression(nowReading)) {
+			return parsePopulatedArrayCreationExpression(); 
+		}
+		if(startsEmptyArrayCreationExpression(nowReading)) {
+			return parseEmptyArrayCreationExpression(); 
+		}
 		return parseLiteral();
 	}
 	private boolean startsAtomicExpression(Token token) {
 		return startsLiteral(token) ||
 				startsUnaryExpression(token) ||
 				startsParenthesesWrappedExpression(token) ||
-				startsTypeCastingExpression(token);
+				startsTypeCastingExpression(token) ||
+				startsPopulatedArrayCreationExpression(token) ||
+				startsEmptyArrayCreationExpression(token); 
 	}
 
 	// unaryExpression			-> UNARYOP atomicExpression
@@ -432,7 +500,7 @@ public class Parser {
 		return OperatorNode.withChildren(operatorToken, child);
 	}
 	private boolean startsUnaryExpression(Token token) {
-		return token.isLextant(Punctuator.SUBTRACT, Punctuator.ADD, Punctuator.BOOLEAN_NOT);
+		return token.isLextant(Punctuator.SUBTRACT, Punctuator.ADD, Punctuator.BOOLEAN_NOT, Keyword.LENGTH);
 	}
 
 
@@ -471,6 +539,123 @@ public class Parser {
 	private boolean startsTypeCastingExpression(Token token) {
 		return token.isLextant(Punctuator.LESSER);
 	}
+	
+	
+	
+	// array: populated creation ==========================================================================
+	private ParseNode parsePopulatedArrayCreationExpression() {
+		if(!startsPopulatedArrayCreationExpression(nowReading)) {
+			return syntaxErrorNode("populated-array-creation expression");
+		}
+		Token arrayToken = nowReading; 
+		readToken();
+		
+		ParseNode arrayNode = new ArrayNode(arrayToken); 
+		arrayNode = parseArrayExpressionList(arrayNode);
+		expect(Punctuator.CLOSE_BRACKETS);
+		return arrayNode;
+	}
+	private boolean startsPopulatedArrayCreationExpression(Token token) {
+		return token.isLextant(Punctuator.OPEN_BRACKETS);
+	}
+	
+	private ParseNode parseArrayExpressionList(ParseNode parent) {
+		if(!startsArrayExpressionList(nowReading)) {
+			return syntaxErrorNode("populated-array-creation expression list cannot be empty");
+		}
+		parent.appendChild(parseExpression());
+		
+		//------------------------------------------------------------
+		if(startsArrayIndexingExpression(nowReading)) {
+			return parseArrayIndexingExpression(nowReading, parent.child(0)); 
+		}
+
+		//------------------------------------------------------------
+		
+		while(nowReading.isLextant(Punctuator.COMMA)) {
+			readToken();
+			parent.appendChild(parseExpression());
+		}
+		return parent; 
+	}
+	private boolean startsArrayExpressionList(Token token) {
+		return startsExpression(token);
+	}
+
+	
+
+
+	// array: indexing ==========================================================================
+	private ParseNode parseArrayIndexingExpression(Token token, ParseNode leftChild) {
+		Token indexingToken = LextantToken.make(token.getLocation(), Punctuator.INDEXING.getLexeme(), Punctuator.INDEXING);
+		readToken();
+		
+		ParseNode rightChild = parseExpression();
+		return OperatorNode.withChildren(indexingToken, leftChild, rightChild);
+	}
+	
+	private boolean startsArrayIndexingExpression(Token token) {
+		return token.isLextant(Punctuator.INDEXING);
+	}
+	
+	
+	
+	
+	// array: empty creation ==========================================================================
+	private ParseNode parseEmptyArrayCreationExpression() {
+		if(!startsEmptyArrayCreationExpression(nowReading)) {
+			return syntaxErrorNode("empty array creation"); 
+		}
+		
+		Token arrayToken = LextantToken.make(nowReading.getLocation(), Punctuator.OPEN_BRACKETS.getLexeme(), Punctuator.OPEN_BRACKETS); 
+		readToken();
+		
+		ParseNode arrayTypeNode = parseArrayType(); 
+		ParseNode arraySizeExpression = parseParenthesesWrappedExpression(); 
+		
+		ParseNode arrayNode = new ArrayNode(arrayToken); 
+		arrayNode.appendChild(arrayTypeNode);
+		arrayNode.appendChild(arraySizeExpression);
+		
+		return arrayNode;
+	}
+	private boolean startsEmptyArrayCreationExpression(Token token) {
+		return token.isLextant(Keyword.NEW); 
+	}
+	
+	private ParseNode parseArrayType() {
+		if(!startsArrayType(nowReading)) {
+			return syntaxErrorNode("arrayType");
+		}
+		
+		ParseNode result = new ArrayTypeNode(nowReading); 
+		readToken();
+		
+		ParseNode innerType; 
+		if(startsPrimitiveType(nowReading)) {
+			innerType = new TypeIndicatorNode(nowReading);
+		} else {
+			innerType = parseArrayType();
+		}
+		result.appendChild(innerType);
+		
+		readToken();
+		expect(Punctuator.CLOSE_BRACKETS);
+		return result;
+	}
+	private boolean startsArrayType(Token token) {
+		return token.isLextant(Punctuator.OPEN_BRACKETS); 
+	}
+	private boolean startsPrimitiveType(Token token) {
+		return Keyword.isATypeKeyword(token.getLexeme()); 
+	}
+
+
+ 
+	
+
+	
+
 	
 	// literal -> number | character | identifier | booleanConstant | string
 	private ParseNode parseLiteral() {

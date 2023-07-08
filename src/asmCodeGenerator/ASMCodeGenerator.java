@@ -5,13 +5,18 @@ import java.util.*;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.SimpleCodeGenerator;
+import asmCodeGenerator.runtime.MemoryManager;
 import asmCodeGenerator.runtime.RunTime;
+import static asmCodeGenerator.Macros.*;
+
+import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
 import parseTree.*;
 import parseTree.nodeTypes.*;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
+import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
@@ -22,6 +27,7 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
 // do not call the code generator if any errors have occurred during analysis.
 public class ASMCodeGenerator {
+	private static final int ARRAY_HEADER_SIZE = 16; 
 	ParseNode root;
 
 	public static ASMCodeFragment generate(ParseNode syntaxTree) {
@@ -35,12 +41,10 @@ public class ASMCodeGenerator {
 
 	public ASMCodeFragment makeASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
-
 		code.append( RunTime.getEnvironment() );
 		code.append( globalVariableBlockASM() );
 		code.append( programASM() );
-//		code.append( MemoryManager.codeForAfterApplication() );
-
+		code.append( MemoryManager.codeForAfterApplication() );
 		return code;
 	}
 	private ASMCodeFragment globalVariableBlockASM() {
@@ -107,6 +111,64 @@ public class ASMCodeGenerator {
 			makeFragmentValueCode(frag, node);
 			return frag;
 		}
+
+		private ASMCodeFragment getAndRemoveCodeArray(ParseNode node, int level) {
+			ASMCodeFragment result = codeMap.get(node);
+			codeMap.remove(node);
+			if(node.getType() ==PrimitiveType.INTEGER && level == 2 && !(node instanceof IdentifierNode)){
+				result.add(ConvertF);
+			}
+			else if(node.getType() ==PrimitiveType.CHARACTER && level == 2 && !(node instanceof IdentifierNode)){
+				result.add(ConvertF);
+			}
+			return result;
+		}
+
+		ASMCodeFragment removeValueCodeArray(ParseNode node, int level) {
+			ASMCodeFragment frag = getAndRemoveCodeArray(node, level);
+			makeFragmentValueCodeArray(frag, node, level);
+			return frag;
+		}
+
+		private void makeFragmentValueCodeArray(ASMCodeFragment code, ParseNode node, int level) {
+			assert !code.isVoid();
+
+			if(code.isAddress()) {
+				turnAddressIntoValueArray(code, node, level);
+			}
+		}
+
+		private void turnAddressIntoValueArray(ASMCodeFragment code, ParseNode node, int level) {
+			if(node.getType() == PrimitiveType.INTEGER) {
+				code.add(LoadI);
+				if(level == 2){
+					code.add(ConvertF);
+				}
+			}
+			else if(node.getType() == ReferenceType.STRING) {
+				code.add(LoadI);
+			}
+			else if(node.getType() == PrimitiveType.FLOAT) {
+				code.add(LoadF);
+			}
+			else if(node.getType() == PrimitiveType.BOOLEAN) {
+				code.add(LoadC);
+			}
+			else if(node.getType() == PrimitiveType.CHARACTER) {
+				code.add(LoadC);
+				if(level == 2){
+					code.add(ConvertF);
+				}
+			}
+			else if(node.getType() instanceof Array) {
+				code.add(LoadI);
+			}
+			else {
+				assert false : "node " + node;
+			}
+			code.markAsValue();
+		}
+
 		private ASMCodeFragment removeAddressCode(ParseNode node) {
 			ASMCodeFragment frag = getAndRemoveCode(node);
 			assert frag.isAddress();
@@ -142,6 +204,9 @@ public class ASMCodeGenerator {
 			}
 			else if(node.getType() == PrimitiveType.CHARACTER) {
 				code.add(LoadC);
+			}
+			else if(node.getType() instanceof Array) {
+				code.add(LoadI);
 			}
 			else {
 				assert false : "node " + node;
@@ -211,7 +276,12 @@ public class ASMCodeGenerator {
 
 			code.append(lvalue);
 			code.append(rvalue);
-
+			if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.INTEGER) {
+				code.add(ConvertF);
+			}
+			if(node.child(0).getType() == PrimitiveType.FLOAT && node.child(1).getType() == PrimitiveType.CHARACTER) {
+				code.add(ConvertF);
+			}
 			Type type = node.getType();
 			code.add(opcodeForStore(type));
 		}
@@ -292,6 +362,9 @@ public class ASMCodeGenerator {
 			else if(type == PrimitiveType.CHARACTER) {
 				return StoreC;
 			}
+			else if(type instanceof Array) {
+				return StoreI; 
+			}
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
 		}
@@ -302,7 +375,7 @@ public class ASMCodeGenerator {
 		public void visitLeave(OperatorNode node) {
 			Lextant operator = node.getOperator();
 
-			if(operator == Punctuator.SUBTRACT || operator == Punctuator.ADD || operator == Punctuator.BOOLEAN_NOT) {
+			if(operator == Punctuator.SUBTRACT || operator == Punctuator.ADD || operator == Punctuator.BOOLEAN_NOT || operator == Keyword.LENGTH) {
 				if(node.nChildren() == 1)
 					visitUnaryOperatorNode(node);
 				else
@@ -317,6 +390,9 @@ public class ASMCodeGenerator {
 			else if(operator == Punctuator.CONDITIONAL_OR || operator == Punctuator.CONDITIONAL_AND) {
 				visitConditionalOperatorNode(node); 
 			}
+			else if(operator == Punctuator.INDEXING) {
+				visitArrayIndexingOperatorNode(node); 
+			}
 			else {
 				visitNormalBinaryOperatorNode(node);
 			}
@@ -328,8 +404,13 @@ public class ASMCodeGenerator {
 			code.append(arg1);
 
 			FunctionSignature sig = FunctionSignatures.signature(node.getOperator(), Arrays.asList(node.child(0).getType()));
-			ASMOpcode opcode = (ASMOpcode) (sig.getVariant());
-			code.add(opcode);
+			Object variant = sig.getVariant();
+			if(variant instanceof ASMOpcode) {
+				code.add((ASMOpcode) variant); 
+				return; 
+			}
+
+			((SimpleCodeGenerator) variant).generate(code);
 		}
 
 		private void visitCastingOperatorNode(OperatorNode node) {
@@ -365,9 +446,16 @@ public class ASMCodeGenerator {
 			newValueCode(node);
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			ASMCodeFragment arg2 = removeValueCode(node.child(1));
-
 			code.append(arg1);
+			if((node.child(0).getType() == PrimitiveType.INTEGER ||node.child(0).getType() == PrimitiveType.CHARACTER) && node.child(1).getType()== PrimitiveType.FLOAT) {
+				code.add(ConvertF);
+			}
 			code.append(arg2);
+			if(node.child(0).getType() == PrimitiveType.FLOAT && (node.child(1).getType()== PrimitiveType.INTEGER||node.child(1).getType() == PrimitiveType.CHARACTER)) {
+				code.add(ConvertF);
+			}
+
+
 			generateComparisonCodeFragment(node, arg1, arg2);
 		}
 
@@ -381,14 +469,93 @@ public class ASMCodeGenerator {
 			}
 			((SimpleCodeGenerator)variant).generate(node , code);
 		}
+		
+		
 
+		private void visitArrayIndexingOperatorNode(OperatorNode node) {
+			Type subType = node.child(0).getType().getSubtype(); 
+			
+			Labeller labeller = new Labeller("array-indexing"); 
+			String baseAddressLabel = labeller.newLabel("baseAddress");
+			String indexLabel = labeller.newLabel("index"); 
+			
+			
+			newValueCode(node);
+			ASMCodeFragment arg1 = removeValueCode(node.child(0)); 
+			ASMCodeFragment arg2 = removeValueCode(node.child(1)); 
+
+			
+			// storing array base address into a temp memory location:
+			code.append(arg1); 			// [... baseAddress]
+			code.add(DLabel, baseAddressLabel);
+			code.add(DataI, 0); //clear 4 bytes with all zeroes
+			code.add(PushD, baseAddressLabel);
+			code.add(Exchange);
+			code.add(StoreI); 			// [...]
+			
+			
+			//storing index i into a temp memory location:
+			code.append(arg2);			// [... i]
+			code.add(DLabel, indexLabel); 
+			code.add(DataI, 0); //clear 4 bytes with all zeroes
+			code.add(PushD, indexLabel); 
+			code.add(Exchange);
+			code.add(StoreI); 			// [...]
+			
+
+			// start: index validation -------------------------------------------------------------
+			//first, check if i < 0. If yes, throw runtime error. 
+			loadIFrom(code, indexLabel);		// [... i]
+			code.add(JumpNeg, RunTime.ARRAY_INDEX_OUT_OF_BOUNDS);
+			
+			//second, check if i >= arrayLength. If yes, throw runtime error.
+			loadIFrom(code, indexLabel);		// [... i]
+
+			code.add(PushD, baseAddressLabel);
+			code.add(LoadI); 					// [... i, baseAddress]
+			code.add(PushI, 12);
+			code.add(Add);						// [... i, baseAddress+12]
+			code.add(LoadI); 					// [... i, arrayLength]
+			
+			code.add(Subtract); 				// [... i - arrayLength]
+			code.add(Duplicate); 				// [... i - arrayLength, 	i - arrayLength]
+			code.add(JumpFalse, RunTime.ARRAY_INDEX_OUT_OF_BOUNDS); 	// [... i - arrayLength]	
+			code.add(JumpPos, RunTime.ARRAY_INDEX_OUT_OF_BOUNDS); 		// [...]
+			// end : index validation ---------------------------------------------------------------
+			
+			
+			//start accessing the indexed location:
+			code.add(PushD, baseAddressLabel);
+			code.add(LoadI); 			// [... baseAddress]
+			code.add(PushI, ARRAY_HEADER_SIZE);
+			code.add(Add);				// [... baseAddress+headerSize]
+			loadIFrom(code, indexLabel); 			// [... baseAddress+headerSize, i]
+
+			code.add(PushD, baseAddressLabel);
+			code.add(LoadI); 			// [... baseAddress+headerSize,   i,	baseAddress]
+			code.add(PushI, 8);
+			code.add(Add);
+			code.add(LoadI); 		// [... baseAddress+headerSize,   i,   subtypeSize]
+			
+			code.add(Multiply); 	// [... baseAddress+headerSize,   i*subtypeSize]
+			code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
+			turnAddressIntoValue(subType);
+		}
+		
+		
 		private void visitNormalBinaryOperatorNode(OperatorNode node) {
 			newValueCode(node);
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			ASMCodeFragment arg2 = removeValueCode(node.child(1));
 
 			code.append(arg1);
+			if((node.child(0).getType() == PrimitiveType.INTEGER ||node.child(0).getType() == PrimitiveType.CHARACTER) && node.child(1).getType()== PrimitiveType.FLOAT) {
+				code.add(ConvertF);
+			}
 			code.append(arg2);
+			if(node.child(0).getType() == PrimitiveType.FLOAT && (node.child(1).getType()== PrimitiveType.INTEGER||node.child(1).getType() == PrimitiveType.CHARACTER)) {
+				code.add(ConvertF);
+			}
 
 			if(node.getType() == PrimitiveType.FLOAT) {
 				if(node.getOperator() == Punctuator.DIVIDE) {
@@ -472,6 +639,422 @@ public class ASMCodeGenerator {
 			return null;
 		}
 
+		public int checkHighestPromotableArray(ParseNode node) {
+			int promoteLevelFlag = 0;
+
+			for (int i = 0; i < node.nChildren(); i++) {
+				ParseNode child = node.child(i);
+				if (isFloat(child)) {
+					promoteLevelFlag = 2;
+				} else if (isInteger(child)) {
+					promoteLevelFlag = Math.max(promoteLevelFlag, 1);
+				} else if (isCharacter(child)) {
+					promoteLevelFlag = Math.max(promoteLevelFlag, 0);
+				}
+			}
+			for (int i = 0; i < node.nChildren(); i++){
+				ParseNode child = node.child(i);
+				if (isBoolean(child)) {
+					promoteLevelFlag = 0;
+				}
+			}
+			return promoteLevelFlag;
+		}
+
+		public boolean promoteCandidateArray(ParseNode node){
+			Type type = node.child(0).getType();
+			for (int i = 1; i < node.nChildren(); i++) {
+				ParseNode child = node.child(i);
+				if(type != child.getType()) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public void updateSubType(ParseNode node, int level){
+			for (int i = 0; i < node.nChildren(); i++) {
+				ParseNode child = node.child(i);
+				if(level == 2)
+					child.setType(PrimitiveType.FLOAT);
+				}
+		}
+
+		public boolean isFloat(ParseNode node){
+			return node.getType() == PrimitiveType.FLOAT;
+		}
+		public boolean isCharacter(ParseNode node){
+			return node.getType() == PrimitiveType.CHARACTER;
+		}
+		public boolean isInteger(ParseNode node){
+			return node.getType() == PrimitiveType.INTEGER;
+		}
+		public boolean isBoolean(ParseNode node){
+			return node.getType() == PrimitiveType.BOOLEAN;
+		}
+
+
+		///////////////////////////////////////////////////////////////////////////
+		// array
+		public void visitLeave(ArrayNode node) {
+			boolean promoteCandidate = promoteCandidateArray(node);
+			int promoteLevel =0;
+			if(promoteCandidate){
+				promoteLevel = checkHighestPromotableArray(node);
+			}
+
+
+
+			assert(node.nChildren() >= 1);
+			
+			if(node.child(0) instanceof ArrayTypeNode) {
+				generateCodeForEmptyArrayCreation(node);
+				return; 
+			}
+			
+			List<ASMCodeFragment> elements = new ArrayList<>();
+			for(int i = 0; i < node.nChildren(); i++) {
+				ASMCodeFragment child = removeValueCodeArray(node.child(i), promoteLevel);
+				elements.add(child);
+			}
+			int header_typeIdentifier_byteConsumption = 4;
+			int header_status_byteConsumption = 4;
+			int header_subtypeSize_byteConsumption = 4;
+			int header_length_byteConsumption = 4;
+
+
+			int numOfElements = node.nChildren();
+			Type subtype = node.getType().getSubtype();
+			int subtypeSize = subtype.getSize();
+
+			newValueCode(node);
+			int totalSize = (header_typeIdentifier_byteConsumption
+					+ header_status_byteConsumption
+					+ header_subtypeSize_byteConsumption
+					+ header_length_byteConsumption)
+					+ (numOfElements * subtypeSize);
+
+
+			Labeller labeller = new Labeller("array");
+			String pointerLabel = labeller.newLabel("pointer");
+
+
+			// Allocate memory for the array
+			code.add(PushI, totalSize);  // memory needed = size * offset
+			code.add(Call, MemoryManager.MEM_MANAGER_ALLOCATE);
+
+
+			//Store header data
+			code.add(DLabel, pointerLabel);
+			code.add(DataZ, 4);
+			code.add(PushD, pointerLabel);
+			code.add(Exchange);
+			code.add(StoreI);
+
+
+			//storing type identifier:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 0); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			code.add(PushI, 5); //stack: [... addr] -> [... addr 5]
+			code.add(StoreI); 			//store 5 into the address
+
+			//storing status:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 4); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			if(subtype instanceof PrimitiveType) {
+				code.add(PushI, 0);
+			}
+			else {
+				code.add(PushI, 2);
+			}
+			code.add(StoreI);
+
+			//storing subtype size:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 8);
+			code.add(Add);
+			code.add(PushI, subtypeSize);
+			code.add(StoreI);
+
+			//storing length (number of elements)
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 12);
+			code.add(Add);
+			code.add(PushI, numOfElements);
+			code.add(StoreI);
+			updateSubType(node, promoteLevel);
+			// Store each element in the array
+			for (int i = 0; i < numOfElements; i++) {
+				code.add(PushD, pointerLabel);
+				code.add(LoadI); 			//loads the base address of the array
+				code.add(PushI, 16);
+				code.add(Add);
+
+				code.add(PushI, subtypeSize*i); //offset
+				code.add(Add);
+				code.append(elements.get(i));
+				code.add(opcodeForStore(subtype));
+			}
+
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+		}
+		
+		
+		private void generateCodeForEmptyArrayCreation(ArrayNode node) {
+			ASMCodeFragment arrayLengthCodeFragment = removeValueCode(node.child(1));
+
+			int header_typeIdentifier_byteConsumption = 4;
+			int header_status_byteConsumption = 4;
+			int header_subtypeSize_byteConsumption = 4;
+			int header_length_byteConsumption = 4;
+
+			Type subtype = node.getType().getSubtype();
+			int subtypeSize = subtype.getSize();
+
+			newValueCode(node);
+			int headerSize = header_typeIdentifier_byteConsumption
+					+ header_status_byteConsumption
+					+ header_subtypeSize_byteConsumption
+					+ header_length_byteConsumption;
+
+			
+			Labeller labeller = new Labeller("array");
+			String pointerLabel = labeller.newLabel("pointer");
+			String indexLabel = labeller.newLabel("index");
+			String loopConditionLabel = labeller.newLabel("loopCondition");
+			String endLoopLabel = labeller.newLabel("endLoop"); 
+			String zeroesDataLabel = labeller.newLabel("zeroesData");
+
+			
+			// check if number of elements is negative. If negative, throw a runtime error. 
+			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
+			code.add(JumpNeg, RunTime.ARRAY_NEGATIVE_NUMBER_OF_ELEMENTS); 
+			
+			
+			
+			// Allocate memory for the array
+			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
+			code.add(PushI, subtypeSize);
+			code.add(Multiply);
+			code.add(PushI, headerSize); 
+			code.add(Add); 
+			code.add(Call, MemoryManager.MEM_MANAGER_ALLOCATE);
+			
+			
+			//Store header data
+			code.add(DLabel, pointerLabel);
+			code.add(DataZ, 4);
+			code.add(PushD, pointerLabel);
+			code.add(Exchange);
+			code.add(StoreI);
+
+			//storing type identifier:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 0); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			code.add(PushI, 5); //stack: [... addr] -> [... addr 5]
+			code.add(StoreI); 			//store 5 into the address
+			
+			//storing status:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 4); //offset (fixed)
+			code.add(Add); 				//base address + offset
+			if(subtype instanceof PrimitiveType) {
+				code.add(PushI, 0);
+			}
+			else {
+				code.add(PushI, 2);
+			}
+			code.add(StoreI);
+
+			//storing subtype size:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 8);
+			code.add(Add);
+			code.add(PushI, subtypeSize);
+			code.add(StoreI);
+
+
+			//storing length (number of elements)
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 12);
+			code.add(Add);
+			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
+			code.add(StoreI);
+
+
+			// LOOP: Store all 0's bits in the array ///////////////////////////////////////////////
+			// make zeroes data in memory:
+			code.add(DLabel, zeroesDataLabel);
+			code.add(DataZ, subtypeSize); 
+			
+			
+			// declare int i=0:
+			code.add(DLabel, indexLabel);
+			code.add(DataZ, PrimitiveType.INTEGER.getSize());
+			
+			
+			// while condition: i < arrayLength
+			code.add(Label, loopConditionLabel);
+			code.add(PushD, indexLabel);
+			code.add(LoadI); 		// [... i]
+
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 12);
+			code.add(Add);
+			code.add(LoadI); 		// [... i arrayLength]
+			
+			code.add(Subtract);		// [... i - arrayLength]
+			code.add(JumpFalse, endLoopLabel);  // [...]
+			
+			//entering while loop body:
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, headerSize);
+			code.add(Add);				// [... baseAddress+headerSize]
+
+
+			code.add(PushD, indexLabel);
+			code.add(LoadI); 		// [... baseAddress+headerSize   i]
+
+
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+			code.add(PushI, 8);
+			code.add(Add);
+			code.add(LoadI); 		// [... baseAddress+headerSize   i   subtypeSize]
+			
+			code.add(Multiply);		// [... baseAddress+headerSize   i*subtypeSize]
+			code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
+			
+			code.add(PushD, zeroesDataLabel); 
+			turnAddressIntoValue(subtype); 	// [... baseAddress+headerSize + i*subtypeSize   0]
+			code.add(opcodeForStore(subtype));
+			
+			
+			//increment i:
+			incrementInteger(code, indexLabel);
+			code.add(Jump, loopConditionLabel);
+			code.add(Label, endLoopLabel);
+			
+			
+			//final step ////////////////
+			code.add(PushD, pointerLabel);
+			code.add(LoadI); 			//loads the base address of the array
+		}
+		
+		
+		private void turnAddressIntoValue(Type type) {
+			if(type == PrimitiveType.INTEGER) {
+				code.add(LoadI);
+			}
+			else if(type == ReferenceType.STRING) {
+				code.add(LoadI);
+			}
+			else if(type == PrimitiveType.FLOAT) {
+				code.add(LoadF);
+			}
+			else if(type == PrimitiveType.BOOLEAN) {
+				code.add(LoadC);
+			}
+			else if(type == PrimitiveType.CHARACTER) {
+				code.add(LoadC);
+			}
+			else if(type instanceof Array) {
+				code.add(LoadI);
+			}
+			else {
+				assert false : "setting zeroes for empty array creation: cannot turn address into value.";
+			}
+		}
+
+
+
+		@Override
+		public void visitLeave(TargetableArrayReferenceNode node) {
+			Type subType = node.child(0).getType().getSubtype();
+
+			Labeller labeller = new Labeller("array-indexing");
+			String baseAddressLabel = labeller.newLabel("baseAddress");
+			String indexLabel = labeller.newLabel("index");
+
+
+			newAddressCode(node);
+			ASMCodeFragment arg1 = removeValueCode(node.child(0));
+			ASMCodeFragment arg2 = removeValueCode(node.child(1));
+
+
+			// storing array base address into a temp memory location:
+			code.append(arg1); 			// [... baseAddress]
+			code.add(DLabel, baseAddressLabel);
+			code.add(DataI, 0); //clear 4 bytes with all zeroes
+			code.add(PushD, baseAddressLabel);
+			code.add(Exchange);
+			code.add(StoreI); 			// [...]
+
+
+			//storing index i into a temp memory location:
+			code.append(arg2);			// [... i]
+			code.add(DLabel, indexLabel);
+			code.add(DataI, 0); //clear 4 bytes with all zeroes
+			code.add(PushD, indexLabel);
+			code.add(Exchange);
+			code.add(StoreI); 			// [...]
+
+
+			// start: index validation -------------------------------------------------------------
+			//first, check if i < 0. If yes, throw runtime error. 
+			loadIFrom(code, indexLabel);		// [... i]
+			code.add(JumpNeg, RunTime.ARRAY_INDEX_OUT_OF_BOUNDS);
+
+			//second, check if i >= arrayLength. If yes, throw runtime error.
+			loadIFrom(code, indexLabel);		// [... i]
+
+			code.add(PushD, baseAddressLabel);
+			code.add(LoadI); 					// [... i, baseAddress]
+			code.add(PushI, 12);
+			code.add(Add);						// [... i, baseAddress+12]
+			code.add(LoadI); 					// [... i, arrayLength]
+
+			code.add(Subtract); 				// [... i - arrayLength]
+			code.add(Duplicate); 				// [... i - arrayLength, 	i - arrayLength]
+			code.add(JumpFalse, RunTime.ARRAY_INDEX_OUT_OF_BOUNDS); 	// [... i - arrayLength]	
+			code.add(JumpPos, RunTime.ARRAY_INDEX_OUT_OF_BOUNDS); 		// [...]
+			// end : index validation ---------------------------------------------------------------
+
+
+			//start accessing the indexed location:
+			code.add(PushD, baseAddressLabel);
+			code.add(LoadI); 			// [... baseAddress]
+			code.add(PushI, ARRAY_HEADER_SIZE);
+			code.add(Add);				// [... baseAddress+headerSize]
+			loadIFrom(code, indexLabel); 			// [... baseAddress+headerSize, i]
+
+			code.add(PushD, baseAddressLabel);
+			code.add(LoadI); 			// [... baseAddress+headerSize,   i,	baseAddress]
+			code.add(PushI, 8);
+			code.add(Add);
+			code.add(LoadI); 		// [... baseAddress+headerSize,   i,   subtypeSize]
+
+			code.add(Multiply); 	// [... baseAddress+headerSize,   i*subtypeSize]
+			code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
+		}
+
+		
+		
+		
 		///////////////////////////////////////////////////////////////////////////
 		// leaf nodes (ErrorNode not necessary)
 		public void visit(BooleanConstantNode node) {
@@ -498,7 +1081,7 @@ public class ASMCodeGenerator {
 			code.add(PushI, node.getValue());
 		}
 		public void visit(StringConstantNode node) {
-			newValueCode(node);
+			newValueCode(node); 
 
 			String strAddressLabel ="_string_" + StringConstantNode.getCounter() + "_";
 			code.add(DLabel, strAddressLabel);

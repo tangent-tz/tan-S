@@ -1,0 +1,4 @@
+main {
+	const AA := [17, 22, 3.14, 10];
+	print AA \n;
+}

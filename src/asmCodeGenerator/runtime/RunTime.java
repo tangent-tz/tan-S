@@ -5,6 +5,7 @@ import asmCodeGenerator.codeStorage.ASMCodeFragment;
 public class RunTime {
 	public static final String EAT_LOCATION_ZERO      = "$eat-location-zero";		// helps us distinguish null pointers from real ones.
 	public static final String INTEGER_PRINT_FORMAT   = "$print-format-integer";
+	public static final String PRINT_ARRAY_FORMAT     = "$print-format-array";
 	public static final String BOOLEAN_PRINT_FORMAT   = "$print-format-boolean";
 	public static final String FLOAT_PRINT_FORMAT     = "$print-format-float";
 	public static final String CHARACTER_PRINT_FORMAT = "$print-format-character";
@@ -21,9 +22,12 @@ public class RunTime {
 	public static final String GENERAL_RUNTIME_ERROR = "$$general-runtime-error";
 	public static final String INTEGER_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$i-divide-by-zero";
 	public static final String FLOAT_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$f-divide-by-zero";
+	public static final String ARRAY_NEGATIVE_NUMBER_OF_ELEMENTS = "$$-array-negative-number-of-elements";
+	public static final String ARRAY_INDEX_OUT_OF_BOUNDS = "$$-array-index-out-of-bounds";
 
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
+		result.append(MemoryManager.codeForInitialization()); //todo: added this line here by trial and error. And somehow, it works. May need further investigation.
 		result.append(jumpToMain());
 		result.append(stringsForPrintf());
 		result.append(runtimeErrors());
@@ -61,6 +65,8 @@ public class RunTime {
 		frag.add(DataS, "true");
 		frag.add(DLabel, BOOLEAN_FALSE_STRING);
 		frag.add(DataS, "false");
+		frag.add(DLabel, PRINT_ARRAY_FORMAT);
+		frag.add(DataS, "%s");
 		
 		return frag;
 	}
@@ -72,6 +78,8 @@ public class RunTime {
 		generalRuntimeError(frag);
 		integerDivideByZeroError(frag);
 		floatDivideByZeroError(frag);
+		arrayNegativeNumberOfElements(frag);
+		arrayIndexOutOfBounds(frag);
 		
 		return frag;
 	}
@@ -108,6 +116,30 @@ public class RunTime {
 		frag.add(PushD, floatDivideByZeroMessage);
 		frag.add(Jump, GENERAL_RUNTIME_ERROR);
 	}
+	
+	private void arrayNegativeNumberOfElements(ASMCodeFragment frag) {
+		String arrayNegativeNumberOfElementsMessage = "$errors-array-negative-number-of-elements";
+
+		frag.add(DLabel, arrayNegativeNumberOfElementsMessage);
+		frag.add(DataS, "array created with negative number of elements");
+
+		frag.add(Label, ARRAY_NEGATIVE_NUMBER_OF_ELEMENTS);
+		frag.add(PushD, arrayNegativeNumberOfElementsMessage);
+		frag.add(Jump, GENERAL_RUNTIME_ERROR);
+	}
+
+	private void arrayIndexOutOfBounds(ASMCodeFragment frag) {
+		String arrayIndexOutOfBoundsMessage = "$errors-array-index-out-of-bounds";
+
+		frag.add(DLabel, arrayIndexOutOfBoundsMessage);
+		frag.add(DataS, "array index out of bounds");
+
+		frag.add(Label, ARRAY_INDEX_OUT_OF_BOUNDS);
+		frag.add(PushD, arrayIndexOutOfBoundsMessage);
+		frag.add(Jump, GENERAL_RUNTIME_ERROR);
+	}
+	
+	
 	
 	
 	public static ASMCodeFragment getEnvironment() {

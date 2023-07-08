@@ -1,5 +1,0 @@
-main {
-	var integer := 11;
-	integer := true;
-	print integer \s true \n;
-}

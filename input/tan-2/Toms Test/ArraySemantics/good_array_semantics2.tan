@@ -1,0 +1,6 @@
+main {
+	const farm := [18, 71];
+	const cow := farm;
+	cow[1] := 70;
+	print farm \s cow \n;
+}
