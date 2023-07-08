@@ -404,7 +404,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		else if(highestLevel == 1 && isPromotable){
 			node.setType(new Array(PrimitiveType.INTEGER, node.nChildren()));
 		}
-		else if(highestLevel == -1){
+		else if(highestLevel == -1 && isPromotable){
 			logError("types do not match in array creation");
 		}
 		else{
