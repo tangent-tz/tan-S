@@ -115,6 +115,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Type identifierType = identifier.getType();
 		Type expressionType = expression.getType();
 
+
 		int isPromotable = promotableTypesAssignment(childTypes); // check if we can promote
 
 		if(!(expressionType.equivalent(identifierType)) && isPromotable !=0 && !isIdentifier(expression)) { // are lvalue and rvalue not same type, is it promotable, is rValue not identifier node,
@@ -126,7 +127,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 				visitLeave(node);
 			}
 		}
-		else if (isPromotable == 0){ //
+		else if (isPromotable == 0 && !(expressionType.equivalent(identifierType))){ //
 			logError("types do not match in AssignmentStatement"); //
 			return;
 		}
