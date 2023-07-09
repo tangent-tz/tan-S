@@ -673,6 +673,7 @@ public class ASMCodeGenerator {
 
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
+			//code.add(PStack);
 		}
 		
 		
