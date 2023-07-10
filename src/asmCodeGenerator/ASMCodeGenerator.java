@@ -693,12 +693,13 @@ public class ASMCodeGenerator {
 			return node.getType() == PrimitiveType.BOOLEAN;
 		}
 
-		public boolean isMultidimensional(ParseNode node){
-			for(int i = 0; i < node.nChildren(); i++){
+		public boolean isMultidimensional(ParseNode node) {
+			for (int i = 0; i < node.nChildren(); i++) {
 				ParseNode child = node.child(i);
-				Type test = child.getType();
-				if(!(child.getType() instanceof PrimitiveType) || !(child.getType() instanceof ReferenceType))
+				Type type = child.getType();
+				if (type != PrimitiveType.INTEGER) {
 					return true;
+				}
 			}
 			return false;
 		}
@@ -815,7 +816,7 @@ public class ASMCodeGenerator {
 
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			//code.add(PStack);
+		//	code.add(PStack);
 		}
 		
 		

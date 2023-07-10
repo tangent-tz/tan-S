@@ -99,8 +99,8 @@ public class PrintStatementGenerator {
 		code.append(visitor.removeValueCode(node));
 		createAndSaveAddressToLabel(baseArray);
 
-		isMultiDimension(checkMultiExit);
 		code.add(JumpNeg, "print-OneD-Array");
+
 
 
 
