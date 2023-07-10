@@ -22,6 +22,8 @@ import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.runtime.RunTime;
 
 
+import java.lang.reflect.AccessibleObject;
+
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
 public class PrintStatementGenerator {
@@ -72,10 +74,9 @@ public class PrintStatementGenerator {
 
 		code.add(PushI, 2);
 		code.add(Subtract);
-		code.add(Duplicate);
 	}
 
-	private void createLabel(String label){
+	private void createAndSaveAddressToLabel(String label){
 		code.add(DLabel, label);
 		code.add(DataZ, 4);
 		code.add(PushD, label);
@@ -91,145 +92,84 @@ public class PrintStatementGenerator {
 	private void appendArrayPrintCode(ParseNode node){
 		Labeller labeller = new Labeller("arrayPrinter");
 		String baseArray = labeller.newLabel("baseAddress");
-		String multiDimension = labeller.newLabel("multiDimensional");
-		String notMultiDimension = labeller.newLabel("notMultiDimensional");
-		String joinLabel  = labeller.newLabel("join");
+		String checkMultiExit = labeller.newLabel("isMultiExit");
+		Type type = node.getType().getSubtype();
+
 		code.append(visitor.removeValueCode(node));
-		//code.add(PStack);
-		createLabel(baseArray);
-		isMultiDimension(baseArray); // returns 0 on stack if true, else other value=false
-		code.add(Jump, notMultiDimension);
-		printOneDimensional(notMultiDimension, joinLabel);
-		code.add(Label, joinLabel);
+		createAndSaveAddressToLabel(baseArray);
+
+		isMultiDimension(checkMultiExit); // returns 0 on stack if true, else other value=false
+		code.add(JumpNeg, "print-OneD-Array");
 
 
+
+
+		code.add(Label, "print-OneD-Array");
+		printOneDimensional(baseArray, type);
 
 	}
 
-	private void printOneDimensional(String notMultiDimension, String joinLabel){
-		code.add(Label, notMultiDimension);
-		code.add(PushI, 55);
-		code.add(Jump,joinLabel);
+	private void printOneDimensional(String baseAddress, Type subtype){
+
+		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
+		code.add(PushI, 0);
+		code.add(Label, "startLoop");//[0] --> [1]-->[2]
+		code.add(Duplicate);//[0,0] -->[1,1]--[2,2]
+		getLength(baseAddress);//[0,0,3] --> [1,1,3]-->[2,2,3]
+		code.add(Subtract);//[0,-3] -->[1,-2]-->[2,-1]
+		code.add(JumpFalse, "exit");//[0]-->[1]-->[2]
+
+		////
+		printElements(baseAddress, subtype);
+
+		//////
+
+		code.add(PushI, 1);//[0,1] -->[1,1]
+		code.add(Add);//[1]-->[2]
+
+		printDelimiter(baseAddress);
+		code.add(Jump, "startLoop");//[1]-->[2]
+		code.add(Label, "exit");
+		appendArrayFormatterPrintCode(ARRAY_FORMATTER_CLOSE_BRACKET);
+
 	}
 
-	
-//	private void appendArrayPrintCode(ParseNode node) {
-//		if(!(node.getType() instanceof Array)) {
-//			return;
-//		}
-//
-//		Type subtype = node.getType().getSubtype();
-//
-//
-//		int header_typeIdentifier_byteConsumption = 4;
-//		int header_status_byteConsumption = 4;
-//		int header_subtypeSize_byteConsumption = 4;
-//		int header_length_byteConsumption = 4;
-//
-//		int headerSize = header_typeIdentifier_byteConsumption
-//				+ header_status_byteConsumption
-//				+ header_subtypeSize_byteConsumption
-//				+ header_length_byteConsumption;
-//
-//		String format = printFormat(subtype);
-//		Labeller labeller = new Labeller("tempHolder");
-//		String pointerLabel = labeller.newLabel("pointer");
-//		String indexLabel = labeller.newLabel("index");
-//		String loopConditionLabel = labeller.newLabel("loopCondition");
-//		String noNeedDelimiterLabel = labeller.newLabel("noNeedDelimiter");
-//		String endLoopLabel = labeller.newLabel("endLoop");
-//
-//
-//		code.append(visitor.removeValueCode(node));
-//
-//		code.add(DLabel, pointerLabel);
-//		code.add(DataI, 0); //clear 4 bytes with all zeroes
-//		code.add(PushD, pointerLabel);
-//		code.add(Exchange);
-//		code.add(StoreI);
-//
-//		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
-//
-//
-//		// START LOOP ////////////////////////////////////////////////////////////
-//		// print each element in the array:
-//		// declare int i=0:
-//		code.add(DLabel, indexLabel);
-//		code.add(DataZ, 4);
-//
-//
-//		// while condition: i < arrayLength
-//		code.add(Label, loopConditionLabel);
-//		code.add(PushD, indexLabel);
-//		code.add(LoadI); 		// [... i]
-//
-//		code.add(PushD, pointerLabel);
-//		code.add(LoadI); 			//loads the base address of the array
-//		code.add(PushI, 12);
-//		code.add(Add);
-//		code.add(LoadI); 		// [... i arrayLength]
-//
-//		code.add(Subtract);		// [... i - arrayLength]
-//		code.add(JumpFalse, endLoopLabel);  // [...]
-//
-//		//entering while loop body:
-//		code.add(PushD, pointerLabel);
-//		code.add(LoadI); 			//loads the base address of the array
-//		code.add(PushI, headerSize);
-//		code.add(Add);				// [... baseAddress+headerSize]
-//
-//
-//		code.add(PushD, indexLabel);
-//		code.add(LoadI); 		// [... baseAddress+headerSize   i]
-//
-//
-//		code.add(PushD, pointerLabel);
-//		code.add(LoadI); 			//loads the base address of the array
-//		code.add(PushI, 8);
-//		code.add(Add);
-//		code.add(LoadI); 		// [... baseAddress+headerSize   i   subtypeSize]
-//
-//		code.add(Multiply);		// [... baseAddress+headerSize   i*subtypeSize]
-//		code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
-//
-//		turnAddressIntoValue(subtype);	// [... value]
-//		convertToStringIfBoolean(subtype);
-//		convertToStringValueIfString(subtype);
-//		code.add(PushD, format);
-//		code.add(Printf);
-//
-//
-//		// START : IF CONDITION FOR DELIMITER /////////////////////////////////////////////////////
-//		// print a delimiter after each element in the array, except for the last element:
-//		// if condition: (i != arrayLength-1)
-//		loadIFrom(code, indexLabel);  // [... i]
-//
-//		code.add(PushD, pointerLabel);
-//		code.add(LoadI); 			//loads the base address of the array
-//		code.add(PushI, 12);
-//		code.add(Add);
-//		code.add(LoadI); 		// [... i arrayLength]
-//
-//		code.add(PushI, 1);  	// [... i, arrayLength, 1]
-//		code.add(Subtract); 			// [... i, arrayLength - 1]
-//
-//		code.add(Subtract); 			// [... i - (arrayLength - 1)]
-//		code.add(JumpFalse, noNeedDelimiterLabel);
-//		appendArrayFormatterPrintCode(ARRAY_FORMATTER_DELIMITER);
-//
-//		code.add(Label, noNeedDelimiterLabel);
-//		// END : IF CONDITION FOR DELIMITER /////////////////////////////////////////////////////
-//
-//
-//		//increment i:
-//		incrementInteger(code, indexLabel);
-//		code.add(Jump, loopConditionLabel);
-//		code.add(Label, endLoopLabel);
-//		// END LOOP ////////////////////////////////////////////////////////////
-//
-//		appendArrayFormatterPrintCode(ARRAY_FORMATTER_CLOSE_BRACKET);
-//
-//	}
+	private void printDelimiter(String baseAddress){
+		//Needs, loop count on top of stack to work, loop starts from 1 to <= array size
+		code.add(Duplicate);//[1,1]
+		getLength(baseAddress);//[1,1,3]
+		code.add(Subtract);//[1,-2]
+		code.add(JumpTrue, "printDelimiter");
+		code.add(Jump, "delimiterExit");
+		code.add(Label, "printDelimiter");
+		appendArrayFormatterPrintCode(ARRAY_FORMATTER_DELIMITER);
+		code.add(Label, "delimiterExit");
+	}
+
+	private void printElements(String baseAddress, Type subtype) {
+		code.add(Duplicate);//[1,1]
+		loadAddress(baseAddress);//[1,1, address]
+		code.add(PushI, 16); //[1,1,address, 16];
+		code.add(Add);//[1,1,address+16]
+		code.add(Exchange);//[1,address+16,1]
+		code.add(PushI, 4);//[1,address+16,1,4]
+		code.add(Multiply);//[1,address+16,4]
+		code.add(Add);
+		turnAddressIntoValue(subtype);
+		String format = printFormat(subtype);
+		convertToStringIfBoolean(subtype);
+		convertToStringValueIfString(subtype);
+		code.add(PushD, format);
+		code.add(Printf);
+	}
+
+	private void getLength(String baseAddress){
+		loadAddress(baseAddress);
+		code.add(PushI,12);
+		code.add(Add);
+		code.add(LoadI);
+	}
+
 	private void turnAddressIntoValue(Type type) {
 		if(type == PrimitiveType.INTEGER) {
 			code.add(LoadI);
@@ -264,8 +204,10 @@ public class PrintStatementGenerator {
 		code.add(PushI, c); 
 		code.add(PushD, format); 
 		code.add(Printf);
-		
-		appendArraySpacingPrintCode();
+
+		if(c != ARRAY_FORMATTER_CLOSE_BRACKET) {
+			appendArraySpacingPrintCode();
+		}
 	}
 	private void appendArraySpacingPrintCode() {
 		String format = printFormat(PrimitiveType.CHARACTER);
