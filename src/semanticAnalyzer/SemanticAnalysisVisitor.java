@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
+import com.sun.source.tree.InstanceOfTree;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
 import lexicalAnalyzer.Punctuator;
@@ -398,13 +399,13 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		boolean isPromotable = promoteCandidateArray(node);
 		int highestLevel = checkHighestPromotableArray(node);
 
-		if(highestLevel == 2 && isPromotable){
+		if(highestLevel == 2 && isPromotable && childTypes.get(0) instanceof PrimitiveType){
 			node.setType(new Array(PrimitiveType.FLOAT, node.nChildren()));
 		}
-		else if(highestLevel == 1 && isPromotable){
+		else if(highestLevel == 1 && isPromotable  && childTypes.get(0) instanceof PrimitiveType){
 			node.setType(new Array(PrimitiveType.INTEGER, node.nChildren()));
 		}
-		else if(highestLevel == -1 && isPromotable){
+		else if(highestLevel == -1 && isPromotable && childTypes.get(0) instanceof PrimitiveType){
 			logError("types do not match in array creation");
 		}
 		else{

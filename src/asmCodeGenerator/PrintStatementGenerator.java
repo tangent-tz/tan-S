@@ -93,6 +93,7 @@ public class PrintStatementGenerator {
 		Labeller labeller = new Labeller("arrayPrinter");
 		String baseArray = labeller.newLabel("baseAddress");
 		String checkMultiExit = labeller.newLabel("isMultiExit");
+		String joinLabel = labeller.newLabel("join");
 		Type type = node.getType().getSubtype();
 
 		code.append(visitor.removeValueCode(node));
@@ -100,13 +101,13 @@ public class PrintStatementGenerator {
 
 		isMultiDimension(checkMultiExit);
 		code.add(JumpNeg, "print-OneD-Array");
-		code.add(Jump, "print-ND-Array");
 
 
 
 
 		code.add(Label, "print-OneD-Array");
 		printOneDimensional(baseArray, type);
+
 
 	}
 
