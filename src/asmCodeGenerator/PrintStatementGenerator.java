@@ -98,8 +98,9 @@ public class PrintStatementGenerator {
 		code.append(visitor.removeValueCode(node));
 		createAndSaveAddressToLabel(baseArray);
 
-		isMultiDimension(checkMultiExit); // returns 0 on stack if true, else other value=false
+		isMultiDimension(checkMultiExit);
 		code.add(JumpNeg, "print-OneD-Array");
+		code.add(Jump, "print-ND-Array");
 
 
 
@@ -113,22 +114,19 @@ public class PrintStatementGenerator {
 
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
 		code.add(PushI, 0);
-		code.add(Label, "startLoop");//[0] --> [1]-->[2]
-		code.add(Duplicate);//[0,0] -->[1,1]--[2,2]
-		getLength(baseAddress);//[0,0,3] --> [1,1,3]-->[2,2,3]
-		code.add(Subtract);//[0,-3] -->[1,-2]-->[2,-1]
-		code.add(JumpFalse, "exit");//[0]-->[1]-->[2]
+		code.add(Label, "startLoop");
+		code.add(Duplicate);
+		getLength(baseAddress);
+		code.add(Subtract);
+		code.add(JumpFalse, "exit");
 
-		////
 		printElements(baseAddress, subtype);
 
-		//////
-
-		code.add(PushI, 1);//[0,1] -->[1,1]
-		code.add(Add);//[1]-->[2]
+		code.add(PushI, 1);
+		code.add(Add);
 
 		printDelimiter(baseAddress);
-		code.add(Jump, "startLoop");//[1]-->[2]
+		code.add(Jump, "startLoop");
 		code.add(Label, "exit");
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_CLOSE_BRACKET);
 
@@ -152,7 +150,7 @@ public class PrintStatementGenerator {
 		code.add(PushI, 16); //[1,1,address, 16];
 		code.add(Add);//[1,1,address+16]
 		code.add(Exchange);//[1,address+16,1]
-		code.add(PushI, 4);//[1,address+16,1,4]
+		code.add(PushI, subtype.getSize());//[1,address+16,1,4]
 		code.add(Multiply);//[1,address+16,4]
 		code.add(Add);
 		turnAddressIntoValue(subtype);
