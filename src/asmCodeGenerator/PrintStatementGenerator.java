@@ -76,6 +76,31 @@ public class PrintStatementGenerator {
 		code.add(Subtract);
 	}
 
+	private void isArray(){
+		createAndSaveAddressToLabel("isArray");
+		loadAddress("isArray");
+		code.add(PushI, 0);
+		code.add(Add);
+		code.add(LoadI);//[5]
+
+
+		code.add(PushI, 5);
+		code.add(Subtract);
+
+
+
+
+		loadAddress("isArray");
+		code.add(PushI, 4);
+		code.add(Add);
+		code.add(LoadI);//[5]
+		code.add(PushI, 2);
+		code.add(Subtract);
+		code.add(Add);
+		code.add(PushI, 2);
+		code.add(Add);
+	}
+
 	private void createAndSaveAddressToLabel(String label){
 		code.add(DLabel, label);
 		code.add(DataZ, 4);
@@ -92,41 +117,34 @@ public class PrintStatementGenerator {
 	private void appendArrayPrintCode(ParseNode node){
 		Labeller labeller = new Labeller("arrayPrinter");
 		String baseArray = labeller.newLabel("baseAddress");
-		String checkMultiExit = labeller.newLabel("isMultiExit");
-		String joinLabel = labeller.newLabel("join");
 		Type type = node.getType().getSubtype();
 
 		code.append(visitor.removeValueCode(node));
 		createAndSaveAddressToLabel(baseArray);
-
-		code.add(JumpNeg, "print-OneD-Array");
-
-
-
-
-
-		code.add(Label, "print-OneD-Array");
-		printOneDimensional(baseArray, type);
-
+		loadAddress(baseArray);
+		printOneDimensional(type, labeller);
 
 	}
 
-	private void printOneDimensional(String baseAddress, Type subtype){
+	private void printOneDimensional(Type subtype, Labeller labeller){
 
+		String subBaseAddress = labeller.newLabel("subBaseAddress");
+		code.add(Label, "printArray");
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
+		createAndSaveAddressToLabel(subBaseAddress);
 		code.add(PushI, 0);
 		code.add(Label, "startLoop");
 		code.add(Duplicate);
-		getLength(baseAddress);
+		getLength(subBaseAddress);
 		code.add(Subtract);
 		code.add(JumpFalse, "exit");
 
-		printElements(baseAddress, subtype);
+		printElements(subBaseAddress, subtype, labeller);
 
 		code.add(PushI, 1);
 		code.add(Add);
 
-		printDelimiter(baseAddress);
+		printDelimiter(subBaseAddress);
 		code.add(Jump, "startLoop");
 		code.add(Label, "exit");
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_CLOSE_BRACKET);
@@ -145,22 +163,32 @@ public class PrintStatementGenerator {
 		code.add(Label, "delimiterExit");
 	}
 
-	private void printElements(String baseAddress, Type subtype) {
-		code.add(Duplicate);//[1,1]
-		loadAddress(baseAddress);//[1,1, address]
-		code.add(PushI, 16); //[1,1,address, 16];
-		code.add(Add);//[1,1,address+16]
-		code.add(Exchange);//[1,address+16,1]
-		code.add(PushI, subtype.getSize());//[1,address+16,1,4]
-		code.add(Multiply);//[1,address+16,4]
+	private void printElements(String subBaseAddress, Type subtype, Labeller labeller) {
+		String returnLabel = labeller.newLabel("return");
+		code.add(Duplicate);
+		loadAddress(subBaseAddress);
+		code.add(PushI, 16);
+		code.add(Add);
+		code.add(Exchange);
+		code.add(PushI, subtype.getSize());
+		code.add(Multiply);
 		code.add(Add);
 		turnAddressIntoValue(subtype);
+		code.add(Duplicate);
+		isArray();
+
+		code.add(JumpFalse, "printArray");
+
+		code.add(Label, returnLabel); // Add a new label here
+
+
 		String format = printFormat(subtype);
 		convertToStringIfBoolean(subtype);
 		convertToStringValueIfString(subtype);
 		code.add(PushD, format);
 		code.add(Printf);
 	}
+
 
 	private void getLength(String baseAddress){
 		loadAddress(baseAddress);
