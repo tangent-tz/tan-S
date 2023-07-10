@@ -1,2 +1,1 @@
-Expected output:
-17
+17 17

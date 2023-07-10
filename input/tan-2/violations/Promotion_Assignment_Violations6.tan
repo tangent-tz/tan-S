@@ -1,0 +1,10 @@
+main{
+
+    #Assign Boolean to Float
+    var AssignmentVar1 := 1; #interger
+    var AssignmentVar2 := 4.3; #float
+    var AssignmentVar0 := 'a'; #character
+    var AssignmentVar := true; #boolean
+
+    AssignmentVar2 := AssignmentVar;
+}

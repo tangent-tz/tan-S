@@ -35,6 +35,9 @@ main {
     print a1 \n; 
     print a2 \n; 
     
+    
+    const AA := ['a', 14, 'c', 'd', 'e'];
+    print AA \n;
 
     
     

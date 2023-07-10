@@ -92,7 +92,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.ERROR);
 			return;
 		}
-		
+
 		if(node.child(0) instanceof IdentifierNode) {
 			typeCheckAssignment_Identifier(node);
 		}
@@ -100,7 +100,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			typeCheckAssignment_ArrayReference(node);
 		}
 	}
-	
+
 	private void typeCheckAssignment_Identifier(AssignmentStatementNode node) {
 		List<Type> childTypes = new ArrayList<>();
 
@@ -115,18 +115,21 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Type identifierType = identifier.getType();
 		Type expressionType = expression.getType();
 
-		if (!(expressionType.equivalent(identifierType))) {
-			if (promotableTypesAssignment(childTypes) != 0) {
-				if (promotableTypesAssignment(childTypes) == 1) {
-					promoteCharacter(node);
-				} else if (promotableTypesAssignment(childTypes) == 2) {
-					promoteInteger(node);
-				}
+
+		int isPromotable = promotableTypesAssignment(childTypes); // check if we can promote
+
+		if(!(expressionType.equivalent(identifierType)) && isPromotable !=0 && !isIdentifier(expression)) { // are lvalue and rvalue not same type, is it promotable, is rValue not identifier node,
+			if (isPromotable == 1) { // promote char to int
+				promoteCharacter(node);
 				visitLeave(node);
-			} else {
-				logError("types do not match in AssignmentStatement");
-				return;
+			} else if (isPromotable == 2) { //promote int to float
+				promoteInteger(node);
+				visitLeave(node);
 			}
+		}
+		else if (isPromotable == 0 && !(expressionType.equivalent(identifierType))){ //
+			logError("types do not match in AssignmentStatement"); //
+			return;
 		}
 		if (identifier.getBinding().isConstant()) {
 			logError("re-assignment to a const identifier, previously declared at location: " + identifier.getBinding().getLocation());
@@ -135,9 +138,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 		node.setType(identifierType);
 	}
-	
+
 	private void typeCheckAssignment_ArrayReference(AssignmentStatementNode node) {
-		List<Type> childTypes = Arrays.asList(node.child(0).getType(), node.child(1).getType()); 
+		List<Type> childTypes = Arrays.asList(node.child(0).getType(), node.child(1).getType());
 
 		TargetableArrayReferenceNode target = (TargetableArrayReferenceNode) (node.child(0));
 		ParseNode expression = node.child(1);
@@ -161,10 +164,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 		node.setType(targetType);
 	}
-	
-	
-	
-	
+
+
+
+
 
 
 	// blockStatement
@@ -229,7 +232,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(signature.resultType().concreteType());
 			node.setSignature(signature); 
 		}
-		else if(operator != Punctuator.INDEXING && childTypes.get(0) instanceof PrimitiveType && promotableTypes(childTypes) != 0) {
+		else if(operator != Punctuator.INDEXING && operator != Keyword.LENGTH && childTypes.get(0) instanceof PrimitiveType && promotableTypes(childTypes) != 0) {
 			if (promotableTypes(childTypes) == 1) {
 				promoteCharacter(node);
 			} else if (promotableTypes(childTypes) == 2) {
@@ -330,7 +333,53 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	
 	///////////////////////////////////////////////////////////
 	// array
-	
+	public int checkHighestPromotableArray(ParseNode node) {
+		int promoteLevelFlag = 0;
+
+		for (int i = 0; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
+			if (isFloat(child)) {
+				promoteLevelFlag = 2;
+			} else if (isInteger(child)) {
+				promoteLevelFlag = Math.max(promoteLevelFlag, 1);
+			} else if (isCharacter(child)) {
+				promoteLevelFlag = Math.max(promoteLevelFlag, 0);
+			}
+		}
+		for (int i = 0; i < node.nChildren(); i++){
+			ParseNode child = node.child(i);
+			if (isBoolean(child)) {
+				promoteLevelFlag = -1;
+			}
+		}
+		return promoteLevelFlag;
+	}
+
+	public boolean promoteCandidateArray(ParseNode node){
+		Type type = node.child(0).getType();
+		for (int i = 1; i < node.nChildren(); i++) {
+			ParseNode child = node.child(i);
+			if(type != child.getType()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isFloat(ParseNode node){
+		return node.getType() == PrimitiveType.FLOAT;
+	}
+	public boolean isCharacter(ParseNode node){
+		return node.getType() == PrimitiveType.CHARACTER;
+	}
+	public boolean isInteger(ParseNode node){
+		return node.getType() == PrimitiveType.INTEGER;
+	}
+	public boolean isBoolean(ParseNode node){
+		return node.getType() == PrimitiveType.BOOLEAN;
+	}
+
+
 	@Override
 	public void visitLeave(ArrayNode node) {
 		assert(node.nChildren() >= 1); 
@@ -346,10 +395,24 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		for(int i=0; i < node.nChildren(); i++) {
 			childTypes.add(node.child(i).getType());
 		}
+		boolean isPromotable = promoteCandidateArray(node);
+		int highestLevel = checkHighestPromotableArray(node);
+
+		if(highestLevel == 2 && isPromotable){
+			node.setType(new Array(PrimitiveType.FLOAT, node.nChildren()));
+		}
+		else if(highestLevel == 1 && isPromotable){
+			node.setType(new Array(PrimitiveType.INTEGER, node.nChildren()));
+		}
+		else if(highestLevel == -1 && isPromotable){
+			logError("types do not match in array creation");
+		}
+		else{
+			node.setType(new Array(childTypes.get(0), node.nChildren()));
+		}
+
 		
 		//todo: check child types => if different types => try promoting to one unified type
-		
-		node.setType(new Array(childTypes.get(0), node.nChildren()));
 	}
 	
 	private boolean emptyArrayCreation(ArrayNode node) {
@@ -379,8 +442,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	@Override
 	public void visitLeave(TargetableArrayReferenceNode node) {
 		assert node.nChildren() == 2;
-		
-		List<Type> childTypes = Arrays.asList(node.child(0).getType(), node.child(1).getType()); 
+
+		List<Type> childTypes = Arrays.asList(node.child(0).getType(), node.child(1).getType());
 
 		Lextant operator = operatorFor(node);
 		FunctionSignature signature = FunctionSignatures.signature(operator, childTypes);
@@ -480,5 +543,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private void logError(String message) {
 		TanLogger log = TanLogger.getLogger("compiler.semanticAnalyzer");
 		log.severe(message);
+	}
+
+	private boolean isIdentifier(ParseNode node){
+		return node instanceof IdentifierNode;
 	}
 }

@@ -9,15 +9,15 @@ main {
     print x2 \n; 
     
     var i := 0;
-    while (i < arrayLen) {
+    while (i < length x2) {
         print [x2:i] \t; 
         i := i + 1; 
     }
     print \n; 
     
-    print [x2:arrayLen-1] != 5 \n; 
-    print [x2:arrayLen-1] <= 1000000 \n; 
-    print [x2:arrayLen-1] >= 1000000 \n;
+    print [x2:length x2-1] != 5 \n; 
+    print [x2:length x2-1] <= 1000000 \n; 
+    print [x2:length x2-1] >= 1000000 \n;
     print \n; 
     
     
@@ -27,7 +27,7 @@ main {
     print x3 \n; 
     
     i := 0;
-    while (i < arrayLen) {
+    while (i < length x3) {
         print [x3:i] \t; 
         i := i + 1; 
     }
@@ -44,14 +44,14 @@ main {
     print x4 \n; 
     
     i := 0;
-    while (i < arrayLen) {
+    while (i < length x4) {
         print [x4:i] \t; 
         i := i + 1; 
     }
     print \n; 
     
-    print [x4:(arrayLen-1)] == "friday" \n;
-    print [x4:(arrayLen-1)] == [x4:(arrayLen-1)] \n; 
+    print [x4:(length x4-1)] == "friday" \n;
+    print [x4:(length x4-1)] == [x4:(arrayLen-1)] \n; 
     print \n; 
        
     
@@ -61,7 +61,7 @@ main {
     print x5 \n; 
     
     i := 0;
-    while (i < arrayLen) {
+    while (i < length x5) {
         print [x5:i] \t; 
         i := i + 1; 
     }
@@ -78,7 +78,7 @@ main {
     print x6 \n; 
     
     i := 0;
-    while (i < arrayLen) {
+    while (i < length x6) {
         print [x6:i] \t; 
         i := i + 1; 
     }
