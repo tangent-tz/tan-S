@@ -66,14 +66,14 @@ public class PrintStatementGenerator {
 		code.add(Printf);
 	}
 
-	private void isMultiDimension(String baseArray){
-		loadAddress(baseArray);
+	private void isMultiDimension(){
+		code.add(Duplicate);
+
+
 		code.add(PushI, 4);
 		code.add(Add);
 		code.add(LoadI);
 
-		code.add(PushI, 2);
-		code.add(Subtract);
 	}
 
 	private void isArray(){
@@ -97,8 +97,6 @@ public class PrintStatementGenerator {
 		code.add(PushI, 2);
 		code.add(Subtract);
 		code.add(Add);
-		code.add(PushI, 2);
-		code.add(Add);
 	}
 
 	private void createAndSaveAddressToLabel(String label){
@@ -117,37 +115,43 @@ public class PrintStatementGenerator {
 	private void appendArrayPrintCode(ParseNode node){
 		Labeller labeller = new Labeller("arrayPrinter");
 		String baseArray = labeller.newLabel("baseAddress");
+		String checkMultiExit = labeller.newLabel("isMultiExit");
+		String joinLabel = labeller.newLabel("join");
 		Type type = node.getType().getSubtype();
 
 		code.append(visitor.removeValueCode(node));
+		code.add(Label, "test");
 		createAndSaveAddressToLabel(baseArray);
-		loadAddress(baseArray);
-		printOneDimensional(type, labeller);
+//		getLength(baseArray);
+//		code.add(PStack);
+//		code.add(Pop);
 
+		printOneDimensional(baseArray, type);
 	}
 
-	private void printOneDimensional(Type subtype, Labeller labeller){
+	private void printOneDimensional(String baseAddress, Type subtype){
 
-		String subBaseAddress = labeller.newLabel("subBaseAddress");
-		code.add(Label, "printArray");
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
-		createAndSaveAddressToLabel(subBaseAddress);
-		code.add(PushI, 0);
-		code.add(Label, "startLoop");
-		code.add(Duplicate);
-		getLength(subBaseAddress);
-		code.add(Subtract);
-		code.add(JumpFalse, "exit");
+		code.add(PushI, 0);//0
+		code.add(Label, "startLoop");//0-->0,1
+		code.add(Duplicate);//0,0
+		getLength(baseAddress);//0,0,1
 
-		printElements(subBaseAddress, subtype, labeller);
+		code.add(Subtract);//0,0,-1
+		code.add(JumpFalse, "exit");//0,0
 
-		code.add(PushI, 1);
-		code.add(Add);
+		printElements(baseAddress, subtype);
 
-		printDelimiter(subBaseAddress);
+
+		code.add(PushI, 1);//0,0,1
+		code.add(Add);//0,1
+
+		printDelimiter(baseAddress);
 		code.add(Jump, "startLoop");
 		code.add(Label, "exit");
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_CLOSE_BRACKET);
+		code.add(PStack);
+
 
 	}
 
@@ -163,32 +167,43 @@ public class PrintStatementGenerator {
 		code.add(Label, "delimiterExit");
 	}
 
-	private void printElements(String subBaseAddress, Type subtype, Labeller labeller) {
-		String returnLabel = labeller.newLabel("return");
-		code.add(Duplicate);
-		loadAddress(subBaseAddress);
-		code.add(PushI, 16);
-		code.add(Add);
-		code.add(Exchange);
-		code.add(PushI, subtype.getSize());
-		code.add(Multiply);
-		code.add(Add);
-		turnAddressIntoValue(subtype);
+	private void printElements(String baseAddress, Type subtype) {
+		code.add(Duplicate);//0,0
+
+
+		loadAddress(baseAddress);//0,0,312
+
+
+		code.add(PushI, 16); //0,0,312,16
+		code.add(Add);//0,0,328
+
+		code.add(Exchange);//0,328,0
+		code.add(PushI, subtype.getSize());//0,328,0,4
+		code.add(Multiply);//0,328,0
+		code.add(Add);//0,328
+
+		turnAddressIntoValue(subtype);//0,350
+
 		code.add(Duplicate);
 		isArray();
-
-		code.add(JumpFalse, "printArray");
-
-		code.add(Label, returnLabel); // Add a new label here
+		code.add(JumpFalse, "recursed");
 
 
 		String format = printFormat(subtype);
+
 		convertToStringIfBoolean(subtype);
+
 		convertToStringValueIfString(subtype);
 		code.add(PushD, format);
 		code.add(Printf);
-	}
 
+
+
+		code.add(Jump, "leavePrint");
+		code.add(Label, "recursed");
+		code.add(Jump, "test");
+		code.add(Label, "leavePrint");
+	}
 
 	private void getLength(String baseAddress){
 		loadAddress(baseAddress);
@@ -287,7 +302,7 @@ public class PrintStatementGenerator {
 			}
 		} else if (type instanceof Array) {
 			// Assuming that all arrays will use the same print format
-			return "";
+			return RunTime.INTEGER_PRINT_FORMAT;
 		} else {
 			switch((ReferenceType)type) {
 				case STRING:    return RunTime.STRING_PRINT_FORMAT;

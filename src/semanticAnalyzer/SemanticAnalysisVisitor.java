@@ -399,13 +399,13 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		boolean isPromotable = promoteCandidateArray(node);
 		int highestLevel = checkHighestPromotableArray(node);
 
-		if(highestLevel == 2 && isPromotable && childTypes.get(0) instanceof PrimitiveType){
+		if(highestLevel == 2 && isPromotable){
 			node.setType(new Array(PrimitiveType.FLOAT, node.nChildren()));
 		}
-		else if(highestLevel == 1 && isPromotable  && childTypes.get(0) instanceof PrimitiveType){
+		else if(highestLevel == 1 && isPromotable){
 			node.setType(new Array(PrimitiveType.INTEGER, node.nChildren()));
 		}
-		else if(highestLevel == -1 && isPromotable && childTypes.get(0) instanceof PrimitiveType){
+		else if(highestLevel == -1 && isPromotable){
 			logError("types do not match in array creation");
 		}
 		else{
