@@ -66,19 +66,14 @@ public class PrintStatementGenerator {
 		code.add(Printf);
 	}
 
-	private void isMultiDimension(){
-		code.add(Duplicate);
 
+	private void isArray(Type type){
 
-		code.add(PushI, 4);
-		code.add(Add);
-		code.add(LoadI);
+		Labeller labeller = new Labeller("arrayCheck");
+		String isArray = labeller.newLabel("isArray");
+		createAndSaveAddressToLabel(isArray);
+		loadAddress(isArray);
 
-	}
-
-	private void isArray(){
-		createAndSaveAddressToLabel("isArray");
-		loadAddress("isArray");
 		code.add(PushI, 0);
 		code.add(Add);
 		code.add(LoadI);//[5]
@@ -88,9 +83,7 @@ public class PrintStatementGenerator {
 		code.add(Subtract);
 
 
-
-
-		loadAddress("isArray");
+		loadAddress(isArray);
 		code.add(PushI, 4);
 		code.add(Add);
 		code.add(LoadI);//[5]
@@ -115,63 +108,93 @@ public class PrintStatementGenerator {
 	private void appendArrayPrintCode(ParseNode node){
 		Labeller labeller = new Labeller("arrayPrinter");
 		String baseArray = labeller.newLabel("baseAddress");
-		String checkMultiExit = labeller.newLabel("isMultiExit");
-		String joinLabel = labeller.newLabel("join");
+		String join = labeller.newLabel("join");
+		String recursiveEnter = labeller.newLabel("recursiveEnter");
 		Type type = node.getType().getSubtype();
 
 		code.append(visitor.removeValueCode(node));
-		code.add(Label, "test");
-		createAndSaveAddressToLabel(baseArray);
-//		getLength(baseArray);
-//		code.add(PStack);
-//		code.add(Pop);
 
-		printOneDimensional(baseArray, type);
+		createAndSaveAddressToLabel(baseArray);
+		printOneDimensional(baseArray, type,recursiveEnter);
+		code.add(Jump, join);
+		code.add(Label, recursiveEnter);
+		recursedHere(type);
+		code.add(Label, join);
 	}
 
-	private void printOneDimensional(String baseAddress, Type subtype){
 
+	private void recursedHere(Type type){
+		Labeller labeller = new Labeller("printRecursion");
+		String subAddress = labeller.newLabel("subAddress");
+		String recursiveEnter = labeller.newLabel("recursiveEnter");
+
+		code.add(Label, recursiveEnter);//[ 0 378 277 ]
+
+		code.add(Exchange);//[ 0 277 378 ]
+		createAndSaveAddressToLabel(subAddress); //[ 0 277 ]
+
+		printOneDimensional(subAddress, type,recursiveEnter);//[ 0 277 2 ]
+		code.add(PStack);
+		code.add(Exchange);//[ 0  2 277]
+		code.add(Return);
+	}
+
+	private void printOneDimensional(String baseAddress, Type subtype, String recursiveEnter){
+
+		Labeller labeller = new Labeller("whileLoop");
+		String startLoop = labeller.newLabel("startLoop");
+		String exit = labeller.newLabel("exit");
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
 		code.add(PushI, 0);//0
-		code.add(Label, "startLoop");//0-->0,1
+		code.add(Label, startLoop);//0-->0,1
 		code.add(Duplicate);//0,0
 		getLength(baseAddress);//0,0,1
 
 		code.add(Subtract);//0,0,-1
-		code.add(JumpFalse, "exit");//0,0
 
-		printElements(baseAddress, subtype);
+		code.add(JumpFalse, exit);//0,0
+
+
+		printElements(baseAddress, subtype, recursiveEnter);
 
 
 		code.add(PushI, 1);//0,0,1
 		code.add(Add);//0,1
 
 		printDelimiter(baseAddress);
-		code.add(Jump, "startLoop");
-		code.add(Label, "exit");
+		code.add(Jump, startLoop);
+		code.add(Label, exit);
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_CLOSE_BRACKET);
-		code.add(PStack);
-
-
 	}
 
 	private void printDelimiter(String baseAddress){
 		//Needs, loop count on top of stack to work, loop starts from 1 to <= array size
+		Labeller labeller = new Labeller("printDelimiter");
+		String delimiterExit = labeller.newLabel("delimiterExit");
+		String printDelimiter = labeller.newLabel("printDelimiter");
+
 		code.add(Duplicate);//[1,1]
 		getLength(baseAddress);//[1,1,3]
 		code.add(Subtract);//[1,-2]
-		code.add(JumpTrue, "printDelimiter");
-		code.add(Jump, "delimiterExit");
-		code.add(Label, "printDelimiter");
+		code.add(JumpTrue, printDelimiter);
+		code.add(Jump, delimiterExit);
+		code.add(Label, printDelimiter);
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_DELIMITER);
-		code.add(Label, "delimiterExit");
+		code.add(Label, delimiterExit);
 	}
 
-	private void printElements(String baseAddress, Type subtype) {
+	private void printElements(String baseAddress, Type subtype, String recursiveEnter) {
+
+		Labeller labeller = new Labeller("printer");
+		String EnterRecursion = labeller.newLabel("EnterRecursion");
+		String leavePrint = labeller.newLabel("leavePrint");
+		String floatCheck = labeller.newLabel("floatCheck");
+
+
 		code.add(Duplicate);//0,0
-
-
 		loadAddress(baseAddress);//0,0,312
+
+
 
 
 		code.add(PushI, 16); //0,0,312,16
@@ -182,13 +205,32 @@ public class PrintStatementGenerator {
 		code.add(Multiply);//0,328,0
 		code.add(Add);//0,328
 
-		turnAddressIntoValue(subtype);//0,350
-
-		code.add(Duplicate);
-		isArray();
-		code.add(JumpFalse, "recursed");
 
 
+	    Type test = subtype.getSubtype();
+		if(test == PrimitiveType.FLOAT || subtype.infoString() == "Float"){
+//			code.add(Duplicate);
+//
+//			isArray(subtype);//0
+//			code.add(Exchange);
+//			turnAddressIntoValue(subtype);//0,350
+//			code.add(JumpFalse, "test");
+//			isArray(subtype);
+//			code.add(PStack);
+
+		}
+		else{
+			turnAddressIntoValue(subtype);//0,350
+			code.add(Duplicate);
+			isArray(subtype);
+			code.add(JumpFalse, EnterRecursion);
+		}
+
+
+
+
+
+//		code.add(Label, "test");
 		String format = printFormat(subtype);
 
 		convertToStringIfBoolean(subtype);
@@ -197,12 +239,14 @@ public class PrintStatementGenerator {
 		code.add(PushD, format);
 		code.add(Printf);
 
+		code.add(Jump, leavePrint);
+
+		code.add(Label, EnterRecursion);
+		code.add(Call, recursiveEnter);//380
+		code.add(Pop);
 
 
-		code.add(Jump, "leavePrint");
-		code.add(Label, "recursed");
-		code.add(Jump, "test");
-		code.add(Label, "leavePrint");
+		code.add(Label, leavePrint);//[0]
 	}
 
 	private void getLength(String baseAddress){
