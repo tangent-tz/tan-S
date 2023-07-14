@@ -23,4 +23,16 @@ main {
 
     #-----------------------------------------------------------------------------
     
+    const chars := [['a','b','c','d'],['e', %146]]; 
+    print chars \n;
+    
+    print [['a','b','c','d'],['e', %146]] \n\n; 
+    
+    #-----------------------------------------------------------------------------
+    
+    const bools := [[[true, true], [false, false]], [[true, false], [false, true]]];
+    print bools \n; 
+    
+    print [[[true, true], [false, false]], [[true, false], [false, true]]] \n\n; 
+    
 }
