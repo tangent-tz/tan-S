@@ -1,4 +1,4 @@
-main {
+main{
     print 45644 \n; 
     
     var x1 := new [int] (2*5 - 2);
@@ -17,4 +17,32 @@ main {
     print x5 \n;
     
     print 123 \n;
+    
+    
+    #=====================================================================
+    #TEST MULTI-DIMENSIONAL ARRAYS
+    var ints2d := new [[int]](3); 
+    print ints2d \n; 
+    print new [[int]](3) \n\n; 
+    
+    
+    var floats3d := new [[[float]]](2); 
+    print floats3d \n; 
+    print new [[[float]]](2) \n\n; 
+    
+    
+    var strings4d := new [[[[string]]]](2); 
+    print strings4d \n; 
+    print new [[[[string]]]](2) \n\n;
+    
+    
+    var chars3d := new [[[char]]](3); 
+    print chars3d \n; 
+    print new [[[char]]](3) \n\n;
+    
+    
+    var bools3d := new [[[bool]]](2); 
+    print bools3d \n; 
+    print new [[[bool]]](2) \n\n;    
+    
 }

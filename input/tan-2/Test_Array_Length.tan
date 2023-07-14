@@ -1,0 +1,83 @@
+main {
+    var a1 := [1, 2, 3, 4, 5]; 
+    var len := length a1; 
+    print a1 \n; 
+    print len \n; 
+    print \n; 
+    
+   
+    var a2 := [1.2, 4.3+21.2, 3.86409]; 
+    len := length a2;
+    print a2 \n; 
+    print len \n; 
+    print \n;     
+    
+    
+    var a3 := ["hello", "world"]; 
+    len := length a3;
+    print a3 \n; 
+    print len \n;
+    print \n; 
+    
+    
+    var a4 := ['a', 'l', 'm', 'n', 'o', 'p']; 
+    len := length a4;
+    print a4 \n; 
+    print len \n;
+    print \n; 
+    
+    
+    var a5 := [true]; 
+    len := length a5; 
+    print a5 \n; 
+    print len \n;   
+    print \n; 
+    
+    
+    print length [true, false, true, false, true] \n; 
+    print length [true, false, true, false, true] * 10 \n;
+    
+    
+    print length a5 \n; 
+    print length a5 + length a4 \n; 
+    
+    print length new [int](11) \n; 
+    print -length new[int](11) \n; 
+    print (length new [int](11)) \n;
+    print \n; 
+    
+    
+    #===================================================================
+    # TEST 'LENGTH' MULTI-DIMENSIONAL ARRAYS
+    print "Test multidimensional arrays:" \n;
+    
+    var ints := [[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10]]];
+    print length ints \n;  
+    ints := new [[[int]]](0); 
+    print length ints \n\n; 
+    
+    
+    var floats := [[[1.1, 2.2], [3.3, 4.4], [5.5, 6.6]], [[7.7, 8.8], [9.9, 10.10]]];
+    print length floats \n;
+    floats := new [[[float]]](1); 
+    print length floats \n\n;
+    
+    
+    var strings := [[["hello", "hi"], ["taylor", "swift"], ["cruel", "summer"]], [["cardigan", "evermore"], ["1989", "invisible string"]]];
+    print length strings \n; 
+    strings := new [[[string]]](2); 
+    print length strings \n\n; 
+    
+    
+    var chars := [[['a', 'b'], ['c', 'd'], ['A', %102]], [[%107, %110], [%176, %041]]];
+    print length chars \n;
+    chars := new [[[char]]](3); 
+    print length chars \n\n;
+    
+    
+    var bools := [[[true, true], [false, false], [false, true]], [[false, false], [false, true]]];
+    print length bools \n;
+    bools := new [[[bool]]](4); 
+    print length bools \n\n;
+
+}
