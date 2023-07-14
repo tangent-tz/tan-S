@@ -80,98 +80,41 @@ public class PrintStatementGenerator {
 		String printPrimitiveTypeLabel = labeller.newLabel("printPrimitive"); 
 		String ifConditionDelimiterLabel = labeller.newLabel("ifConditionDelimiter");
 		
-		code.append(visitor.removeValueCode(node));
+		code.append(visitor.removeValueCode(node));	//[... startAddressOfArray]
+		storeArrayAddressToLabel(pointerLabel);		//[...]
 		
-		code.add(DLabel, pointerLabel);
-		code.add(DataI, 0); //clear 4 bytes with all zeroes
-		code.add(PushD, pointerLabel); 
-		code.add(Exchange); 
-		code.add(StoreI); 
 		
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
 		// START LOOP ////////////////////////////////////////////////////////////
 		// print each element in the array:
 		// declare int i=0:
-		code.add(DLabel, indexLabel);
-		code.add(DataZ, 4);
-
-
+		declareIToZero(indexLabel);
+		
 		// while condition: i < arrayLength
 		code.add(Label, loopConditionLabel);
-		code.add(PushD, indexLabel);
-		code.add(LoadI); 		// [... i]
-
-		code.add(PushD, pointerLabel);
-		code.add(LoadI); 			//loads the base address of the array
-		code.add(PushI, Array.HEADER_LENGTH_OFFSET);
-		code.add(Add);
-		code.add(LoadI); 		// [... i arrayLength]
-
-		code.add(Subtract);		// [... i - arrayLength]
+		verifyIndexLessThanArrayLength(indexLabel, pointerLabel); 	// [... i - arrayLength]
 		code.add(JumpFalse, endLoopLabel);  // [...]
-
+		
 		//entering while loop body:
-		code.add(PushD, pointerLabel);
-		code.add(LoadI); 			//loads the base address of the array
-		code.add(PushI, Array.HEADER_SIZE);
-		code.add(Add);				// [... baseAddress+headerSize]
-		
-		code.add(PushD, indexLabel);
-		code.add(LoadI); 		// [... baseAddress+headerSize   i]
-		
-		code.add(PushD, pointerLabel);
-		code.add(LoadI); 			//loads the base address of the array
-		code.add(PushI, Array.HEADER_SUBTYPESIZE_OFFSET);
-		code.add(Add);
-		code.add(LoadI); 		// [... baseAddress+headerSize   i   subtypeSize]
-
-		code.add(Multiply);		// [... baseAddress+headerSize   i*subtypeSize]
-		code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
-		
-		turnAddressIntoValue(subtype);	// [... value]
+		loadArrayElementAtIndex(pointerLabel, indexLabel, subtype);		// [... value]
 		
 		
 		//---------------------------------------------------------------------------------------------------------
 		// check if subtype is a primitive type or reference type (array). 
-		// if subtype is reference type then recursive printing
-
-		code.add(PushD, pointerLabel);
-		code.add(LoadI); 			//loads the base address of the array [... value, baseAddress]
-		code.add(PushI, Array.HEADER_STATUS_OFFSET); 
-		code.add(Add); 				//base address + offset
-		code.add(LoadI); 			// [... value, statusValue]
+		// if subtype is reference type then recursive printing:
+		loadArrayStatus(pointerLabel);	// [... value, statusValue]
 		code.add(JumpFalse, printPrimitiveTypeLabel);  	// [... value]
-		
 		printArrayRecursive(code, ifConditionDelimiterLabel, subtype.getSubtype());
-		
 		//---------------------------------------------------------------------------------------------------------
 		
 		code.add(Label, printPrimitiveTypeLabel); 
-		convertToStringIfBoolean(subtype);
-		convertToStringValueIfString(subtype);
-		code.add(PushD, format);
-		code.add(Printf);
+		printPrimitiveTypeElement(subtype, format);
 
 
 		// START : IF CONDITION FOR DELIMITER /////////////////////////////////////////////////////
 		// print a delimiter after each element in the array, except for the last element:
-		// if condition: (i != arrayLength-1)
 		code.add(Label, ifConditionDelimiterLabel);
-		loadIFrom(code, indexLabel);  // [... i]
-
-		code.add(PushD, pointerLabel);
-		code.add(LoadI); 			//loads the base address of the array
-		code.add(PushI, Array.HEADER_LENGTH_OFFSET);
-		code.add(Add);
-		code.add(LoadI); 		// [... i arrayLength]
-		
-		code.add(PushI, 1);  	// [... i, arrayLength, 1]
-		code.add(Subtract); 			// [... i, arrayLength - 1]
-		
-		code.add(Subtract); 			// [... i - (arrayLength - 1)]
-		code.add(JumpFalse, noNeedDelimiterLabel);
-		appendArrayFormatterPrintCode(ARRAY_FORMATTER_DELIMITER);
-		
+		printDelimiterIfNotLastElementInArray(indexLabel, pointerLabel, noNeedDelimiterLabel);
 		code.add(Label, noNeedDelimiterLabel);
 		// END : IF CONDITION FOR DELIMITER /////////////////////////////////////////////////////
 		
@@ -273,7 +216,7 @@ public class PrintStatementGenerator {
 					return "";
 			}
 		} else if (type instanceof Array) {
-			// Assuming that all arrays will use the same print format
+			// we will manually handle the format for printing arrays. 
 			return "";
 		} else {
 			switch((ReferenceType)type) {
@@ -300,101 +243,43 @@ public class PrintStatementGenerator {
 		String noNeedDelimiterLabel = labeller.newLabel("noNeedDelimiter");
 		String endLoopLabel = labeller.newLabel("endLoop");
 		String printPrimitiveTypeLabel = labeller.newLabel("printPrimitive");
-		String ifConditionDelimiter = labeller.newLabel("ifConditionDelimiter"); 
+		String ifConditionDelimiterLabel = labeller.newLabel("ifConditionDelimiter"); 
 
 		//at this moment, the stack: [... value]
-		code.add(DLabel, pointerLabel);
-		code.add(DataI, 0); //clear 4 bytes with all zeroes
- 		code.add(PushD, pointerLabel);
-		code.add(Exchange);
-		code.add(StoreI);
+		storeArrayAddressToLabel(pointerLabel);
 		
 		
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
 		// START LOOP ////////////////////////////////////////////////////////////
 		// print each element in the array:
 		// declare int i=0:
-		code.add(DLabel, indexLabel);
-		code.add(DataI, 0); 
-		code.add(PushD, indexLabel); 
-		code.add(PushI, 0); 
-		code.add(StoreI); 
+		declareIToZero(indexLabel); 
 		
 
 		// while condition: i < arrayLength
 		code.add(Label, loopConditionLabel);
-		code.add(PushD, indexLabel);
-		code.add(LoadI); 		// [... i]
-
-		code.add(PushD, pointerLabel);
-		code.add(LoadI); 			//loads the base address of the array
-		code.add(PushI, Array.HEADER_LENGTH_OFFSET);
-		code.add(Add);
-		code.add(LoadI); 		// [... i arrayLength]
-
-		code.add(Subtract);		// [... i - arrayLength]
+		verifyIndexLessThanArrayLength(indexLabel, pointerLabel);	// [... i - arrayLength]
 		code.add(JumpFalse, endLoopLabel);  // [...]
 
 		//entering while loop body:
-		code.add(PushD, pointerLabel);
-		code.add(LoadI); 			//loads the base address of the array
-		code.add(PushI, Array.HEADER_SIZE);
-		code.add(Add);				// [... baseAddress+headerSize]
-		
-		code.add(PushD, indexLabel);
-		code.add(LoadI); 		// [... baseAddress+headerSize   i]
-		
-		code.add(PushD, pointerLabel);
-		code.add(LoadI); 			//loads the base address of the array
-		code.add(PushI, Array.HEADER_SUBTYPESIZE_OFFSET);
-		code.add(Add);
-		code.add(LoadI); 		// [... baseAddress+headerSize   i   subtypeSize]
-
-		code.add(Multiply);		// [... baseAddress+headerSize   i*subtypeSize]
-		code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
-
-		turnAddressIntoValue(PrimitiveType.INTEGER);	// [... value]
+		loadArrayElementAtIndex(pointerLabel, indexLabel, subtype);		// [... value]
 		
 		//---------------------------------------------------------------------------------------------------------
 		// check if subtype is a primitive type or reference type (array). 
 		// if subtype is reference type then recursive printing
-
-		code.add(PushD, pointerLabel);
-		code.add(LoadI); 			//loads the base address of the array [... value, baseAddress]
-		code.add(PushI, Array.HEADER_STATUS_OFFSET); //offset (fixed)
-		code.add(Add); 				//base address + offset
-		code.add(LoadI); 			// [... value, statusValue]
+		loadArrayStatus(pointerLabel);	// [... value, statusValue]
 		code.add(JumpFalse, printPrimitiveTypeLabel);  	// [... value]
-		
-		printArrayRecursive(code, ifConditionDelimiter, subtype.getSubtype());
+		printArrayRecursive(code, ifConditionDelimiterLabel, subtype.getSubtype());
 		//---------------------------------------------------------------------------------------------------------
 
 		code.add(Label, printPrimitiveTypeLabel);
-		convertToStringIfBoolean(subtype);
-		convertToStringValueIfString(subtype);
-		code.add(PushD, format);
-		code.add(Printf);
+		printPrimitiveTypeElement(subtype, format);
 
 
 		// START : IF CONDITION FOR DELIMITER /////////////////////////////////////////////////////
 		// print a delimiter after each element in the array, except for the last element:
-		// if condition: (i != arrayLength-1)
-		code.add(Label, ifConditionDelimiter); 
-		loadIFrom(code, indexLabel);  // [... i]
-
-		code.add(PushD, pointerLabel);
-		code.add(LoadI); 			//loads the base address of the array
-		code.add(PushI, Array.HEADER_LENGTH_OFFSET);
-		code.add(Add);
-		code.add(LoadI); 		// [... i arrayLength]
-
-		code.add(PushI, 1);  	// [... i, arrayLength, 1]
-		code.add(Subtract); 			// [... i, arrayLength - 1]
-
-		code.add(Subtract); 			// [... i - (arrayLength - 1)]
-		code.add(JumpFalse, noNeedDelimiterLabel);
-		appendArrayFormatterPrintCode(ARRAY_FORMATTER_DELIMITER);
-
+		code.add(Label, ifConditionDelimiterLabel);
+		printDelimiterIfNotLastElementInArray(indexLabel, pointerLabel, noNeedDelimiterLabel);
 		code.add(Label, noNeedDelimiterLabel);
 		// END : IF CONDITION FOR DELIMITER /////////////////////////////////////////////////////
 
@@ -409,4 +294,115 @@ public class PrintStatementGenerator {
 		code.add(Jump, returnLabel);
 	}
 	
+	
+	private void declareIToZero(String indexLabel) {
+		code.add(DLabel, indexLabel);
+		code.add(DataZ, 4);
+		code.add(PushD, indexLabel); 
+		code.add(PushI, 0); 
+		code.add(StoreI); 
+	}
+	
+	private void verifyIndexLessThanArrayLength(String indexLabel, String pointerLabel) {
+		loadIFrom(code, indexLabel);	// [... i]
+		loadArrayLength(pointerLabel); 	// [... i arrayLength]
+		code.add(Subtract);		// [... i - arrayLength]
+	}
+	
+	private void loadArrayLength(String pointerLabel) {
+		loadIFrom(code, pointerLabel); 			//loads the base address of the array
+		code.add(PushI, Array.HEADER_LENGTH_OFFSET);
+		code.add(Add);
+		code.add(LoadI); 						// [... i arrayLength]
+	}
+	
+	private void loadArraySubtypeSize(String pointerLabel) {
+		loadIFrom(code, pointerLabel); 			//loads the base address of the array
+		code.add(PushI, Array.HEADER_SUBTYPESIZE_OFFSET);
+		code.add(Add);
+		code.add(LoadI); 						// [... baseAddress+headerSize   i   subtypeSize]
+	}
+	
+	private void loadArrayElementAtIndex(String pointerLabel, String indexLabel, Type subtype) {
+		loadIFrom(code, pointerLabel); 			//loads the base address of the array
+		code.add(PushI, Array.HEADER_SIZE);
+		code.add(Add);							// [... baseAddress+headerSize]
+
+		loadIFrom(code, indexLabel); 			// [... baseAddress+headerSize   i]
+		loadArraySubtypeSize(pointerLabel); 	// [... baseAddress+headerSize   i   subtypeSize]
+
+		code.add(Multiply);						// [... baseAddress+headerSize   i*subtypeSize]
+		code.add(Add); 							// [... baseAddress+headerSize + i*subtypeSize]
+
+		turnAddressIntoValue(subtype);			// [... value]
+	}
+	
+	private void loadArrayStatus(String pointerLabel) {
+		loadIFrom(code, pointerLabel); 			//loads the base address of the array [... value, baseAddress]
+		code.add(PushI, Array.HEADER_STATUS_OFFSET);
+		code.add(Add); 							//base address + offset
+		code.add(LoadI); 						// [... value, statusValue]
+	}
+	
+	private void printPrimitiveTypeElement(Type subtype, String format) {
+		//currently, the stack: [... value]
+		convertToStringIfBoolean(subtype);
+		convertToStringValueIfString(subtype);
+		code.add(PushD, format);
+		code.add(Printf);
+	}
+	
+	private void printDelimiterIfNotLastElementInArray(String indexLabel, String pointerLabel, String noNeedDelimiterLabel) {
+		// if condition: (i != arrayLength-1)
+		loadIFrom(code, indexLabel);  			// [... i]
+		loadArrayLength(pointerLabel); 			// [... i arrayLength]
+
+		code.add(PushI, 1);  			// [... i, arrayLength, 1]
+		code.add(Subtract); 					// [... i, arrayLength - 1]
+		code.add(Subtract); 					// [... i - (arrayLength - 1)]
+		
+		code.add(JumpFalse, noNeedDelimiterLabel);
+		appendArrayFormatterPrintCode(ARRAY_FORMATTER_DELIMITER);
+	}
+	
+	private void storeArrayAddressToLabel(String pointerLabel) {
+		//currently, the stack: [... startAddressOfArray]
+		code.add(DLabel, pointerLabel);
+		code.add(DataI, 0); //clear 4 bytes with all zeroes
+		code.add(PushD, pointerLabel);
+		code.add(Exchange);
+		code.add(StoreI);
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
