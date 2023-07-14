@@ -76,7 +76,7 @@ public class PrintStatementGenerator {
 
 		code.add(PushI, 0);
 		code.add(Add);
-		code.add(LoadI);//[5]
+		code.add(LoadI);//[5
 
 
 		code.add(PushI, 5);
@@ -111,6 +111,13 @@ public class PrintStatementGenerator {
 		String join = labeller.newLabel("join");
 		String recursiveEnter = labeller.newLabel("recursiveEnter");
 		Type type = node.getType().getSubtype();
+		Type type2 = node.getType().getSubtype().getSubtype();
+		if(type2 == PrimitiveType.NO_TYPE) {
+			type2 = type;
+		}
+		if(type == PrimitiveType.NO_TYPE) {
+			type = type2;
+		}
 
 		code.append(visitor.removeValueCode(node));
 
@@ -118,7 +125,7 @@ public class PrintStatementGenerator {
 		printOneDimensional(baseArray, type,recursiveEnter);
 		code.add(Jump, join);
 		code.add(Label, recursiveEnter);
-		recursedHere(type);
+		recursedHere(type2);
 		code.add(Label, join);
 	}
 
@@ -128,13 +135,12 @@ public class PrintStatementGenerator {
 		String subAddress = labeller.newLabel("subAddress");
 		String recursiveEnter = labeller.newLabel("recursiveEnter");
 
-		code.add(Label, recursiveEnter);//[ 0 378 277 ]
+		//code.add(Label, recursiveEnter);//[ 0 378 277 ]
 
 		code.add(Exchange);//[ 0 277 378 ]
 		createAndSaveAddressToLabel(subAddress); //[ 0 277 ]
 
 		printOneDimensional(subAddress, type,recursiveEnter);//[ 0 277 2 ]
-		code.add(PStack);
 		code.add(Exchange);//[ 0  2 277]
 		code.add(Return);
 	}
@@ -165,6 +171,7 @@ public class PrintStatementGenerator {
 		code.add(Jump, startLoop);
 		code.add(Label, exit);
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_CLOSE_BRACKET);
+		return;
 	}
 
 	private void printDelimiter(String baseAddress){
@@ -188,17 +195,23 @@ public class PrintStatementGenerator {
 		Labeller labeller = new Labeller("printer");
 		String EnterRecursion = labeller.newLabel("EnterRecursion");
 		String leavePrint = labeller.newLabel("leavePrint");
-		String floatCheck = labeller.newLabel("floatCheck");
+		String isMultiDimensional = labeller.newLabel("isMultiDimensional");
 
 
 		code.add(Duplicate);//0,0
 		loadAddress(baseAddress);//0,0,312
 
 
+		code.add(Duplicate);
+		isArray(subtype);
+		createAndSaveAddressToLabel(isMultiDimensional);
+
 
 
 		code.add(PushI, 16); //0,0,312,16
 		code.add(Add);//0,0,328
+
+
 
 		code.add(Exchange);//0,328,0
 		code.add(PushI, subtype.getSize());//0,328,0,4
@@ -207,34 +220,19 @@ public class PrintStatementGenerator {
 
 
 
-	    Type test = subtype.getSubtype();
-		if(test == PrimitiveType.FLOAT || subtype.infoString() == "Float"){
-//			code.add(Duplicate);
-//
-//			isArray(subtype);//0
-//			code.add(Exchange);
-//			turnAddressIntoValue(subtype);//0,350
-//			code.add(JumpFalse, "test");
-//			isArray(subtype);
-//			code.add(PStack);
 
-		}
-		else{
-			turnAddressIntoValue(subtype);//0,350
-			code.add(Duplicate);
-			isArray(subtype);
-			code.add(JumpFalse, EnterRecursion);
-		}
+
+		turnAddressIntoValue(subtype);//0,350
+		loadAddress(isMultiDimensional);
+		code.add(JumpFalse, EnterRecursion);
 
 
 
 
 
-//		code.add(Label, "test");
 		String format = printFormat(subtype);
 
 		convertToStringIfBoolean(subtype);
-
 		convertToStringValueIfString(subtype);
 		code.add(PushD, format);
 		code.add(Printf);
@@ -346,7 +344,7 @@ public class PrintStatementGenerator {
 			}
 		} else if (type instanceof Array) {
 			// Assuming that all arrays will use the same print format
-			return RunTime.INTEGER_PRINT_FORMAT;
+			return "";
 		} else {
 			switch((ReferenceType)type) {
 				case STRING:    return RunTime.STRING_PRINT_FORMAT;

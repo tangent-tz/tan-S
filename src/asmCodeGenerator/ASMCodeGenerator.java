@@ -776,7 +776,7 @@ public class ASMCodeGenerator {
 			code.add(LoadI); 			//loads the base address of the array
 			code.add(PushI, 4); //offset (fixed)
 			code.add(Add); 				//base address + offset
-			if(node.getType() instanceof PrimitiveType) {
+			if(subtype instanceof PrimitiveType || subtype == ReferenceType.STRING) {
 				code.add(PushI, 0);
 			}
 			else {
@@ -815,7 +815,6 @@ public class ASMCodeGenerator {
 
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-		//	code.add(PStack);
 		}
 		
 		
