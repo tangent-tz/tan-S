@@ -207,19 +207,13 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		new FunctionSignatures(Punctuator.BOOLEAN_NOT,
 				new FunctionSignature(ASMOpcode.BNegate, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
 		);
-		new FunctionSignatures(Punctuator.INDEXING, 
-				new FunctionSignature(1, new Array(PrimitiveType.INTEGER), PrimitiveType.INTEGER, PrimitiveType.INTEGER), 
-				new FunctionSignature(1, new Array(PrimitiveType.FLOAT), PrimitiveType.INTEGER, PrimitiveType.FLOAT),
-				new FunctionSignature(1, new Array(ReferenceType.STRING), PrimitiveType.INTEGER, ReferenceType.STRING),
-				new FunctionSignature(1, new Array(PrimitiveType.CHARACTER), PrimitiveType.INTEGER, PrimitiveType.CHARACTER),
-				new FunctionSignature(1, new Array(PrimitiveType.BOOLEAN), PrimitiveType.INTEGER, PrimitiveType.BOOLEAN)
+		
+		TypeVariable T = new TypeVariable("T");
+		new FunctionSignatures(Punctuator.INDEXING,
+				new FunctionSignature(1, new Array(T), PrimitiveType.INTEGER, T)
 		);
 		new FunctionSignatures(Keyword.LENGTH,
-				new FunctionSignature(new ArrayLengthCodeGenerator(), new Array(PrimitiveType.INTEGER), PrimitiveType.INTEGER),
-				new FunctionSignature(new ArrayLengthCodeGenerator(), new Array(PrimitiveType.FLOAT), PrimitiveType.INTEGER),
-				new FunctionSignature(new ArrayLengthCodeGenerator(), new Array(ReferenceType.STRING), PrimitiveType.INTEGER), 
-				new FunctionSignature(new ArrayLengthCodeGenerator(), new Array(PrimitiveType.CHARACTER), PrimitiveType.INTEGER),
-				new FunctionSignature(new ArrayLengthCodeGenerator(), new Array(PrimitiveType.BOOLEAN), PrimitiveType.INTEGER)
+				new FunctionSignature(new ArrayLengthCodeGenerator(), new Array(T), PrimitiveType.INTEGER)
 		);
 		
 
