@@ -748,7 +748,7 @@ public class ASMCodeGenerator {
 			code.add(LoadI); 			//loads the base address of the array
 			code.add(PushI, Array.HEADER_STATUS_OFFSET); //offset (fixed)
 			code.add(Add); 				//base address + offset
-			if(subtype instanceof PrimitiveType) {
+			if(!(subtype instanceof Array)) {
 				code.add(PushI, 0);
 			}
 			else {

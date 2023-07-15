@@ -35,4 +35,38 @@ main {
     
     print [[[true, true], [false, false]], [[true, false], [false, true]]] \n\n; 
     
+    
+    
+    
+    #-----------------------------------------------------------------------------
+    print \n "LOOP TEST 1:" \n; 
+    var x := 0; 
+    while (x < 10) {
+        var y := [1, 2, 3]; 
+        [y:2] := x; 
+        print y \n; 
+        print y \n; 
+        x := x + 1; 
+    }
+    
+    
+    
+    print \n "LOOP TEST 2:" \n;
+    const loopInts := [[[[4, 5, 6]], [[7, 8, 9]]], [[[13, 14, 15]], [[22, 23, 24]]]]; 
+    x := 0; 
+    while (x < length loopInts) {
+        var outer := [loopInts:x]; 
+        print outer \n; 
+        
+        var j := 0; 
+        while (j < length outer) {
+            print [outer:j] \n; 
+            j := j + 1; 
+        }
+        print \n; 
+        x := x + 1; 
+    }
+    
+        
+    
 }
