@@ -52,7 +52,7 @@ main {
     
     
     print \n "LOOP TEST 2:" \n;
-    const loopInts := [[[[4, 5, 6]], [[7, 8, 9]]], [[[13, 14, 15]], [[22, 23, 24]]]]; 
+    const loopInts := [[[[4, 5, 6]], [[7, 8, 9]]], [[[13, 14, 15]], [[22, 23, 24]]], [[[30, 31]]]]; 
     x := 0; 
     while (x < length loopInts) {
         var outer := [loopInts:x]; 
@@ -67,6 +67,61 @@ main {
         x := x + 1; 
     }
     
-        
     
+    
+    #---------------------------------------------------------------------------------------
+    # TANZIL'S TEST
+    {   
+        print \n "Tanzil's test:" \n; 
+        var boolean := [true,false];
+        print boolean \n;
+        
+        var multiDimBoolean := [[true,false],[false,true]];
+        print multiDimBoolean \n;
+        
+        var integer := [1,2,3];
+        print integer \n;
+        
+        var multiDimInteger := [[1,2,3],[4,5,6]];
+        print multiDimInteger \n;
+        
+        var floatarray := [1.1,2.2,3.3];
+        print floatarray \n;
+        
+        var multiDimFloat := [[1.1,2.2,3.3],[4.4,5.5,6.6]];
+        print multiDimFloat \n;
+        
+        var stringarray := ["hrty67"];
+        print stringarray \n;
+        
+        
+        var multiDimString := [["hello","world"],["goodbye","world"]];
+        print multiDimString \n;
+        
+        var multiNestedsameType := [[[[4,5,6]],[[7,8,9]]],[[[13,14,15]],[[22,23,24]]]];
+        print multiNestedsameType \n;
+        
+        var multiNestedFloatType := [[[[[4.5],[5.5],[6.5]]],[[[7.5],[8.5],[9.5]]]],[[[[13.5],[14.5],[15.5]]],[[[22.5],[23.5],[24.5]]]]];
+        print multiNestedFloatType \n;
+        
+        var x := 0;
+        while (x < 10) {
+            var y := [1,2,3];
+            [y:2] := x;
+            print y \n;
+            x := x + 1;
+        }
+        
+        
+        var test := [1];
+        print test \n;
+        
+        var test2 := [[[1]]];
+        print test2 \n;
+        
+        var test3 := [[[1]]];
+        
+        print test3 \n;
+    }
+ 
 }
