@@ -111,38 +111,37 @@ public class PrintStatementGenerator {
 		String join = labeller.newLabel("join");
 		String recursiveEnter = labeller.newLabel("recursiveEnter");
 		Type type = node.getType().getSubtype();
-		Type type2 = node.getType().getSubtype().getSubtype();
-		if(type2 == PrimitiveType.NO_TYPE) {
-			type2 = type;
-		}
-		if(type == PrimitiveType.NO_TYPE) {
-			type = type2;
-		}
 
 		code.append(visitor.removeValueCode(node));
 
 		createAndSaveAddressToLabel(baseArray);
 		printOneDimensional(baseArray, type,recursiveEnter);
 		code.add(Jump, join);
-		code.add(Label, recursiveEnter);
-		recursedHere(type2);
+//		code.add(Label, recursiveEnter);
+//		recursedHere(type);
 		code.add(Label, join);
 	}
 
 
 	private void recursedHere(Type type){
+		if(type == PrimitiveType.NO_TYPE)
+			return;
+
+
 		Labeller labeller = new Labeller("printRecursion");
 		String subAddress = labeller.newLabel("subAddress");
 		String recursiveEnter = labeller.newLabel("recursiveEnter");
 
-		//code.add(Label, recursiveEnter);//[ 0 378 277 ]
+//		if(type == PrimitiveType.NO_TYPE)
+//			return;
+//		else type = type.getSubtype();
 
-		code.add(Exchange);//[ 0 277 378 ]
-		createAndSaveAddressToLabel(subAddress); //[ 0 277 ]
-
-		printOneDimensional(subAddress, type,recursiveEnter);//[ 0 277 2 ]
-		code.add(Exchange);//[ 0  2 277]
-		code.add(Return);
+		//Start -->[ 0 370 166 ]
+	//	code.add(Exchange);//[ 0 166 370 ]
+		createAndSaveAddressToLabel(subAddress); //[ 0 166 ]
+		printOneDimensional(subAddress, type,recursiveEnter);//[ 0 166 1 ]
+	//	code.add(Exchange);//[ 0 1 166 ]
+		//code.add(Return);
 	}
 
 	private void printOneDimensional(String baseAddress, Type subtype, String recursiveEnter){
@@ -152,26 +151,26 @@ public class PrintStatementGenerator {
 		String exit = labeller.newLabel("exit");
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_OPEN_BRACKET);
 		code.add(PushI, 0);//0
-		code.add(Label, startLoop);//0-->0,1
+		code.add(Label, startLoop);//0
 		code.add(Duplicate);//0,0
 		getLength(baseAddress);//0,0,1
 
-		code.add(Subtract);//0,0,-1
+		code.add(Subtract);//0,-1
+		code.add(JumpFalse, exit);//0
 
-		code.add(JumpFalse, exit);//0,0
 
 
 		printElements(baseAddress, subtype, recursiveEnter);
 
 
-		code.add(PushI, 1);//0,0,1
-		code.add(Add);//0,1
+
+		code.add(PushI, 1);
+		code.add(Add);
 
 		printDelimiter(baseAddress);
 		code.add(Jump, startLoop);
 		code.add(Label, exit);
 		appendArrayFormatterPrintCode(ARRAY_FORMATTER_CLOSE_BRACKET);
-		return;
 	}
 
 	private void printDelimiter(String baseAddress){
@@ -199,22 +198,22 @@ public class PrintStatementGenerator {
 
 
 		code.add(Duplicate);//0,0
-		loadAddress(baseAddress);//0,0,312
+		loadAddress(baseAddress);//0,0,address
 
 
-		code.add(Duplicate);
-		isArray(subtype);
-		createAndSaveAddressToLabel(isMultiDimensional);
-
-
-
-		code.add(PushI, 16); //0,0,312,16
-		code.add(Add);//0,0,328
+		code.add(Duplicate); // 0,0,address,address
+		isArray(subtype); //0,0,address
+		createAndSaveAddressToLabel(isMultiDimensional);//0,0
 
 
 
-		code.add(Exchange);//0,328,0
-		code.add(PushI, subtype.getSize());//0,328,0,4
+		code.add(PushI, 16); //0,0,16
+		code.add(Add);//0,16
+
+
+
+		code.add(Exchange);//0,16,0
+		code.add(PushI, subtype.getSize());//0,328,4
 		code.add(Multiply);//0,328,0
 		code.add(Add);//0,328
 
@@ -240,8 +239,9 @@ public class PrintStatementGenerator {
 		code.add(Jump, leavePrint);
 
 		code.add(Label, EnterRecursion);
-		code.add(Call, recursiveEnter);//380
-		code.add(Pop);
+		//code.add(Call, recursiveEnter);//[ 0 1]
+		recursedHere(subtype.getSubtype());
+		code.add(Pop);//[0]
 
 
 		code.add(Label, leavePrint);//[0]
