@@ -209,17 +209,12 @@ public class PrintStatementGenerator {
 	private void appendArrayFormatterPrintCode(char c) {
 		String format = printFormat(PrimitiveType.CHARACTER);
 		
-		if(c == ARRAY_FORMATTER_CLOSE_BRACKET) {
-			appendArraySpacingPrintCode();
-		}
-		
 		code.add(PushI, c); 
 		code.add(PushD, format); 
 		code.add(Printf);
 
-		if(c != ARRAY_FORMATTER_CLOSE_BRACKET) {
+		if(c == ARRAY_FORMATTER_DELIMITER)
 			appendArraySpacingPrintCode();
-		}
 	}
 	private void appendArraySpacingPrintCode() {
 		String format = printFormat(PrimitiveType.CHARACTER);
@@ -227,7 +222,6 @@ public class PrintStatementGenerator {
 		code.add(PushD, format);
 		code.add(Printf);
 	}
-	
 	
 	private void convertToStringIfBoolean(Type type) {
 		if(type != PrimitiveType.BOOLEAN) {
