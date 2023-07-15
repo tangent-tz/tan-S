@@ -25,14 +25,29 @@ main{
 #  var multiDimString := [["hello","world"],["goodbye","world"]];
 #  print multiDimString \n;
 
-#  var multiNestedsameType := [[[[4,5,6]],[[7,8,9]]],[[[13,14,15]],[[22,23,24]]]];
-#  print multiNestedsameType \n;
+  var multiNestedsameType := [[[[4,5,6]],[[7,8,9]]],[[[13,14,15]],[[22,23,24]]]];
+  print multiNestedsameType \n;
 
-    var x := 0;
-    while (x < 10) {
-        var y := [1,2,3];
-        [y:2] := x;
-        print y \n;
-        x := x + 1;
-    }
+  var multiNestedFloatType := [[[[[4.5],[5.5],[6.5]]],[[[7.5],[8.5],[9.5]]]],[[[[13.5],[14.5],[15.5]]],[[[22.5],[23.5],[24.5]]]]];
+    print multiNestedFloatType \n;
+
+#   var x := 0;
+#   while (x < 10) {
+#       var y := [1,2,3];
+#       [y:2] := x;
+#       print y \n;
+#       x := x + 1;
+#   }
+
+
+#var test := [1];
+#print test \n;
+
+#var test2 := [[[1]]];
+#print test2 \n;
+
+#var test3 := [[[1]]];
+
+#print test3 \n;
+
 }
