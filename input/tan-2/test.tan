@@ -1,0 +1,38 @@
+main{
+
+#  var boolean := [true,false];
+#  print boolean \n;
+
+#  var multiDimBoolean := [[true,false],[false,true]];
+#  print multiDimBoolean \n;
+
+#  var integer := [1,2,3];
+#  print integer \n;
+
+#  var multiDimInteger := [[1,2,3],[4,5,6]];
+#  print multiDimInteger \n;
+
+#  var floatarray := [1.1,2.2,3.3];
+#   print floatarray \n;
+
+#  var multiDimFloat := [[1.1,2.2,3.3],[4.4,5.5,6.6]];
+#   print multiDimFloat \n;
+
+#  var stringarray := ["hrty67"];
+#  print stringarray \n;
+
+
+#  var multiDimString := [["hello","world"],["goodbye","world"]];
+#  print multiDimString \n;
+
+#  var multiNestedsameType := [[[[4,5,6]],[[7,8,9]]],[[[13,14,15]],[[22,23,24]]]];
+#  print multiNestedsameType \n;
+
+    var x := 0;
+    while (x < 10) {
+        var y := [1,2,3];
+        [y:2] := x;
+        print y \n;
+        x := x + 1;
+    }
+}
