@@ -91,5 +91,33 @@ main {
     print [x6:1] || false \n;
     print \n; 
     
-   
+    
+    
+    #===================================================================
+    # TEST INDEXING MULTI-DIMENSIONAL ARRAYS
+    var ints := [[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10]]];
+    print [[ints:0]:0] \n; 
+    print [[ints:1]:1] \n; 
+    
+    
+    var floats := [[[1.1, 2.2], [3.3, 4.4], [5.5, 6.6]], [[7.7, 8.8], [9.9, 10.10]]];
+    print [[floats:0]:0] \n; 
+    print [[floats:1]:1] \n; 
+    
+    
+    var strings := [[["hello", "hi"], ["taylor", "swift"], ["cruel", "summer"]], [["cardigan", "evermore"], ["1989", "invisible string"]]];
+    print [[strings:0]:0] \n; 
+    print [[strings:1]:1] \n; 
+    
+    
+    var chars := [[['a', 'b'], ['c', 'd'], ['A', %102]], [[%107, %110], [%176, %041]]];
+    print [[chars:0]:0] \n; 
+    print [[chars:1]:1] \n;
+    
+    
+    var bools := [[[true, true], [false, false], [false, true]], [[false, false], [false, true]]];
+    print [[bools:0]:0] \n; 
+    print [[bools:1]:1] \n;
+
+                
 }
