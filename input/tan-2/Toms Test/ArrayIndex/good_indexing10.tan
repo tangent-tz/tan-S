@@ -1,5 +1,5 @@
 main {
 	const farm := [['a'], ['b'], ['c', 'd', 'e']];
-	print farm[2] \n;
-	print farm[2][1] \n;
+	print [farm:2] \n;
+	print [[farm:2]:1] \n;
 }

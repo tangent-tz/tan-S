@@ -24,7 +24,6 @@ public enum ReferenceType implements Type {
     }
     public boolean equivalent(Type otherType) {
         return this == otherType;
-        //TODO: might need promotion here???
     }
 
     @Override

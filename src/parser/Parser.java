@@ -634,12 +634,12 @@ public class Parser {
 		ParseNode innerType; 
 		if(startsPrimitiveType(nowReading)) {
 			innerType = new TypeIndicatorNode(nowReading);
+			readToken();
 		} else {
 			innerType = parseArrayType();
 		}
 		result.appendChild(innerType);
 		
-		readToken();
 		expect(Punctuator.CLOSE_BRACKETS);
 		return result;
 	}

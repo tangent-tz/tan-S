@@ -33,12 +33,12 @@ public class TypeVariable implements Type {
 
     @Override
     public void addTypeVariables(Set<TypeVariable> typeVariables) {
-        
+        typeVariables.add(this); 
     }
 
     @Override
     public int getSize() {
-        return 0;
+        return -1;
     }
 
     @Override

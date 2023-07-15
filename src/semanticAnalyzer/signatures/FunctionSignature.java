@@ -37,7 +37,6 @@ public class FunctionSignature {
 		}
 	}
 	
-	
 	///////////////////////////////////////////////////////////////
 	// accessors
 	
@@ -60,11 +59,12 @@ public class FunctionSignature {
 			return false;
 		}
 		
+		resetTypeVariables();
 		for(int i=0; i<paramTypes.length; i++) {
 			if(!assignableTo(paramTypes[i], types.get(i))) {
 				return false;
 			}
-		}		
+		}
 		return true;
 	}
 	private boolean assignableTo(Type formalType, Type actualType) {
