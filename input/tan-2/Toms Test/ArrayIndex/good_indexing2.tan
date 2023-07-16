@@ -1,4 +1,4 @@
 main {
 	const farm := [18, 71, 52, 42];
-	print farm[1] \s farm[2] \n;
+	print [farm:1] \s [farm:2] \n;
 }

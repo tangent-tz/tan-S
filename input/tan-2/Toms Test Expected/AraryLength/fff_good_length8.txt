@@ -1,2 +1,1 @@
-Expected output:
-4
+4 4

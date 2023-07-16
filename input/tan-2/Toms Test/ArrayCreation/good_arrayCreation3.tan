@@ -6,7 +6,7 @@ main {
 	print [AA:1] \n;
 	print [AA:2] \n\n;
 
-	print [AA:0] \n;
-	print [AA:1] \n;
-	print [AA:2] \n\n;
+	print [BB:0] \n;
+	print [BB:1] \n;
+	print [BB:2] \n\n;
 }

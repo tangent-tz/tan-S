@@ -1,4 +1,4 @@
 main {
 	const farm := ['a', 'b'];
-	print farm[0] \s farm[1] \n;
+	print [farm:0] \s [farm:1] \n;
 }
