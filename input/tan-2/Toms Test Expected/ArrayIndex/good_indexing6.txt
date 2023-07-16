@@ -1,2 +1,1 @@
-Expected output:
 true false true

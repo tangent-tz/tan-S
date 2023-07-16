@@ -1,4 +1,3 @@
-Expected output:
 true
 true
 true
