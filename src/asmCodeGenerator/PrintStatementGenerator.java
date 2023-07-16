@@ -104,6 +104,14 @@ public class PrintStatementGenerator {
 		// if subtype is reference type then recursive printing:
 		loadArrayStatus(pointerLabel);	// [... value, statusValue]
 		code.add(JumpFalse, printPrimitiveTypeLabel);  	// [... value]
+		
+		//if we reach this point in the instructions, that means we did not jump, that means we detect that the element-to-be-printed is of type Array. 
+		//normally, we can just recursively print out this array element. But, we first need to see if this element has been initialized or not (because the parent array may be constructed with the empty array creation).
+		code.add(Duplicate); 		// [... value, value]
+		code.add(JumpFalse, printPrimitiveTypeLabel);
+		
+		//if we read this point, that means the element-to-be-printed is an array AND this array has been initialized.
+		//so we can safely do the recursive array printing:
 		printArrayRecursive(code, ifConditionDelimiterLabel, subtype.getSubtype());
 		//---------------------------------------------------------------------------------------------------------
 		
@@ -210,8 +218,9 @@ public class PrintStatementGenerator {
 					return "";
 			}
 		} else if (type instanceof Array) {
-			// we will manually handle the format for printing arrays. 
-			return "";
+			// this format is used only when we are printing an array element that has not been initialized yet. 
+			// so its value is just 4 bytes filled with all O's 
+			return RunTime.INTEGER_PRINT_FORMAT;
 		} else {
 			switch((ReferenceType)type) {
 				case STRING:    return RunTime.STRING_PRINT_FORMAT;
