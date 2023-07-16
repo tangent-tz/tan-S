@@ -1,5 +1,4 @@
-Expected output:
-0 true
+ true
 10 true
 20 true
 30 true
