@@ -200,6 +200,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.setType(PrimitiveType.NO_TYPE);
 	}
 
+	
 	@Override
 	public void visitLeave(WhileNode node) {
 		ParseNode condition = node.child(0);
@@ -458,8 +459,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 	}
 	
-	
-	
 
 	///////////////////////////////////////////////////////////////////////////
 	// simple leaf nodes
@@ -500,6 +499,21 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visit(TypeIndicatorNode node) {
 		node.setType(node.getValue());
 	}
+	@Override
+	public void visit(BreakStatementNode node) {
+		ParseNode parentLoopNode = node.findClosestLoopNode();
+		if(parentLoopNode == null) {
+			node.setType(PrimitiveType.ERROR);
+		}
+	}
+	@Override
+	public void visit(ContinueStatementNode node) {
+		ParseNode parentLoopNode = node.findClosestLoopNode();
+		if(parentLoopNode == null) {
+			node.setType(PrimitiveType.ERROR);
+		}
+	}
+	
 
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods

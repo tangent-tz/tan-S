@@ -83,6 +83,12 @@ public class Parser {
 		if(startsIfStatement(nowReading)) {
 			return parseIfStatement();
 		}
+		if(startsBreakStatement(nowReading)) {
+			return parseBreakStatement(); 
+		}
+		if(startsContinueStatement(nowReading)) {
+			return parseContinueStatement(); 
+		}
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
@@ -91,7 +97,9 @@ public class Parser {
 				startsAssignmentStatement(token) ||
 				startsBlockStatement(token) ||
 				startsWhileStatement(token) ||
-				startsIfStatement(token);
+				startsIfStatement(token) ||
+				startsBreakStatement(token) ||
+				startsContinueStatement(token);
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
@@ -267,9 +275,6 @@ public class Parser {
 	
 	
 	
-	
-
-
 	// block statement -> { statement* }
 	private ParseNode parseBlockStatement() {
 		if(!startsBlockStatement(nowReading)) {
@@ -289,6 +294,7 @@ public class Parser {
 		return token.isLextant(Punctuator.OPEN_BRACE);
 	}
 
+	
 	private ParseNode parseWhileStatement() {
 		if(!startsWhileStatement(nowReading)) {
 			return syntaxErrorNode("whileStatement");
@@ -327,6 +333,38 @@ public class Parser {
 	private boolean startsIfStatement(Token token) {
 		return token.isLextant(Keyword.IF);
 	}
+	
+	
+	
+	private ParseNode parseBreakStatement() {
+		if(!startsBreakStatement(nowReading)) {
+			return syntaxErrorNode("breakStatement");
+		}
+		Token breakToken = nowReading; 
+		readToken();
+		expect(Punctuator.TERMINATOR);
+		
+		return new BreakStatementNode(breakToken); 
+	}
+	private boolean startsBreakStatement(Token token) {
+		return token.isLextant(Keyword.BREAK); 
+	}
+	
+	
+	private ParseNode parseContinueStatement() {
+		if(!startsContinueStatement(nowReading)){
+			return syntaxErrorNode("continueStatement");
+		}
+		Token continueToken = nowReading; 
+		readToken();
+		expect(Punctuator.TERMINATOR); 
+		
+		return new ContinueStatementNode(continueToken);
+	}
+	private boolean startsContinueStatement(Token token) {
+		return token.isLextant(Keyword.CONTINUE);
+	}
+	
 
 	///////////////////////////////////////////////////////////
 	// expressions
