@@ -2,7 +2,6 @@ import shutil
 import subprocess
 import os
 import datetime
-import time
 
 TOMS_TEST_LEXICAL = "C:\CMPT379\input\\tan-1\\toms tests\lexical"
 TOMS_TEST_LEXICAL_EXPECTED = "C:\CMPT379\input\\tan-1\Toms Test Expected\lexical"
@@ -25,11 +24,15 @@ GENERAL_TEST_1_EXPECTED = "C:\CMPT379\input\\tan-1\expected"
 GENERAL_TEST_2 = "C:\CMPT379\input\\tan-2"
 GENERAL_TEST_2_EXPECTED = "C:\CMPT379\input\\tan-2\expected"
 
+GENERAL_TEST_3 = "C:\CMPT379\input\\tan-3"
+GENERAL_TEST_3_EXPECTED = "C:\CMPT379\input\\tan-3\expected"
+
 global TAN_PATH
 global EXPECTED_PATH
 
 OUTPUT_PATH_1 = "C:\CMPT379\input\\tan-1\output"
 OUTPUT_PATH_2 = "C:\CMPT379\input\\tan-2\output"
+OUTPUT_PATH_3 = "C:\CMPT379\input\\tan-3\output"
 
 ASM_PATH = "C:\CMPT379\ASM_Emulator\ASMEmu.exe"
 BIN_PATH = "C:\CMPT379\\bin"
@@ -159,7 +162,7 @@ def assertions(tanFiles, compilerOutput, expectedOutput, bad_file_names):
 
 
 def test_to_run():
-    user_input = input("System: What Test to run? [Tom, General1, General2]\nYou: ")
+    user_input = input("System: What Test to run? [Tom, General1, General2, General3]\nYou: ")
     tan_path = ""
     expected_path = ""
     if user_input.lower() == "tom":
@@ -187,6 +190,9 @@ def test_to_run():
     elif user_input.lower() == "general2":
         tan_path = GENERAL_TEST_2
         expected_path = GENERAL_TEST_2_EXPECTED
+    elif user_input.lower() == "general3":
+        tan_path = GENERAL_TEST_3
+        expected_path = GENERAL_TEST_3_EXPECTED
     elif user_input.lower() == EXIT:
         tan_path = EXIT
         expected_path = EXIT
@@ -215,8 +221,10 @@ def setOutputPath():
     if TAN_PATH == GENERAL_TEST_1:
         OUTPUT_PATH = OUTPUT_PATH_1
         return
-    
-    OUTPUT_PATH = OUTPUT_PATH_2
+    if TAN_PATH == GENERAL_TEST_2:
+        OUTPUT_PATH = OUTPUT_PATH_2
+        return
+    OUTPUT_PATH = OUTPUT_PATH_3
      
 
 if __name__ == "__main__":
