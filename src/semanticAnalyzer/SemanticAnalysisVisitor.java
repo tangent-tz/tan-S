@@ -501,13 +501,13 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 	@Override
 	public void visit(BreakStatementNode node) {
-		ParseNode parentLoopNode = node.findClosestLoopNode();
-		if(parentLoopNode == null) {
-			node.setType(PrimitiveType.ERROR);
-		}
+		visitLoopFlowDisruptorNode(node);
 	}
 	@Override
 	public void visit(ContinueStatementNode node) {
+		visitLoopFlowDisruptorNode(node);
+	}
+	private void visitLoopFlowDisruptorNode(LoopFlowDisruptorNode node) {
 		ParseNode parentLoopNode = node.findClosestLoopNode();
 		if(parentLoopNode == null) {
 			node.setType(PrimitiveType.ERROR);
