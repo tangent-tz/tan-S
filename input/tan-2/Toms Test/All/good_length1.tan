@@ -1,0 +1,4 @@
+main {
+	var farm := [18, 71, 91];
+	print length farm \s 3 \n;
+}

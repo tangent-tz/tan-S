@@ -39,6 +39,18 @@ TOMS_2_TEST_ARRAY_LENGTH_EXPECTED = "C:\CMPT379\input\\tan-2\Toms Test Expected\
 TOMS_2_TEST_ARRAY_SEMANTICS = "C:\\CMPT379\\input\\tan-2\\Toms Test\\ArraySemantics"
 TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED = "C:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArraySemantics"
 
+TOMS_2_TEST_ALL = "Tom2_All"
+TOMS_2_TEST_ALL_EXPECTED = "Tom2_All_Expected"
+
+test_expected_dict = {TOMS_2_TEST_PROMOTION: TOMS_2_TEST_PROMOTION_EXPECTED,
+                      TOMS_2_TEST_ARRAY_CREATION: TOMS_2_TEST_ARRAY_CREATION_EXPECTED,
+                      TOMS_2_TEST_ARRAY_INDEX: TOMS_2_TEST_ARRAY_INDEX_EXPECTED,
+                      TOMS_2_TEST_ARRAY_PRINT: TOMS_2_TEST_ARRAY_PRINT_EXPECTED,
+                      TOMS_2_TEST_ARRAY_POPULATED: TOMS_2_TEST_ARRAY_POPULATED_EXPECTED,
+                      TOMS_2_TEST_ARRAY_LENGTH: TOMS_2_TEST_ARRAY_LENGTH_EXPECTED,
+                      TOMS_2_TEST_ARRAY_SEMANTICS: TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED
+                      }
+
 GENERAL_TEST_1 = "C:\CMPT379\input\\tan-1"
 GENERAL_TEST_1_EXPECTED = "C:\CMPT379\input\\tan-1\expected"
 
@@ -55,6 +67,7 @@ ASM_PATH = "C:\CMPT379\ASM_Emulator\ASMEmu.exe"
 BIN_PATH = "C:\CMPT379\\bin"
 
 EXIT = "exit"
+
 
 def run_java_file(java_file_path, java_class, file):
     command = ['javac', '-cp', "C:\\CMPT379\\src\\", '-d', BIN_PATH, "C:\\CMPT379\\src\\applications\\TanCompiler.java"]
@@ -188,7 +201,8 @@ def test_to_run():
     tan_path = ""
     expected_path = ""
     if user_input.lower() == "tom1":
-        user_input = input("System: Please choose Test: [Lexical, Miscellaneous, Precedence, Statements, TypeChecking]\nYou: ")
+        user_input = input(
+            "System: Please choose Test: [Lexical, Miscellaneous, Precedence, Statements, TypeChecking]\nYou: ")
         if user_input.lower() == "lexical":
             tan_path = TOMS_TEST_LEXICAL
             expected_path = TOMS_TEST_LEXICAL_EXPECTED
@@ -207,7 +221,8 @@ def test_to_run():
         else:
             return None, None
     elif user_input.lower() == "tom2":
-        user_input = input("System: Please choose Test: [Promotion, ArrayLength, ArrayCreation, ArrayIndex, ArrayPopulated, ArraySemantics, ArrayPrint]\nYou: ")
+        user_input = input(
+            "System: Please choose Test: [Promotion, ArrayLength, ArrayCreation, ArrayIndex, ArrayPopulated, ArraySemantics, ArrayPrint, All]\nYou: ")
         if user_input.lower() == "promotion":
             tan_path = TOMS_2_TEST_PROMOTION
             expected_path = TOMS_2_TEST_PROMOTION_EXPECTED
@@ -229,6 +244,9 @@ def test_to_run():
         elif user_input.lower() == "arrayprint":
             tan_path = TOMS_2_TEST_ARRAY_PRINT
             expected_path = TOMS_2_TEST_ARRAY_PRINT_EXPECTED
+        elif user_input.lower() == "all":
+            tan_path = TOMS_2_TEST_ALL
+            expected_path = TOMS_2_TEST_ALL_EXPECTED
         else:
             return None, None
     elif user_input.lower() == "general1":
@@ -280,6 +298,19 @@ if __name__ == "__main__":
 
         if TAN_PATH == EXIT:
             break
+
+        if TAN_PATH == TOMS_2_TEST_ALL:
+            for tanPath, expectedPath in test_expected_dict.items():
+                print("\n\nTesting: ", tanPath)
+                TAN_PATH, EXPECTED_PATH = tanPath, expectedPath
+                setOutputPath()
+                deleteFolder()
+                tanFiles, badFile, bad_file_names = java_file_execute_orchestrator()
+                compilerOutput = ASM_file_execute_orchestrator(badFile)
+                expectedOutput = expected_file_orchestrator(bad_file_names)
+                assertions(tanFiles, compilerOutput, expectedOutput, bad_file_names)
+            continue
+
 
         setOutputPath()
         deleteFolder()

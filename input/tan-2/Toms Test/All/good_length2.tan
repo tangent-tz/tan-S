@@ -1,0 +1,4 @@
+main {
+	var farm := ['a', '*', 'l', '$', 'Y', 'x'];
+	print length farm \s 6 \n;
+}
