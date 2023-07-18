@@ -56,9 +56,13 @@ main{
     print strings4d \n; 
     print new [[[[string]]]](2) \n;
     
-    const someString := [[["the", "last", "string"]]]; 
+    var someString := [[["the", "last", "string"]]]; 
     [strings4d:(length strings4d)-1] := someString; 
-    print strings4d \n\n; 
+    print strings4d \n; 
+    
+    someString := [[new[string](5)]];
+    [strings4d:(length strings4d)-1] := someString; 
+    print strings4d \n\n;
     
     
     #-------------------------------------------------------------------------

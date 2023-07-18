@@ -197,10 +197,28 @@ public class PrintStatementGenerator {
 		if (type != ReferenceType.STRING) {
 			return;
 		}
-
+		
+		Labeller labeller = new Labeller("string-print"); 
+		String printEmptyStringLabel = labeller.newLabel("print-empty-string");
+		String endLabel = labeller.newLabel("end"); 
+		
+		
+		//first, check if this string is initialized or not 
+		//(because we might be printing an uninitialized string in an array built by empty-array-creation)
+		//currently, the stack: [... value]
+		code.add(Duplicate); 	// [... value, value]
+		code.add(JumpFalse, printEmptyStringLabel);		// [... value]
+		
 		int offset = 4 + 4 + 4;
-		code.add(PushI, offset);
-		code.add(Add);
+		code.add(PushI, offset);	// [... value, offset]
+		code.add(Add);				// [... value + offset]
+		code.add(Jump, endLabel);
+		
+		code.add(Label, printEmptyStringLabel); 	// [... value]
+		code.add(Pop); 								// [...]
+		code.add(PushD, RunTime.EMPTY_STRING); 
+		
+		code.add(Label, endLabel);
 	}
 
 
