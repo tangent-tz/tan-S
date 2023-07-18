@@ -1,5 +1,0 @@
-main {
-	var c := '!';
-	c := true;
-	print c \s true \n;
-}

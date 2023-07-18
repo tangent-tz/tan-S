@@ -1,4 +1,0 @@
-main {
-	const v := true || (17 / 0) > 1;
-	print v \n;
-}

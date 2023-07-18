@@ -1,3 +1,0 @@
-main {
-	print 44.7 < 'j' \s true \n;
-}

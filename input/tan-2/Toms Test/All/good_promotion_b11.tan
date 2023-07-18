@@ -1,3 +1,0 @@
-main {
-	print 107 == 'k' \s true \n;
-}

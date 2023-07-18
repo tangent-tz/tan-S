@@ -3,6 +3,7 @@ import subprocess
 import os
 import datetime
 
+# ---------------- TOMS 1 ---------------------------------------------
 TOMS_TEST_LEXICAL = "D:\CMPT379\input\\tan-1\\toms tests\lexical"
 TOMS_TEST_LEXICAL_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\lexical"
 
@@ -28,41 +29,55 @@ test_expected_dict = {TOMS_TEST_LEXICAL: TOMS_TEST_LEXICAL_EXPECTED,
                       TOMS_TEST_TYPECHECKING: TOMS_TEST_TYPECHECKING_EXPECTED
                       }
 
-
 # ---------------- TOMS 2 ---------------------------------------------
-TOMS_2_TEST_PROMOTION = "D:\\CMPT379\\input\\tan-2\Toms Test\\Promotion"
-TOMS_2_TEST_PROMOTION_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\Promotion"
-
 TOMS_2_TEST_ARRAY_CREATION = "D:\\CMPT379\\input\\tan-2\Toms Test\\ArrayCreation"
 TOMS_2_TEST_ARRAY_CREATION_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayCreation"
 
 TOMS_2_TEST_ARRAY_INDEX = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayIndex"
 TOMS_2_TEST_ARRAY_INDEX_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayIndex"
 
-TOMS_2_TEST_ARRAY_PRINT = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayPrint"
-TOMS_2_TEST_ARRAY_PRINT_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayPrint"
+TOMS_2_TEST_ARRAY_LENGTH = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayLength"
+TOMS_2_TEST_ARRAY_LENGTH_EXPECTED = "D:\CMPT379\input\\tan-2\Toms Test Expected\ArrayLength"
+
+TOMS_2_TEST_ARRAY_MISCELLANEOUS = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayMisc"
+TOMS_2_TEST_ARRAY_MISCELLANEOUS_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayMisc"
 
 TOMS_2_TEST_ARRAY_POPULATED = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayPopulated"
 TOMS_2_TEST_ARRAY_POPULATED_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayPopulated"
 
-TOMS_2_TEST_ARRAY_LENGTH = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayLength"
-TOMS_2_TEST_ARRAY_LENGTH_EXPECTED = "D:\CMPT379\input\\tan-2\Toms Test Expected\ArrayLength"
+TOMS_2_TEST_ARRAY_PRINT = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayPrint"
+TOMS_2_TEST_ARRAY_PRINT_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayPrint"
 
 TOMS_2_TEST_ARRAY_SEMANTICS = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArraySemantics"
 TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArraySemantics"
 
+TOMS_2_TEST_MISCELLANEOUS = "D:\\CMPT379\\input\\tan-2\\Toms Test\\Miscellaneous"
+TOMS_2_TEST_MISCELLANEOUS_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\Miscellaneous"
+
+TOMS_2_TEST_PROMOTION = "D:\\CMPT379\\input\\tan-2\Toms Test\\Promotion"
+TOMS_2_TEST_PROMOTION_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\Promotion"
+
+TOMS_2_TEST_STATEMENTS = "D:\\CMPT379\\input\\tan-2\\Toms Test\\Statements"
+TOMS_2_TEST_STATEMENTS_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\Statements"
+
 TOMS_2_TEST_ALL = "Tom2_All"
 TOMS_2_TEST_ALL_EXPECTED = "Tom2_All_Expected"
 
-test_expected_dict2 = {TOMS_2_TEST_PROMOTION: TOMS_2_TEST_PROMOTION_EXPECTED,
-                       TOMS_2_TEST_ARRAY_CREATION: TOMS_2_TEST_ARRAY_CREATION_EXPECTED,
+test_expected_dict2 = {TOMS_2_TEST_ARRAY_CREATION: TOMS_2_TEST_ARRAY_CREATION_EXPECTED,
                        TOMS_2_TEST_ARRAY_INDEX: TOMS_2_TEST_ARRAY_INDEX_EXPECTED,
-                       TOMS_2_TEST_ARRAY_PRINT: TOMS_2_TEST_ARRAY_PRINT_EXPECTED,
-                       TOMS_2_TEST_ARRAY_POPULATED: TOMS_2_TEST_ARRAY_POPULATED_EXPECTED,
                        TOMS_2_TEST_ARRAY_LENGTH: TOMS_2_TEST_ARRAY_LENGTH_EXPECTED,
-                       TOMS_2_TEST_ARRAY_SEMANTICS: TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED
+                       TOMS_2_TEST_ARRAY_MISCELLANEOUS: TOMS_2_TEST_ARRAY_MISCELLANEOUS_EXPECTED,
+                       TOMS_2_TEST_ARRAY_POPULATED: TOMS_2_TEST_ARRAY_POPULATED_EXPECTED,
+                       TOMS_2_TEST_ARRAY_PRINT: TOMS_2_TEST_ARRAY_PRINT_EXPECTED,
+                       TOMS_2_TEST_ARRAY_SEMANTICS: TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED,
+                       TOMS_2_TEST_MISCELLANEOUS: TOMS_2_TEST_MISCELLANEOUS_EXPECTED,
+                       TOMS_2_TEST_PROMOTION: TOMS_2_TEST_PROMOTION_EXPECTED,
+                       TOMS_2_TEST_STATEMENTS: TOMS_2_TEST_STATEMENTS_EXPECTED
                        }
 
+
+
+# ---------------- GENERAL's ---------------------------------------------
 GENERAL_TEST_1 = "D:\CMPT379\input\\tan-1"
 GENERAL_TEST_1_EXPECTED = "D:\CMPT379\input\\tan-1\expected"
 
@@ -107,7 +122,7 @@ def find_files(directory_path):
     with os.scandir(directory_path) as entries:
         for entry in entries:
             if entry.is_file():
-                if 'Violations' in entry.name or 'Conventions' in entry.name or 'err' in entry.name or 'rte' in entry.name or 'fff' in entry.name:
+                if 'Violations' in entry.name or 'Conventions' in entry.name or 'err' in entry.name or 'fff' in entry.name:
                     continue
                 else:
                     fileList.append(entry.name)
@@ -237,28 +252,37 @@ def test_to_run():
             return None, None
     elif user_input.lower() == "tom2":
         user_input = input(
-            "System: Please choose Test: [Promotion, ArrayLength, ArrayCreation, ArrayIndex, ArrayPopulated, ArraySemantics, ArrayPrint, All]\nYou: ")
-        if user_input.lower() == "promotion":
-            tan_path = TOMS_2_TEST_PROMOTION
-            expected_path = TOMS_2_TEST_PROMOTION_EXPECTED
-        elif user_input.lower() == "arraylength":
-            tan_path = TOMS_2_TEST_ARRAY_LENGTH
-            expected_path = TOMS_2_TEST_ARRAY_LENGTH_EXPECTED
-        elif user_input.lower() == "arraycreation":
+            "System: Please choose Test: [ArrayCreation, ArrayIndex, ArrayLength, ArrayMisc, ArrayPopulated, ArrayPrint, ArraySemantics, Miscellaneous, Promotion, Statements, All]\nYou: ")
+        if user_input.lower() == "arraycreation":
             tan_path = TOMS_2_TEST_ARRAY_CREATION
             expected_path = TOMS_2_TEST_ARRAY_CREATION_EXPECTED
         elif user_input.lower() == "arrayindex":
             tan_path = TOMS_2_TEST_ARRAY_INDEX
             expected_path = TOMS_2_TEST_ARRAY_INDEX_EXPECTED
+        elif user_input.lower() == "arraylength":
+            tan_path = TOMS_2_TEST_ARRAY_LENGTH
+            expected_path = TOMS_2_TEST_ARRAY_LENGTH_EXPECTED
+        elif user_input.lower() == "arraymisc":
+            tan_path = TOMS_2_TEST_ARRAY_MISCELLANEOUS
+            expected_path = TOMS_2_TEST_ARRAY_MISCELLANEOUS_EXPECTED
         elif user_input.lower() == "arraypopulated":
             tan_path = TOMS_2_TEST_ARRAY_POPULATED
             expected_path = TOMS_2_TEST_ARRAY_POPULATED_EXPECTED
-        elif user_input.lower() == "arraysemantics":
-            tan_path = TOMS_2_TEST_ARRAY_SEMANTICS
-            expected_path = TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED
         elif user_input.lower() == "arrayprint":
             tan_path = TOMS_2_TEST_ARRAY_PRINT
             expected_path = TOMS_2_TEST_ARRAY_PRINT_EXPECTED
+        elif user_input.lower() == "arraysemantics":
+            tan_path = TOMS_2_TEST_ARRAY_SEMANTICS
+            expected_path = TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED
+        elif user_input.lower() == "miscellaneous":
+            tan_path = TOMS_2_TEST_MISCELLANEOUS
+            expected_path = TOMS_2_TEST_MISCELLANEOUS_EXPECTED
+        elif user_input.lower() == "promotion":
+            tan_path = TOMS_2_TEST_PROMOTION
+            expected_path = TOMS_2_TEST_PROMOTION_EXPECTED
+        elif user_input.lower() == "statements":
+            tan_path = TOMS_2_TEST_STATEMENTS
+            expected_path = TOMS_2_TEST_STATEMENTS_EXPECTED
         elif user_input.lower() == "all":
             tan_path = TOMS_2_TEST_ALL
             expected_path = TOMS_2_TEST_ALL_EXPECTED
@@ -300,6 +324,7 @@ def setOutputPath():
         return
 
     OUTPUT_PATH = OUTPUT_PATH_2
+
 
 def main():
     setOutputPath()

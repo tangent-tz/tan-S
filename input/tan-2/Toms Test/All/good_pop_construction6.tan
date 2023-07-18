@@ -1,4 +1,0 @@
-main {
-	var barb := [[10], [2, 3], new [int](0)];
-	print barb \n;
-}
