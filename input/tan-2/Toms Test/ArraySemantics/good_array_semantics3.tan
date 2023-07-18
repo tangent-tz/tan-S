@@ -3,6 +3,6 @@ main {
 	const cow := [22, 44];
 	const hay := [farm, cow];
 	print hay \n;
-	hay[0][0] := 70;
+	[[hay:0]:0] := 70;
 	print hay \s farm \s cow \n;
 }
