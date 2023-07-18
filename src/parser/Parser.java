@@ -80,6 +80,9 @@ public class Parser {
 		if(startsWhileStatement(nowReading)) {
 			return parseWhileStatement();
 		}
+		if(startsForStatement(nowReading)) {
+			return parseForStatement();
+		}
 		if(startsIfStatement(nowReading)) {
 			return parseIfStatement();
 		}
@@ -91,6 +94,7 @@ public class Parser {
 				startsAssignmentStatement(token) ||
 				startsBlockStatement(token) ||
 				startsWhileStatement(token) ||
+				startsForStatement(token) ||
 				startsIfStatement(token);
 	}
 	
@@ -264,11 +268,6 @@ public class Parser {
 	private boolean startsTargetableParenthesesWrappedExpression(Token token) {
 		return token.isLextant(Punctuator.OPEN_PARENTHESIS);  
 	}
-	
-	
-	
-	
-
 
 	// block statement -> { statement* }
 	private ParseNode parseBlockStatement() {
@@ -287,6 +286,24 @@ public class Parser {
 	}
 	private boolean startsBlockStatement(Token token) {
 		return token.isLextant(Punctuator.OPEN_BRACE);
+	}
+
+	private ParseNode parseForBlockStatement() {
+		if(!startsBlockStatement(nowReading)) {
+			return syntaxErrorNode("blockForStatement");
+		}
+		ParseNode codeBlock = new BlockStatementNode(nowReading); // reuse block statement node, but this time initializes with parenthesis instead of braces
+		expect(Punctuator.OPEN_PARENTHESIS);
+
+		while(startsStatement(nowReading)) {
+			ParseNode statement = parseStatement();
+			codeBlock.appendChild(statement);
+		}
+		expect(Punctuator.CLOSE_PARENTHESIS);
+		return codeBlock;
+	}
+	private boolean startsForBlockStatement(Token token) {
+		return token.isLextant(Punctuator.OPEN_PARENTHESIS);
 	}
 
 	private ParseNode parseWhileStatement() {
@@ -308,6 +325,24 @@ public class Parser {
 		return token.isLextant(Keyword.WHILE);
 	}
 
+	private ParseNode parseForStatement() {
+		if(!startsForStatement(nowReading)) {
+			return syntaxErrorNode("forStatement");
+		}
+
+		Token forToken = nowReading; // Save the while token for creating the WhileNode later
+		readToken(); // Consume the "for" keyword
+		expect(Punctuator.OPEN_PARENTHESIS);
+		ParseNode forDeclationBlock = parseForStatement();
+		expect(Punctuator.CLOSE_PARENTHESIS);
+
+		ParseNode forBlock = parseBlockStatement();
+
+		return ForNode.withChildren(forToken, forDeclationBlock, forBlock);
+	}
+	private boolean startsForStatement(Token token) {
+		return token.isLextant(Keyword.FOR);
+	}
 
 	private ParseNode parseIfStatement() {
 		if(!startsIfStatement(nowReading)) {
