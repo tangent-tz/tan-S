@@ -2,7 +2,6 @@ import shutil
 import subprocess
 import os
 import datetime
-import time
 
 TOMS_TEST_LEXICAL = "D:\CMPT379\input\\tan-1\\toms tests\lexical"
 TOMS_TEST_LEXICAL_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\lexical"
@@ -19,6 +18,18 @@ TOMS_TEST_STATEMENTS_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\stat
 TOMS_TEST_TYPECHECKING = "D:\CMPT379\input\\tan-1\\toms tests\\typechecking"
 TOMS_TEST_TYPECHECKING_EXPECTED = "D:\CMPT379\input\\tan-1\Toms Test Expected\\typechecking"
 
+TOMS_TEST_ALL = "Tom_All"
+TOMS_TEST_ALL_EXPECTED = "Tom_All_Expected"
+
+test_expected_dict = {TOMS_TEST_LEXICAL: TOMS_TEST_LEXICAL_EXPECTED,
+                      TOMS_TEST_MISCELLANEOUS: TOMS_TEST_MISCELLANEOUS_EXPECTED,
+                      TOMS_TEST_PRECEDENCE: TOMS_TEST_PRECEDENCE_EXPECTED,
+                      TOMS_TEST_STATEMENTS: TOMS_TEST_STATEMENTS_EXPECTED,
+                      TOMS_TEST_TYPECHECKING: TOMS_TEST_TYPECHECKING_EXPECTED
+                      }
+
+
+# ---------------- TOMS 2 ---------------------------------------------
 TOMS_2_TEST_PROMOTION = "D:\\CMPT379\\input\\tan-2\Toms Test\\Promotion"
 TOMS_2_TEST_PROMOTION_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\Promotion"
 
@@ -35,10 +46,22 @@ TOMS_2_TEST_ARRAY_POPULATED = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayPopula
 TOMS_2_TEST_ARRAY_POPULATED_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArrayPopulated"
 
 TOMS_2_TEST_ARRAY_LENGTH = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArrayLength"
-TOMS_2_TEST_ARRAY_LENGTH_EXPECTED = "D:\CMPT379\input\\tan-2\Toms Test Expected\AraryLength"
+TOMS_2_TEST_ARRAY_LENGTH_EXPECTED = "D:\CMPT379\input\\tan-2\Toms Test Expected\ArrayLength"
 
 TOMS_2_TEST_ARRAY_SEMANTICS = "D:\\CMPT379\\input\\tan-2\\Toms Test\\ArraySemantics"
 TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED = "D:\\CMPT379\\input\\tan-2\\Toms Test Expected\\ArraySemantics"
+
+TOMS_2_TEST_ALL = "Tom2_All"
+TOMS_2_TEST_ALL_EXPECTED = "Tom2_All_Expected"
+
+test_expected_dict2 = {TOMS_2_TEST_PROMOTION: TOMS_2_TEST_PROMOTION_EXPECTED,
+                       TOMS_2_TEST_ARRAY_CREATION: TOMS_2_TEST_ARRAY_CREATION_EXPECTED,
+                       TOMS_2_TEST_ARRAY_INDEX: TOMS_2_TEST_ARRAY_INDEX_EXPECTED,
+                       TOMS_2_TEST_ARRAY_PRINT: TOMS_2_TEST_ARRAY_PRINT_EXPECTED,
+                       TOMS_2_TEST_ARRAY_POPULATED: TOMS_2_TEST_ARRAY_POPULATED_EXPECTED,
+                       TOMS_2_TEST_ARRAY_LENGTH: TOMS_2_TEST_ARRAY_LENGTH_EXPECTED,
+                       TOMS_2_TEST_ARRAY_SEMANTICS: TOMS_2_TEST_ARRAY_SEMANTICS_EXPECTED
+                       }
 
 GENERAL_TEST_1 = "D:\CMPT379\input\\tan-1"
 GENERAL_TEST_1_EXPECTED = "D:\CMPT379\input\\tan-1\expected"
@@ -56,6 +79,7 @@ ASM_PATH = "D:\CMPT379\ASM_Emulator\ASMEmu.exe"
 BIN_PATH = "D:\CMPT379\\bin"
 
 EXIT = "exit"
+
 
 def run_java_file(java_file_path, java_class, file):
     command = ['javac', '-cp', "D:\\CMPT379\\src\\", '-d', BIN_PATH, "D:\\CMPT379\\src\\applications\\TanCompiler.java"]
@@ -189,7 +213,8 @@ def test_to_run():
     tan_path = ""
     expected_path = ""
     if user_input.lower() == "tom1":
-        user_input = input("System: Please choose Test: [Lexical, Miscellaneous, Precedence, Statements, TypeChecking]\nYou: ")
+        user_input = input(
+            "System: Please choose Test: [Lexical, Miscellaneous, Precedence, Statements, TypeChecking, All]\nYou: ")
         if user_input.lower() == "lexical":
             tan_path = TOMS_TEST_LEXICAL
             expected_path = TOMS_TEST_LEXICAL_EXPECTED
@@ -205,10 +230,14 @@ def test_to_run():
         elif user_input.lower() == "typechecking":
             tan_path = TOMS_TEST_TYPECHECKING
             expected_path = TOMS_TEST_TYPECHECKING_EXPECTED
+        elif user_input.lower() == "all":
+            tan_path = TOMS_TEST_ALL
+            expected_path = TOMS_TEST_ALL_EXPECTED
         else:
             return None, None
     elif user_input.lower() == "tom2":
-        user_input = input("System: Please choose Test: [Promotion, ArrayLength, ArrayCreation, ArrayIndex, ArrayPopulated, ArraySemantics, ArrayPrint]\nYou: ")
+        user_input = input(
+            "System: Please choose Test: [Promotion, ArrayLength, ArrayCreation, ArrayIndex, ArrayPopulated, ArraySemantics, ArrayPrint, All]\nYou: ")
         if user_input.lower() == "promotion":
             tan_path = TOMS_2_TEST_PROMOTION
             expected_path = TOMS_2_TEST_PROMOTION_EXPECTED
@@ -230,6 +259,9 @@ def test_to_run():
         elif user_input.lower() == "arrayprint":
             tan_path = TOMS_2_TEST_ARRAY_PRINT
             expected_path = TOMS_2_TEST_ARRAY_PRINT_EXPECTED
+        elif user_input.lower() == "all":
+            tan_path = TOMS_2_TEST_ALL
+            expected_path = TOMS_2_TEST_ALL_EXPECTED
         else:
             return None, None
     elif user_input.lower() == "general1":
@@ -269,6 +301,14 @@ def setOutputPath():
 
     OUTPUT_PATH = OUTPUT_PATH_2
 
+def main():
+    setOutputPath()
+    deleteFolder()
+    tanFiles, badFile, bad_file_names = java_file_execute_orchestrator()
+    compilerOutput = ASM_file_execute_orchestrator(badFile)
+    expectedOutput = expected_file_orchestrator(bad_file_names)
+    assertions(tanFiles, compilerOutput, expectedOutput, bad_file_names)
+
 
 if __name__ == "__main__":
     while True:
@@ -282,9 +322,18 @@ if __name__ == "__main__":
         if TAN_PATH == EXIT:
             break
 
-        setOutputPath()
-        deleteFolder()
-        tanFiles, badFile, bad_file_names = java_file_execute_orchestrator()
-        compilerOutput = ASM_file_execute_orchestrator(badFile)
-        expectedOutput = expected_file_orchestrator(bad_file_names)
-        assertions(tanFiles, compilerOutput, expectedOutput, bad_file_names)
+        if TAN_PATH == TOMS_TEST_ALL:
+            for tanPath, expectedPath in test_expected_dict.items():
+                print("\n\nTesting: ", tanPath)
+                TAN_PATH, EXPECTED_PATH = tanPath, expectedPath
+                main()
+            continue
+
+        if TAN_PATH == TOMS_2_TEST_ALL:
+            for tanPath, expectedPath in test_expected_dict2.items():
+                print("\n\nTesting: ", tanPath)
+                TAN_PATH, EXPECTED_PATH = tanPath, expectedPath
+                main()
+            continue
+
+        main()
