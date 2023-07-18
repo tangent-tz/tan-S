@@ -1,0 +1,4 @@
+main {
+	const farm := [71, 152];
+	print [farm:"cow"] \n;
+}

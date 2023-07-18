@@ -1,4 +1,4 @@
 main {
-	var hark := [1, 4, 7, 9];
+	var hark := [1, 4, 7 , 9];
 	print hark \n;
 }

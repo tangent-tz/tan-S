@@ -1,3 +1,3 @@
 main {
-	print length(new[bool](20)) \n;
+	print length new[bool](20) \n;
 }
