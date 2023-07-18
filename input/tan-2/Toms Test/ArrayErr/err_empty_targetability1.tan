@@ -1,0 +1,6 @@
+main {
+	const barb := new[int](4);
+	print 'o' \s 'k' \n;
+	[barb:0]+7 := new [int](8);
+	print barb \n;
+}

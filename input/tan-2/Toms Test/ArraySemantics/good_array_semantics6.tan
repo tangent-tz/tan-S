@@ -1,6 +1,6 @@
 main {
 	const farm := [18, 71];
-	var cow := farm;
+	var cow := farm; 
 	[cow:0] := 1;
 	print farm \s cow \n;
 	const horse := [29, 36];

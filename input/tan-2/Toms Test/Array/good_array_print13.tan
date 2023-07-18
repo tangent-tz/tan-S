@@ -1,4 +1,0 @@
-main {
-	imm hogslop := [""];
-	print #h$ #i$s hogslop $s #b$ #u$ #d$n;
-}

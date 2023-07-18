@@ -1,0 +1,4 @@
+main {
+	var barb := [88, 'a', true];
+	print barb \n;
+}

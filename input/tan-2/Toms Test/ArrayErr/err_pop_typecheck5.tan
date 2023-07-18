@@ -1,0 +1,4 @@
+main {
+	var barb := [1, false];
+	print barb \n;
+}

@@ -1,0 +1,6 @@
+main {
+	const b := [new[int](4):1];
+	var c := 4;
+	c := b;
+	print "ok" \n;
+}

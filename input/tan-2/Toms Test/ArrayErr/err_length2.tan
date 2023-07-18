@@ -1,0 +1,4 @@
+main {
+	const gram := "hello, world!";
+	print length gram \n; 			# doesn't print 13
+}

@@ -1,0 +1,11 @@
+main {
+	const a := 'x';
+
+	if (a) {
+		print "then" \n;
+	}
+	else {
+		print "else" \n;
+	}
+	print "after" \n;
+}
