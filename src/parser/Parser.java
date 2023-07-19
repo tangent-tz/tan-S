@@ -191,10 +191,41 @@ public class Parser {
 		
 		return DeclarationNode.withChildren(declarationToken, identifier, initializer);
 	}
+
 	private boolean startsDeclaration(Token token) {
 		return token.isLextant(Keyword.CONST) || token.isLextant(Keyword.VAR);
 	}
 
+	private ParseNode parseForStatement() {
+		if(!startsForStatement(nowReading)) {
+			return syntaxErrorNode("forStatement");
+		}
+
+		Token forToken = nowReading; // Save the while token for creating the ForNode later
+		readToken(); // Consume the "for" keyword
+		ParseNode forExpressionScope = parseForBlockStatement();
+		ParseNode forBlock = parseBlockStatement();
+
+		return ForLoopDeclarationNode.BinaryOperatorNode(forToken, forExpressionScope, forBlock);
+	}
+	private boolean startsForStatement(Token token) {
+		return token.isLextant(Keyword.FOR);
+	}
+
+	private ParseNode parseForBlockStatement() {
+//		if(!startsForBlockStatement(nowReading)) {
+//			return syntaxErrorNode("blockStatement");
+//		}
+		ParseNode codeBlock = new BlockStatementNode(nowReading);
+		expect(Punctuator.OPEN_PARENTHESIS);
+		ParseNode identifier = parseIdentifier();
+		expect(Keyword.FROM);
+		ParseNode initializerFrom = parseExpression();
+		expect(Keyword.TO);
+		ParseNode initializerTo = parseExpression();
+		expect(Punctuator.CLOSE_PARENTHESIS);
+		return codeBlock;
+	}
 
 	// assignmentStatement -> target := expression TERMINATOR
 	private ParseNode parseAssignmentStatement() {
@@ -288,24 +319,6 @@ public class Parser {
 		return token.isLextant(Punctuator.OPEN_BRACE);
 	}
 
-	private ParseNode parseForBlockStatement() {
-		if(!startsBlockStatement(nowReading)) {
-			return syntaxErrorNode("blockForStatement");
-		}
-		ParseNode codeBlock = new BlockStatementNode(nowReading); // reuse block statement node, but this time initializes with parenthesis instead of braces
-		expect(Punctuator.OPEN_PARENTHESIS);
-
-		while(startsStatement(nowReading)) {
-			ParseNode statement = parseStatement();
-			codeBlock.appendChild(statement);
-		}
-		expect(Punctuator.CLOSE_PARENTHESIS);
-		return codeBlock;
-	}
-	private boolean startsForBlockStatement(Token token) {
-		return token.isLextant(Punctuator.OPEN_PARENTHESIS);
-	}
-
 	private ParseNode parseWhileStatement() {
 		if(!startsWhileStatement(nowReading)) {
 			return syntaxErrorNode("whileStatement");
@@ -323,25 +336,6 @@ public class Parser {
 	}
 	private boolean startsWhileStatement(Token token) {
 		return token.isLextant(Keyword.WHILE);
-	}
-
-	private ParseNode parseForStatement() {
-		if(!startsForStatement(nowReading)) {
-			return syntaxErrorNode("forStatement");
-		}
-
-		Token forToken = nowReading; // Save the while token for creating the WhileNode later
-		readToken(); // Consume the "for" keyword
-		expect(Punctuator.OPEN_PARENTHESIS);
-		ParseNode forDeclationBlock = parseForStatement();
-		expect(Punctuator.CLOSE_PARENTHESIS);
-
-		ParseNode forBlock = parseBlockStatement();
-
-		return ForNode.withChildren(forToken, forDeclationBlock, forBlock);
-	}
-	private boolean startsForStatement(Token token) {
-		return token.isLextant(Keyword.FOR);
 	}
 
 	private ParseNode parseIfStatement() {
