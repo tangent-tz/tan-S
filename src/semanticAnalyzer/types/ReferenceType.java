@@ -23,12 +23,11 @@ public enum ReferenceType implements Type {
         return infoString;
     }
     public boolean equivalent(Type otherType) {
-        return this == otherType;
+        return this == otherType.concreteType();
     }
 
     @Override
     public void addTypeVariables(Set<TypeVariable> typeVariables) {
-        
     }
 
     @Override

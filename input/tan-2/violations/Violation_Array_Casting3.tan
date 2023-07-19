@@ -1,0 +1,4 @@
+main {
+    const chars := [['a','b','c','d'],['e', %146]]; 
+    const castChars := <[char]>(chars); 
+}

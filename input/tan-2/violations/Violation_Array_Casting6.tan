@@ -1,0 +1,4 @@
+main {
+    const strings := "hi";
+    const castStrings := <[[[[[string]]]]]>(strings); 
+}

@@ -41,7 +41,7 @@ public class Array implements Type {
 
     @Override
     public Type getSubtype() {
-        return subtype;
+        return subtype.concreteType();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class Array implements Type {
 
     @Override
     public Type concreteType() {
-        return this;
+        return new Array(subtype.concreteType()); 
     }
 
     public int getArrayLength() {

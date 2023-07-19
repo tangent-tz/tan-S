@@ -697,7 +697,7 @@ public class ASMCodeGenerator {
 		// array
 		public void visitLeave(ArrayNode node) {
 			boolean promoteCandidate = promoteCandidateArray(node);
-			int promoteLevel =0;
+			int promoteLevel = 0;
 			if(promoteCandidate){
 				promoteLevel = checkHighestPromotableArray(node);
 			}
@@ -948,7 +948,6 @@ public class ASMCodeGenerator {
 				assert false : "setting zeroes for empty array creation: cannot turn address into value.";
 			}
 		}
-
 
 
 		@Override
