@@ -422,7 +422,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Array arrayType = (Array) (node.child(0).getType());
 		Type sizeType = node.child(1).getType();
 
-		if(sizeType != PrimitiveType.INTEGER) {
+		if(sizeType != PrimitiveType.INTEGER && sizeType != PrimitiveType.CHARACTER) {
 			typeCheckError(node, Arrays.asList(arrayType, sizeType));
 			node.setType(PrimitiveType.ERROR);
 			return;
