@@ -212,6 +212,12 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 	}
 
+	@Override
+	public void visitLeave(ForLoopDeclarationNode node) {
+		ParseNode condition = node.child(0);
+
+	}
+
 
 	///////////////////////////////////////////////////////////////////////////
 	// expressions
