@@ -1,4 +1,0 @@
-main {
-	mut barb := alloc[int];
-	print barb $n;
-}

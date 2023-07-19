@@ -1,4 +1,0 @@
-main {
-	imm farm := alloc[char](3);
-	print farm[3] $n;
-}

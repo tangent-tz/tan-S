@@ -1,0 +1,5 @@
+main {
+	const aVariable := 19;
+	const bVariable := <[int]>(aVariable);
+	print bVariable \n;
+}

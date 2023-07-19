@@ -1,4 +1,0 @@
-main {
-	alloc[int](4)[1] := 3 + 5 + 7;
-	print "ok" $n;
-}

@@ -1,4 +1,0 @@
-main {
-	mut barb := [true, #a];
-	print barb $n;
-}

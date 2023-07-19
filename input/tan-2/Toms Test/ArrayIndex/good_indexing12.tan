@@ -1,5 +1,6 @@
 main {
-	const farm := [["a", "z", "y"], ["b"], ["c", "d", "e"]];
+	const farm := [['a', 'z', 'y'], ['b'], ['c', 'd', 'e']];
 	print [farm:2] \n;
 	print [[farm:0]:0] \n;
 }
+

@@ -1,5 +1,0 @@
-main {
-	imm aVariable := ["abcd", "efgh"];
-	imm bVariable := [ aVariable as [[int]]];
-	print bVariable $n;
-}

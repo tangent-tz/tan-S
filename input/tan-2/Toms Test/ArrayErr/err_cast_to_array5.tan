@@ -1,0 +1,5 @@
+main {
+	const aVariable := ["abcd", "efgh"];
+	const bVariable := <[[int]]>(aVariable);
+	print bVariable \n;
+}

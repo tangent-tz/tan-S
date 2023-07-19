@@ -1,0 +1,4 @@
+main {
+	var farm := new[int](3.21);
+	print 14 \s farm \n;
+}

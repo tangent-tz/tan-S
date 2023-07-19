@@ -3,46 +3,86 @@ main{
     
     var x1 := new [int] (2*5 - 2);
     print x1 \n; 
+    [x1:(length x1)-1] := 111; 
+    print x1 \n\n; 
+    
     
     var x2 := new [float] (2*5 - 2);
     print x2 \n;
+    [x2:(length x2)-1] := 111.123; 
+    print x2 \n\n; 
+    
     
     var x3 := new [string] (2*5 - 2);
     print x3 \n;
+    [x3:(length x3)-1] := "last element!"; 
+    print x3 \n\n;
+    
     
     var x4 := new [char] (2*5 - 2);
     print x4 \n;
+    [x4:(length x4)-1] := 'a'; 
+    print x4 \n\n;
+    
     
     var x5 := new [bool] (2*5 - 2);
     print x5 \n;
+    [x5:(length x5)-1] := true; 
+    print x5 \n\n;
     
-    print 123 \n;
+    
+    print 123 \n\n;
     
     
     #=====================================================================
     #TEST MULTI-DIMENSIONAL ARRAYS
-    var ints2d := new [[int]](3); 
+    var ints2d := new [[int]](0); 
     print ints2d \n; 
-    print new [[int]](3) \n\n; 
+    print new [[int]](0) \n\n; 
     
+    #-------------------------------------------------------------------------
     
-    var floats3d := new [[[float]]](2); 
+    var floats3d := new [[[float]]](1); 
     print floats3d \n; 
-    print new [[[float]]](2) \n\n; 
+    print new [[[float]]](1) \n; 
     
+    [floats3d:(length floats3d)-1] := [[1.1, 2.2, 3.3, 4.4, 5.5]];
+    print floats3d \n\n;
+    
+   
+    #-------------------------------------------------------------------------
     
     var strings4d := new [[[[string]]]](2); 
     print strings4d \n; 
-    print new [[[[string]]]](2) \n\n;
+    print new [[[[string]]]](2) \n;
     
+    var someString := [[["the", "last", "string"]]]; 
+    [strings4d:(length strings4d)-1] := someString; 
+    print strings4d \n; 
+    
+    someString := [[new[string](5)]];
+    [strings4d:(length strings4d)-1] := someString; 
+    print strings4d \n\n;
+    
+    
+    #-------------------------------------------------------------------------
     
     var chars3d := new [[[char]]](3); 
     print chars3d \n; 
-    print new [[[char]]](3) \n\n;
+    print new [[[char]]](3) \n;
+    
+    [chars3d : (length chars3d)-1] := [['a', 'A', 'b', 'B'], ['x', 'y', 'z']]; 
+    print chars3d \n\n; 
     
     
-    var bools3d := new [[[bool]]](2); 
+    #-------------------------------------------------------------------------
+    
+    var bools3d := new [[[bool]]](5); 
     print bools3d \n; 
-    print new [[[bool]]](2) \n\n;    
+    print new [[[bool]]](5) \n;    
+    
+    var someBool := [[true, true], [true, false, false], [false, true, false]];
+    [bools3d : 2] := someBool; 
+    print bools3d \n\n; 
     
 }

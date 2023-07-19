@@ -1,10 +1,13 @@
 main {
-	const AA := [0, 0, 0, 0, 0, 0, 0, 13];
+	const AA := new[int](8);
+	[AA:7] := 13;
 	print AA \n;
-
-	const BB := [0.0, 0.0, 0.0, 0.0, 0.0, 2.34];
+	
+	const BB := new[float](6);
+	[BB:5] := 2.34;
 	print BB \n;
-
-	const CC := [false, false, false, true];
+	
+	const CC := new[bool](4);
+	[CC:3] := true;
 	print CC \n;
 }
