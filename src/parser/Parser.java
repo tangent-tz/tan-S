@@ -192,6 +192,7 @@ public class Parser {
 		return token.isLextant(Keyword.CONST) || token.isLextant(Keyword.VAR);
 	}
 
+
 	// assignmentStatement -> target := expression TERMINATOR
 	private ParseNode parseAssignmentStatement() {
 		if(!startsAssignmentStatement(nowReading)) {

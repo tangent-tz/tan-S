@@ -30,9 +30,6 @@ public interface ParseNodeVisitor {
 	void visitEnter(WhileNode node);
 	void visitLeave(WhileNode node);
 
-	void visitEnter(ForLoopDeclarationNode node);
-	void visitLeave(ForLoopDeclarationNode node);
-
 	void visitEnter(IfStatementNode node);
 	void visitLeave(IfStatementNode node);
 	
@@ -121,13 +118,6 @@ public interface ParseNodeVisitor {
 			defaultVisitEnter(node);
 		}
 		public void visitLeave(WhileNode node) {
-			defaultVisitLeave(node);
-		}
-
-		public void visitEnter(ForLoopDeclarationNode node) {
-			defaultVisitEnter(node);
-		}
-		public void visitLeave(ForLoopDeclarationNode node) {
 			defaultVisitLeave(node);
 		}
 		public void visitEnter(IfStatementNode node) {
