@@ -80,9 +80,6 @@ public class Parser {
 		if(startsWhileStatement(nowReading)) {
 			return parseWhileStatement();
 		}
-		if(startsForStatement(nowReading)) {
-			return parseForStatement();
-		}
 		if(startsIfStatement(nowReading)) {
 			return parseIfStatement();
 		}
@@ -94,7 +91,6 @@ public class Parser {
 				startsAssignmentStatement(token) ||
 				startsBlockStatement(token) ||
 				startsWhileStatement(token) ||
-				startsForStatement(token) ||
 				startsIfStatement(token);
 	}
 	
@@ -194,37 +190,6 @@ public class Parser {
 
 	private boolean startsDeclaration(Token token) {
 		return token.isLextant(Keyword.CONST) || token.isLextant(Keyword.VAR);
-	}
-
-	private ParseNode parseForStatement() {
-		if(!startsForStatement(nowReading)) {
-			return syntaxErrorNode("forStatement");
-		}
-
-		Token forToken = nowReading; // Save the while token for creating the ForNode later
-		readToken(); // Consume the "for" keyword
-		ParseNode forExpressionScope = parseForBlockStatement();
-		ParseNode forBlock = parseBlockStatement();
-
-		return ForLoopDeclarationNode.BinaryOperatorNode(forToken, forExpressionScope, forBlock);
-	}
-	private boolean startsForStatement(Token token) {
-		return token.isLextant(Keyword.FOR);
-	}
-
-	private ParseNode parseForBlockStatement() {
-//		if(!startsForBlockStatement(nowReading)) {
-//			return syntaxErrorNode("blockStatement");
-//		}
-		ParseNode codeBlock = new BlockStatementNode(nowReading);
-		expect(Punctuator.OPEN_PARENTHESIS);
-		ParseNode identifier = parseIdentifier();
-		expect(Keyword.FROM);
-		ParseNode initializerFrom = parseExpression();
-		expect(Keyword.TO);
-		ParseNode initializerTo = parseExpression();
-		expect(Punctuator.CLOSE_PARENTHESIS);
-		return codeBlock;
 	}
 
 	// assignmentStatement -> target := expression TERMINATOR
