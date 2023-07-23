@@ -319,11 +319,8 @@ public class Parser {
 		// Creates new ForBlock scope, which includes the identifier and loop bound initializations
 		ParseNode forExpressionScope = parseForBlockStatement();
 
-		// Creates the body of the For loop
-		ParseNode forBlock = parseBlockStatement();
-
 		// Returns a new ForLoopDeclarationNode with the new scope and loop body
-		return ForNode.withChildren(forToken, forExpressionScope, forBlock);
+		return ForNode.withChildren(forToken, forExpressionScope);
 	}
 
 	private ParseNode parseForBlockStatement() {
@@ -333,23 +330,21 @@ public class Parser {
 		expect(Punctuator.OPEN_PARENTHESIS);
 
 		// Adds the loop variable to the new scope
+		Token declarationToken = Keyword.CONST.prototype();
 		ParseNode identifier = parseIdentifier();
-		codeBlock.appendChild(identifier);
-
 		expect(Keyword.FROM);
-
-		// Adds the initial value of the loop variable to the new scope
 		ParseNode initializerFrom = parseExpression();
-		codeBlock.appendChild(initializerFrom);
-
 		expect(Keyword.TO);
-
-		// Adds the loop bound to the new scope
+		Token declarationTokenUpper = Keyword.CONST.prototype();
+		Token literalToken = new IdentifierToken(nowReading.getLocation(), "upperfor");
 		ParseNode initializerTo = parseExpression();
-		codeBlock.appendChild(initializerTo);
-
 		expect(Punctuator.CLOSE_PARENTHESIS);
-
+		ParseNode node = DeclarationNode.withChildren(declarationToken, identifier, initializerFrom);
+		ParseNode nodeUpper = DeclarationNode.withChildren(declarationTokenUpper, new IdentifierNode(literalToken), initializerTo);
+		ParseNode block = parseBlockStatement();
+		codeBlock.appendChild(node);
+		codeBlock.appendChild(nodeUpper);
+		codeBlock.appendChild(block);
 		return codeBlock;
 	}
 

@@ -39,6 +39,14 @@ public class DeclarationNode extends ParseNode {
 		node.appendChild(initializer);
 		return node;
 	}
+
+	public static DeclarationNode withChildren(Token token, ParseNode declaredName, ParseNode initializerFrom, ParseNode initializerTo) {
+		DeclarationNode node = new DeclarationNode(token);
+		node.appendChild(declaredName);
+		node.appendChild(initializerFrom);
+		node.appendChild(initializerTo);
+		return node;
+	}
 	
 	
 	///////////////////////////////////////////////////////////

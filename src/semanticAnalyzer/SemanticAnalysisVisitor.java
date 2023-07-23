@@ -212,6 +212,19 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 	}
 
+	@Override
+	public void visitLeave(ForNode node) {
+		ParseNode condition = node.child(0);
+		Type conditionType = condition.child(0).getType();
+
+		if (conditionType != PrimitiveType.INTEGER) {
+			logError("Condition in for loop at " + node.getToken().getLocation() + " is not a integer value");
+			node.setType(PrimitiveType.ERROR);
+		} else {
+			node.setType(PrimitiveType.NO_TYPE);
+		}
+	}
+
 
 	///////////////////////////////////////////////////////////////////////////
 	// expressions

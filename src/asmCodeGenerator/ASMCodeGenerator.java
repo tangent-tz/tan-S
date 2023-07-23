@@ -345,6 +345,22 @@ public class ASMCodeGenerator {
 			code.add(Label, endLabel);
 
 		}
+
+		public void visitLeave(ForNode node) {
+			ASMCodeFragment lvalue = codeMap.get(node.child(0).child(0).child(0).child(1));
+
+			Labeller labeller = new Labeller("for-statement");
+//			String startLabel = labeller.newLabel("-for-start");
+//			String endLabel = labeller.newLabel("-for-end");
+//
+//			code.add(Label, startLabel);
+//			code.append(lvalue);
+//			code.add(JumpFalse, endLabel);
+//			code.append(rvalue);
+//			code.add(Jump, startLabel);
+//			code.add(Label, endLabel);
+
+		}
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
 				return StoreI;
