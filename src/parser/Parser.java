@@ -80,6 +80,9 @@ public class Parser {
 		if(startsWhileStatement(nowReading)) {
 			return parseWhileStatement();
 		}
+		if(startsForStatement(nowReading)) {
+			return parseForStatement();
+		}
 		if(startsIfStatement(nowReading)) {
 			return parseIfStatement();
 		}
@@ -91,6 +94,7 @@ public class Parser {
 				startsAssignmentStatement(token) ||
 				startsBlockStatement(token) ||
 				startsWhileStatement(token) ||
+				startsForStatement(token) ||
 				startsIfStatement(token);
 	}
 	
@@ -302,6 +306,55 @@ public class Parser {
 	}
 	private boolean startsWhileStatement(Token token) {
 		return token.isLextant(Keyword.WHILE);
+	}
+
+	private ParseNode parseForStatement() {
+		if(!startsForStatement(nowReading)) {
+			return syntaxErrorNode("forStatement");
+		}
+
+		Token forToken = nowReading;
+		readToken();
+
+		// Creates new ForBlock scope, which includes the identifier and loop bound initializations
+		ParseNode forExpressionScope = parseForBlockStatement();
+
+		// Creates the body of the For loop
+		ParseNode forBlock = parseBlockStatement();
+
+		// Returns a new ForLoopDeclarationNode with the new scope and loop body
+		return ForNode.withChildren(forToken, forExpressionScope, forBlock);
+	}
+
+	private ParseNode parseForBlockStatement() {
+		// Creates a new BlockStatementNode that will represent the For loop's scope
+		ParseNode codeBlock = new BlockStatementNode(nowReading);
+
+		expect(Punctuator.OPEN_PARENTHESIS);
+
+		// Adds the loop variable to the new scope
+		ParseNode identifier = parseIdentifier();
+		codeBlock.appendChild(identifier);
+
+		expect(Keyword.FROM);
+
+		// Adds the initial value of the loop variable to the new scope
+		ParseNode initializerFrom = parseExpression();
+		codeBlock.appendChild(initializerFrom);
+
+		expect(Keyword.TO);
+
+		// Adds the loop bound to the new scope
+		ParseNode initializerTo = parseExpression();
+		codeBlock.appendChild(initializerTo);
+
+		expect(Punctuator.CLOSE_PARENTHESIS);
+
+		return codeBlock;
+	}
+
+	private boolean startsForStatement(Token token) {
+		return token.isLextant(Keyword.FOR);
 	}
 
 	private ParseNode parseIfStatement() {
