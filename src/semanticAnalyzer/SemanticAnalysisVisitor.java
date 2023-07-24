@@ -216,7 +216,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitLeave(ForNode node) {
 		ParseNode condition = node.child(0);
 		Type conditionType = condition.child(0).getType();
-
+		Token sample = LextantToken.make(condition.getToken().getLocation(), condition.getToken().getLexeme(), Punctuator.LESSER);
+		ParseNode test = OperatorNode.withChildren(sample, condition.child(0), condition.child(1));
+		node.appendChild(condition);
+		node.replaceChild(condition, test);
 		if (conditionType != PrimitiveType.INTEGER) {
 			logError("Condition in for loop at " + node.getToken().getLocation() + " is not a integer value");
 			node.setType(PrimitiveType.ERROR);
@@ -470,9 +473,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.ERROR);
 		}
 	}
-	
-	
-	
 
 	///////////////////////////////////////////////////////////////////////////
 	// simple leaf nodes
@@ -520,7 +520,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visit(IdentifierNode node) {
 		if(!isBeingDeclared(node)) {
 			Binding binding = node.findVariableBinding();
-			
 			node.setType(binding.getType());
 			node.setBinding(binding);
 		}

@@ -347,18 +347,12 @@ public class ASMCodeGenerator {
 		}
 
 		public void visitLeave(ForNode node) {
-			ASMCodeFragment lvalue = codeMap.get(node.child(0).child(0).child(0).child(1));
 
-			Labeller labeller = new Labeller("for-statement");
-//			String startLabel = labeller.newLabel("-for-start");
-//			String endLabel = labeller.newLabel("-for-end");
-//
-//			code.add(Label, startLabel);
-//			code.append(lvalue);
-//			code.add(JumpFalse, endLabel);
-//			code.append(rvalue);
-//			code.add(Jump, startLabel);
-//			code.add(Label, endLabel);
+			newVoidCode(node);
+			for(ParseNode child : node.child(0).getChildren()) {
+				ASMCodeFragment childCode = removeVoidCode(child);
+				code.append(childCode);
+			}
 
 		}
 		private ASMOpcode opcodeForStore(Type type) {
