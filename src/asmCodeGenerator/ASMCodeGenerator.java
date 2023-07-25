@@ -348,9 +348,27 @@ public class ASMCodeGenerator {
 
 		public void visitLeave(ForNode node) {
 			newVoidCode(node);
-			ASMCodeFragment arg1 = removeValueCode(node.child(3));
+			ASMCodeFragment arg1 = removeVoidCode(node.child(0));
+			ASMCodeFragment arg2 = removeVoidCode(node.child(1));
+			ASMCodeFragment svalue = removeValueCode(node.child(2));
+			ASMCodeFragment evalue = removeVoidCode(node.child(3));
+			ASMCodeFragment bvalue = removeVoidCode(node.child(4));
+
+			Labeller labeller = new Labeller("for-statement");
+			String startLabel = labeller.newLabel("-for-start");
+			String endLabel = labeller.newLabel("-for-end");
+
 			code.append(arg1);
-			code.add(PStack);
+			code.append(arg2);
+			code.add(Label, startLabel);
+			code.append(svalue);
+			code.add(JumpFalse, endLabel);
+			code.append(evalue);
+			code.append(bvalue);
+			code.add(Jump, startLabel);
+			code.add(Label, endLabel);
+
+
 		}
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {

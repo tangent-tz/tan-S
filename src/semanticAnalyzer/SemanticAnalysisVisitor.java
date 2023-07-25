@@ -214,14 +214,17 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 	@Override
 	public void visitLeave(ForNode node) {
-		ParseNode condition = node.child(0);
-		Type conditionType = condition.child(0).getType();
-		Token sample = LextantToken.make(condition.getToken().getLocation(), condition.getToken().getLexeme(), Punctuator.LESSER);
-		ParseNode test = OperatorNode.withChildren(sample, condition.child(0), condition.child(1));
-		ParseNode x = node.child(0).child(0);
-		node.removeChild(x);
-		if (conditionType != PrimitiveType.INTEGER && conditionType != PrimitiveType.CHARACTER) {
-			logError("Condition in for loop at " + node.getToken().getLocation() + " is not a integer value");
+		ParseNode initializer = node.child(0);
+		ParseNode boundary = node.child(1);
+
+		Type initializerType = initializer.getType();
+		Type boundaryType = boundary.getType();
+
+		if (initializerType != PrimitiveType.INTEGER && boundaryType != PrimitiveType.CHARACTER) {
+			logError("Initializer in for loop at " + initializer.getToken().getLocation() + " is not an integer value");
+			node.setType(PrimitiveType.ERROR);
+		} else if (boundaryType != PrimitiveType.INTEGER && boundaryType != PrimitiveType.CHARACTER) {
+			logError("Boundary in for loop at " + boundary.getToken().getLocation() + " is not an integer value");
 			node.setType(PrimitiveType.ERROR);
 		} else {
 			node.setType(PrimitiveType.NO_TYPE);
