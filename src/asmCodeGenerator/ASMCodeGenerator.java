@@ -27,7 +27,6 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
 // do not call the code generator if any errors have occurred during analysis.
 public class ASMCodeGenerator {
-	private static final int ARRAY_HEADER_SIZE = 16; 
 	ParseNode root;
 
 	public static ASMCodeFragment generate(ParseNode syntaxTree) {
@@ -535,7 +534,7 @@ public class ASMCodeGenerator {
 			//start accessing the indexed location:
 			code.add(PushD, baseAddressLabel);
 			code.add(LoadI); 			// [... baseAddress]
-			code.add(PushI, ARRAY_HEADER_SIZE);
+			code.add(PushI, Array.HEADER_SIZE);
 			code.add(Add);				// [... baseAddress+headerSize]
 			loadIFrom(code, indexLabel); 			// [... baseAddress+headerSize, i]
 
@@ -706,12 +705,10 @@ public class ASMCodeGenerator {
 		// array
 		public void visitLeave(ArrayNode node) {
 			boolean promoteCandidate = promoteCandidateArray(node);
-			int promoteLevel =0;
+			int promoteLevel = 0;
 			if(promoteCandidate){
 				promoteLevel = checkHighestPromotableArray(node);
 			}
-
-
 
 			assert(node.nChildren() >= 1);
 			
@@ -725,45 +722,31 @@ public class ASMCodeGenerator {
 				ASMCodeFragment child = removeValueCodeArray(node.child(i), promoteLevel);
 				elements.add(child);
 			}
-			int header_typeIdentifier_byteConsumption = 4;
-			int header_status_byteConsumption = 4;
-			int header_subtypeSize_byteConsumption = 4;
-			int header_length_byteConsumption = 4;
-
 
 			int numOfElements = node.nChildren();
 			Type subtype = node.getType().getSubtype();
 			int subtypeSize = subtype.getSize();
-
-			newValueCode(node);
-			int totalSize = (header_typeIdentifier_byteConsumption
-					+ header_status_byteConsumption
-					+ header_subtypeSize_byteConsumption
-					+ header_length_byteConsumption)
-					+ (numOfElements * subtypeSize);
-
-
+			int totalSize = Array.HEADER_SIZE + (numOfElements * subtypeSize);
+			
 			Labeller labeller = new Labeller("array");
 			String pointerLabel = labeller.newLabel("pointer");
 
-
+			newValueCode(node);
 			// Allocate memory for the array
 			code.add(PushI, totalSize);  // memory needed = size * offset
 			code.add(Call, MemoryManager.MEM_MANAGER_ALLOCATE);
-
-
+			
 			//Store header data
 			code.add(DLabel, pointerLabel);
-			code.add(DataZ, 4);
+			code.add(DataZ, Array.SIZE);
 			code.add(PushD, pointerLabel);
 			code.add(Exchange);
 			code.add(StoreI);
 
-
 			//storing type identifier:
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 0); //offset (fixed)
+			code.add(PushI, Array.HEADER_TYPE_IDENTIFIER_OFFSET); //offset (fixed)
 			code.add(Add); 				//base address + offset
 			code.add(PushI, 5); //stack: [... addr] -> [... addr 5]
 			code.add(StoreI); 			//store 5 into the address
@@ -771,9 +754,9 @@ public class ASMCodeGenerator {
 			//storing status:
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 4); //offset (fixed)
+			code.add(PushI, Array.HEADER_STATUS_OFFSET); //offset (fixed)
 			code.add(Add); 				//base address + offset
-			if(subtype instanceof PrimitiveType) {
+			if(!(subtype instanceof Array)) {
 				code.add(PushI, 0);
 			}
 			else {
@@ -784,7 +767,7 @@ public class ASMCodeGenerator {
 			//storing subtype size:
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 8);
+			code.add(PushI, Array.HEADER_SUBTYPESIZE_OFFSET);
 			code.add(Add);
 			code.add(PushI, subtypeSize);
 			code.add(StoreI);
@@ -792,16 +775,17 @@ public class ASMCodeGenerator {
 			//storing length (number of elements)
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 12);
+			code.add(PushI, Array.HEADER_LENGTH_OFFSET);
 			code.add(Add);
 			code.add(PushI, numOfElements);
 			code.add(StoreI);
 			updateSubType(node, promoteLevel);
+			
 			// Store each element in the array
 			for (int i = 0; i < numOfElements; i++) {
 				code.add(PushD, pointerLabel);
 				code.add(LoadI); 			//loads the base address of the array
-				code.add(PushI, 16);
+				code.add(PushI, Array.HEADER_SIZE);
 				code.add(Add);
 
 				code.add(PushI, subtypeSize*i); //offset
@@ -818,20 +802,8 @@ public class ASMCodeGenerator {
 		private void generateCodeForEmptyArrayCreation(ArrayNode node) {
 			ASMCodeFragment arrayLengthCodeFragment = removeValueCode(node.child(1));
 
-			int header_typeIdentifier_byteConsumption = 4;
-			int header_status_byteConsumption = 4;
-			int header_subtypeSize_byteConsumption = 4;
-			int header_length_byteConsumption = 4;
-
 			Type subtype = node.getType().getSubtype();
 			int subtypeSize = subtype.getSize();
-
-			newValueCode(node);
-			int headerSize = header_typeIdentifier_byteConsumption
-					+ header_status_byteConsumption
-					+ header_subtypeSize_byteConsumption
-					+ header_length_byteConsumption;
-
 			
 			Labeller labeller = new Labeller("array");
 			String pointerLabel = labeller.newLabel("pointer");
@@ -841,24 +813,22 @@ public class ASMCodeGenerator {
 			String zeroesDataLabel = labeller.newLabel("zeroesData");
 
 			
+			newValueCode(node);
 			// check if number of elements is negative. If negative, throw a runtime error. 
 			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
 			code.add(JumpNeg, RunTime.ARRAY_NEGATIVE_NUMBER_OF_ELEMENTS); 
-			
-			
 			
 			// Allocate memory for the array
 			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
 			code.add(PushI, subtypeSize);
 			code.add(Multiply);
-			code.add(PushI, headerSize); 
+			code.add(PushI, Array.HEADER_SIZE); 
 			code.add(Add); 
 			code.add(Call, MemoryManager.MEM_MANAGER_ALLOCATE);
 			
-			
 			//Store header data
 			code.add(DLabel, pointerLabel);
-			code.add(DataZ, 4);
+			code.add(DataZ, Array.SIZE);
 			code.add(PushD, pointerLabel);
 			code.add(Exchange);
 			code.add(StoreI);
@@ -866,7 +836,7 @@ public class ASMCodeGenerator {
 			//storing type identifier:
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 0); //offset (fixed)
+			code.add(PushI, Array.HEADER_TYPE_IDENTIFIER_OFFSET); //offset (fixed)
 			code.add(Add); 				//base address + offset
 			code.add(PushI, 5); //stack: [... addr] -> [... addr 5]
 			code.add(StoreI); 			//store 5 into the address
@@ -874,9 +844,9 @@ public class ASMCodeGenerator {
 			//storing status:
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 4); //offset (fixed)
+			code.add(PushI, Array.HEADER_STATUS_OFFSET); //offset (fixed)
 			code.add(Add); 				//base address + offset
-			if(subtype instanceof PrimitiveType) {
+			if(!(subtype instanceof Array)) {
 				code.add(PushI, 0);
 			}
 			else {
@@ -887,7 +857,7 @@ public class ASMCodeGenerator {
 			//storing subtype size:
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 8);
+			code.add(PushI, Array.HEADER_SUBTYPESIZE_OFFSET);
 			code.add(Add);
 			code.add(PushI, subtypeSize);
 			code.add(StoreI);
@@ -896,7 +866,7 @@ public class ASMCodeGenerator {
 			//storing length (number of elements)
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 12);
+			code.add(PushI, Array.HEADER_LENGTH_OFFSET);
 			code.add(Add);
 			code.append(new ASMCodeFragment(arrayLengthCodeFragment));
 			code.add(StoreI);
@@ -906,7 +876,6 @@ public class ASMCodeGenerator {
 			// make zeroes data in memory:
 			code.add(DLabel, zeroesDataLabel);
 			code.add(DataZ, subtypeSize); 
-			
 			
 			// declare int i=0:
 			code.add(DLabel, indexLabel);
@@ -920,7 +889,7 @@ public class ASMCodeGenerator {
 
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 12);
+			code.add(PushI, Array.HEADER_LENGTH_OFFSET);
 			code.add(Add);
 			code.add(LoadI); 		// [... i arrayLength]
 			
@@ -930,7 +899,7 @@ public class ASMCodeGenerator {
 			//entering while loop body:
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, headerSize);
+			code.add(PushI, Array.HEADER_SIZE);
 			code.add(Add);				// [... baseAddress+headerSize]
 
 
@@ -940,7 +909,7 @@ public class ASMCodeGenerator {
 
 			code.add(PushD, pointerLabel);
 			code.add(LoadI); 			//loads the base address of the array
-			code.add(PushI, 8);
+			code.add(PushI, Array.HEADER_SUBTYPESIZE_OFFSET);
 			code.add(Add);
 			code.add(LoadI); 		// [... baseAddress+headerSize   i   subtypeSize]
 			
@@ -989,11 +958,8 @@ public class ASMCodeGenerator {
 		}
 
 
-
 		@Override
 		public void visitLeave(TargetableArrayReferenceNode node) {
-			Type subType = node.child(0).getType().getSubtype();
-
 			Labeller labeller = new Labeller("array-indexing");
 			String baseAddressLabel = labeller.newLabel("baseAddress");
 			String indexLabel = labeller.newLabel("index");
@@ -1002,7 +968,6 @@ public class ASMCodeGenerator {
 			newAddressCode(node);
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			ASMCodeFragment arg2 = removeValueCode(node.child(1));
-
 
 			// storing array base address into a temp memory location:
 			code.append(arg1); 			// [... baseAddress]
@@ -1032,7 +997,7 @@ public class ASMCodeGenerator {
 
 			code.add(PushD, baseAddressLabel);
 			code.add(LoadI); 					// [... i, baseAddress]
-			code.add(PushI, 12);
+			code.add(PushI, Array.HEADER_LENGTH_OFFSET);
 			code.add(Add);						// [... i, baseAddress+12]
 			code.add(LoadI); 					// [... i, arrayLength]
 
@@ -1046,21 +1011,19 @@ public class ASMCodeGenerator {
 			//start accessing the indexed location:
 			code.add(PushD, baseAddressLabel);
 			code.add(LoadI); 			// [... baseAddress]
-			code.add(PushI, ARRAY_HEADER_SIZE);
+			code.add(PushI, Array.HEADER_SIZE);
 			code.add(Add);				// [... baseAddress+headerSize]
 			loadIFrom(code, indexLabel); 			// [... baseAddress+headerSize, i]
 
 			code.add(PushD, baseAddressLabel);
 			code.add(LoadI); 			// [... baseAddress+headerSize,   i,	baseAddress]
-			code.add(PushI, 8);
+			code.add(PushI, Array.HEADER_SUBTYPESIZE_OFFSET);
 			code.add(Add);
 			code.add(LoadI); 		// [... baseAddress+headerSize,   i,   subtypeSize]
 
 			code.add(Multiply); 	// [... baseAddress+headerSize,   i*subtypeSize]
 			code.add(Add); 			// [... baseAddress+headerSize + i*subtypeSize]
 		}
-
-		
 		
 		
 		///////////////////////////////////////////////////////////////////////////

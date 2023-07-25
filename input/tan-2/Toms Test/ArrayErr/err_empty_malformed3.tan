@@ -1,0 +1,4 @@
+main {
+	var barb := new int(1);
+	print barb \n;
+}

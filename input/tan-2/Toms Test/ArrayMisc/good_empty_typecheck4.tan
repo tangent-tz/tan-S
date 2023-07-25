@@ -1,0 +1,5 @@
+main {
+	var farm := new[bool](4);
+	farm := [true, false];
+	print "ok" \n;
+}

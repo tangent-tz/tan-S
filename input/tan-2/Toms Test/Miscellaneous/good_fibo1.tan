@@ -1,0 +1,21 @@
+main {
+	const max := 40;
+	var prevFib := 0;
+	var thisFib := 1;
+	var n := 1;
+	
+	print \s 0 \s prevFib \n;
+	print \s 1 \s thisFib \n;
+	
+	while (n < max) {
+		const prevHolder := thisFib;
+		thisFib := thisFib + prevFib;
+		prevFib := prevHolder;
+		
+		n := n + 1;
+		if(n<10) {
+			print \s;
+		}
+		print n \s thisFib \n;
+	}
+}

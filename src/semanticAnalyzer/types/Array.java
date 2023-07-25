@@ -3,7 +3,24 @@ package semanticAnalyzer.types;
 import java.util.Set;
 
 public class Array implements Type {
-    static final int SIZE = 4;
+    public static final int SIZE = 4;
+    public static final int HEADER_TYPE_IDENTIFIER_SIZE = 4;
+    public static final int HEADER_STATUS_SIZE = 4;
+    public static final int HEADER_SUBTYPESIZE_SIZE = 4;
+    public static final int HEADER_LENGTH_SIZE = 4;
+    public static final int HEADER_SIZE = HEADER_TYPE_IDENTIFIER_SIZE 
+                                    + HEADER_STATUS_SIZE
+                                    + HEADER_SUBTYPESIZE_SIZE
+                                    + HEADER_LENGTH_SIZE;
+
+
+    public static final int HEADER_TYPE_IDENTIFIER_OFFSET = 0;
+    public static final int HEADER_STATUS_OFFSET = HEADER_TYPE_IDENTIFIER_SIZE;
+    public static final int HEADER_SUBTYPESIZE_OFFSET = HEADER_TYPE_IDENTIFIER_SIZE + HEADER_STATUS_SIZE;
+    public static final int HEADER_LENGTH_OFFSET = HEADER_TYPE_IDENTIFIER_SIZE + HEADER_STATUS_SIZE + HEADER_SUBTYPESIZE_SIZE;
+
+    
+    
     Type subtype;
     int arrayLength;
     
@@ -24,7 +41,7 @@ public class Array implements Type {
 
     @Override
     public Type getSubtype() {
-        return subtype;
+        return subtype.concreteType();
     }
 
     @Override
@@ -49,7 +66,7 @@ public class Array implements Type {
 
     @Override
     public Type concreteType() {
-        return this;
+        return new Array(subtype.concreteType()); 
     }
 
     public int getArrayLength() {

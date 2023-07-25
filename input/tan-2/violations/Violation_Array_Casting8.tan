@@ -1,0 +1,4 @@
+main {
+    const ints := [1, 2, 5]; 
+    print <[float]>(ints) \n; 
+}

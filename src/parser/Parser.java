@@ -565,19 +565,27 @@ public class Parser {
 
 		LextantToken tokenForCasting = LextantToken.make(nowReading.getLocation(), Punctuator.CAST.getLexeme(), Punctuator.CAST);
 		expect(Punctuator.LESSER);
-		Token targetTypeToken = nowReading;
-		expect(Keyword.BOOL, Keyword.CHAR, Keyword.STRING, Keyword.INT, Keyword.FLOAT);
+		
+		ParseNode typeNode;
+		if(startsPrimitiveTypeKeyword(nowReading)) {
+			Token targetTypeToken = nowReading;
+			readToken();
+			typeNode = new TypeIndicatorNode(targetTypeToken);
+		} else {
+			typeNode = parseArrayType(); 
+		}
+		
 		expect(Punctuator.GREATER);
-
 		ParseNode expressionNode = parseParenthesesWrappedExpression();
-		TypeIndicatorNode typeNode = new TypeIndicatorNode(targetTypeToken);
-
+		
 		return OperatorNode.withChildren(tokenForCasting, typeNode, expressionNode);
 	}
 	private boolean startsTypeCastingExpression(Token token) {
 		return token.isLextant(Punctuator.LESSER);
 	}
-	
+	private boolean startsPrimitiveTypeKeyword(Token token) {
+		return token.isLextant(Keyword.BOOL, Keyword.CHAR, Keyword.STRING, Keyword.INT, Keyword.FLOAT);
+	}
 	
 	
 	// array: populated creation ==========================================================================

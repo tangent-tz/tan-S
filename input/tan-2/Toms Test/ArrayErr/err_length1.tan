@@ -1,0 +1,4 @@
+main {
+	var gram := 'a';
+	print length gram \n; 			# typecheck, error
+}

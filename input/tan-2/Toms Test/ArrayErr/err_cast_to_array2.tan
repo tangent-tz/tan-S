@@ -1,0 +1,5 @@
+main {
+	const aVariable := 7.3E-02;
+	const bVariable := <[int]>(aVariable);
+	print bVariable \n;
+}

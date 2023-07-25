@@ -1,4 +1,0 @@
-main {
-	imm DD := alloc [float](12);
-	print DD $n;
-}

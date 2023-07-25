@@ -423,7 +423,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Array arrayType = (Array) (node.child(0).getType());
 		Type sizeType = node.child(1).getType();
 
-		if(sizeType != PrimitiveType.INTEGER) {
+		if(sizeType != PrimitiveType.INTEGER && sizeType != PrimitiveType.CHARACTER) {
 			typeCheckError(node, Arrays.asList(arrayType, sizeType));
 			node.setType(PrimitiveType.ERROR);
 			return;
@@ -543,7 +543,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
 		Token token = node.getToken();
 		if (token.isLextant(Punctuator.CAST)) {
-			logError("casting from " + operandTypes.get(1) + " to " + operandTypes.get(0) + " is not allowed, at " + token.getLocation());
+			logError("casting from " + operandTypes.get(1).infoString() + " to " + operandTypes.get(0).infoString() + " is not allowed, at " + token.getLocation());
 			return;
 		}
 		if(token.isLextant(Punctuator.OPEN_BRACKETS)) {
