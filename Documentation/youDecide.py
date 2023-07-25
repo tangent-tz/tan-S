@@ -75,6 +75,19 @@ test_expected_dict2 = {TOMS_2_TEST_ARRAY_CREATION: TOMS_2_TEST_ARRAY_CREATION_EX
                        TOMS_2_TEST_STATEMENTS: TOMS_2_TEST_STATEMENTS_EXPECTED
                        }
 
+# ---------------- TOMS 3 ---------------------------------------------
+TOMS_3_TEST_STATEMENTS_BREAK = "D:\\CMPT379\\input\\tan-3\Toms Test\\StatementsBreak"
+TOMS_3_TEST_STATEMENTS_BREAK_EXPECTED = "D:\\CMPT379\\input\\tan-3\\Toms Test Expected\\StatementsBreak"
+
+TOMS_3_TEST_STATEMENTS_CONTINUE = "D:\\CMPT379\\input\\tan-3\Toms Test\\StatementsContinue"
+TOMS_3_TEST_STATEMENTS_CONTINUE_EXPECTED = "D:\\CMPT379\\input\\tan-3\\Toms Test Expected\\StatementsContinue"
+
+TOMS_3_TEST_ALL = "Tom3_All"
+TOMS_3_TEST_ALL_EXPECTED = "Tom3_All_Expected"
+
+test_expected_dict3 = {TOMS_3_TEST_STATEMENTS_BREAK: TOMS_3_TEST_STATEMENTS_BREAK_EXPECTED,
+                       TOMS_3_TEST_STATEMENTS_CONTINUE: TOMS_3_TEST_STATEMENTS_CONTINUE_EXPECTED
+                       }
 
 
 # ---------------- GENERAL's ---------------------------------------------
@@ -84,11 +97,15 @@ GENERAL_TEST_1_EXPECTED = "D:\CMPT379\input\\tan-1\expected"
 GENERAL_TEST_2 = "D:\CMPT379\input\\tan-2"
 GENERAL_TEST_2_EXPECTED = "D:\CMPT379\input\\tan-2\expected"
 
+GENERAL_TEST_3 = "D:\CMPT379\input\\tan-3"
+GENERAL_TEST_3_EXPECTED = "D:\CMPT379\input\\tan-3\expected"
+
 global TAN_PATH
 global EXPECTED_PATH
 
 OUTPUT_PATH_1 = "D:\CMPT379\input\\tan-1\output"
 OUTPUT_PATH_2 = "D:\CMPT379\input\\tan-2\output"
+OUTPUT_PATH_3 = "D:\CMPT379\input\\tan-3\output"
 
 ASM_PATH = "D:\CMPT379\ASM_Emulator\ASMEmu.exe"
 BIN_PATH = "D:\CMPT379\\bin"
@@ -224,7 +241,7 @@ def assertions(tanFiles, compilerOutput, expectedOutput, bad_file_names):
 
 
 def test_to_run():
-    user_input = input("System: What Test to run? [Tom1, Tom2, General1, General2]\nYou: ")
+    user_input = input("System: What Test to run? [Tom1, Tom2, Tom3, General1, General2, General3]\nYou: ")
     tan_path = ""
     expected_path = ""
     if user_input.lower() == "tom1":
@@ -288,12 +305,28 @@ def test_to_run():
             expected_path = TOMS_2_TEST_ALL_EXPECTED
         else:
             return None, None
+    elif user_input.lower() == "tom3":
+        user_input = input("System: Please choose Test: [Break, Continue, All]\nYou: ")
+        if user_input.lower() == "break":
+            tan_path = TOMS_3_TEST_STATEMENTS_BREAK
+            expected_path = TOMS_3_TEST_STATEMENTS_BREAK_EXPECTED
+        elif user_input.lower() == "continue":
+            tan_path = TOMS_3_TEST_STATEMENTS_CONTINUE
+            expected_path = TOMS_3_TEST_STATEMENTS_CONTINUE_EXPECTED
+        elif user_input.lower() == "all":
+            tan_path = TOMS_3_TEST_ALL
+            expected_path = TOMS_3_TEST_ALL_EXPECTED
+        else:
+            return None, None
     elif user_input.lower() == "general1":
         tan_path = GENERAL_TEST_1
         expected_path = GENERAL_TEST_1_EXPECTED
     elif user_input.lower() == "general2":
         tan_path = GENERAL_TEST_2
         expected_path = GENERAL_TEST_2_EXPECTED
+    elif user_input.lower() == "general3":
+        tan_path = GENERAL_TEST_3
+        expected_path = GENERAL_TEST_3_EXPECTED
     elif user_input.lower() == EXIT:
         tan_path = EXIT
         expected_path = EXIT
@@ -322,8 +355,10 @@ def setOutputPath():
     if TAN_PATH == GENERAL_TEST_1:
         OUTPUT_PATH = OUTPUT_PATH_1
         return
-
-    OUTPUT_PATH = OUTPUT_PATH_2
+    elif TAN_PATH == GENERAL_TEST_2:
+        OUTPUT_PATH = OUTPUT_PATH_2
+        return
+    OUTPUT_PATH = OUTPUT_PATH_3
 
 
 def main():
@@ -347,15 +382,14 @@ if __name__ == "__main__":
         if TAN_PATH == EXIT:
             break
 
-        if TAN_PATH == TOMS_TEST_ALL:
-            for tanPath, expectedPath in test_expected_dict.items():
-                print("\n\nTesting: ", tanPath)
-                TAN_PATH, EXPECTED_PATH = tanPath, expectedPath
-                main()
-            continue
-
-        if TAN_PATH == TOMS_2_TEST_ALL:
-            for tanPath, expectedPath in test_expected_dict2.items():
+        if TAN_PATH == TOMS_TEST_ALL or TAN_PATH == TOMS_2_TEST_ALL or TAN_PATH == TOMS_3_TEST_ALL:
+            if TAN_PATH == TOMS_TEST_ALL:
+                testDictionary = test_expected_dict
+            elif TAN_PATH == TOMS_2_TEST_ALL:
+                testDictionary = test_expected_dict2
+            else:
+                testDictionary = test_expected_dict3
+            for tanPath, expectedPath in testDictionary.items():
                 print("\n\nTesting: ", tanPath)
                 TAN_PATH, EXPECTED_PATH = tanPath, expectedPath
                 main()
