@@ -1,0 +1,11 @@
+main {
+	const min := 90;
+	const max := 100;
+	continue;
+	
+	var count := min;
+	while (count < max) {
+		count := count + 1;
+	}
+	print "done." \n;
+}

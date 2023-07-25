@@ -1,9 +1,0 @@
-main {
-	for (count in <#a..#h>) {
-		if(count == #a || count == #e) {
-			continue;
-		}
-		print count;
-	}
-	print " done." $n;
-}

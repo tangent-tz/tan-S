@@ -1,20 +1,20 @@
 main {
-	imm min := 10;
-	imm max := 100;
+	const min := 10;
+	const max := 100;
 	
-	mut count := min;
+	var count := min;
 	while (count < max) {
-		print count $s;
+		print count \s;
 		count := count + 1;
 		if(count == 13) {
-			mut x := 2;
+			const x := 2;
 			if(x > 1) {
-				mut y := 41 - x;
+				var y := 41 - x;
 				if(y < 100) {
 					break;
 				}
 			}
 		}
 	}
-	print "done." $n;
+	print "done." \n;
 }

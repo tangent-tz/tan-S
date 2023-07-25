@@ -1,15 +1,15 @@
 main {
-	imm min := 11;
-	imm max := 17;
+	const min := 11;
+	const max := 17;
 	
-	mut count := min;
+	var count := min;
 	while (count < max) {
 		if(count == 15) {
 			count := count + 1;
 			continue;
 		}
-		print count $s;
+		print count \s;
 		count := count + 1;
 	}
-	print "done." $n;
+	print "done." \n;
 }
