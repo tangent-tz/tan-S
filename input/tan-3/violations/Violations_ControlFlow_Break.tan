@@ -1,0 +1,10 @@
+main {
+    {
+        var x := 10; 
+        print x \n;
+        break; 
+        print "hello" \n; 
+    }
+    
+    #Expected error: SEVERE: break statement used with no associated loop at: (Violations_ControlFlow_Break.tan line 5, character 8)
+}

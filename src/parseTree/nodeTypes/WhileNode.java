@@ -3,10 +3,13 @@ package parseTree.nodeTypes;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import lexicalAnalyzer.Keyword;
-import tokens.LextantToken;
 import tokens.Token;
 
+import java.util.ArrayList;
+
 public class WhileNode extends ParseNode {
+    private ArrayList<String> ASMLinkageLabels = new ArrayList<>();
+    
     public WhileNode(Token token) {
         super(token);
         assert(token.isLextant(Keyword.WHILE));
@@ -15,8 +18,25 @@ public class WhileNode extends ParseNode {
         super(node);
     }
 
+
+    ////////////////////////////////////////////////////////////
+    // Speciality functions
+    public void storeLinkageLabels(String startLoopLabel, String endLoopLabel) {
+        ASMLinkageLabels.add(startLoopLabel); 
+        ASMLinkageLabels.add(endLoopLabel); 
+    }
+    
+    public String getStartLoopLabel() {
+        return ASMLinkageLabels.get(0); 
+    }
+    
+    public String getEndLoopLabel() {
+        return ASMLinkageLabels.get(1); 
+    }
+    
+    
     ///////////////////////////////////////////////////////////
-// accept a visitor
+    // accept a visitor
     public void accept(ParseNodeVisitor visitor) {
         visitor.visitEnter(this);
         visitChildren(visitor);

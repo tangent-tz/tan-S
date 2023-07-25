@@ -1,13 +1,13 @@
 continue;
 
 main {
-	imm min := 90;
-	imm max := 100;
+	const min := 90;
+	const max := 100;
 	
-	mut count := min;
+	var count := min;
 	while (count < max) {
 		call sequence(count);
 		count := count + 1;
 	}
-	print "done." $n;
+	print "done." \n;
 }

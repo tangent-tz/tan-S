@@ -1,0 +1,23 @@
+main {
+	const min := 10;
+	const max := 20;
+	
+	var count := min;
+	while (count < max) {
+		print \n;
+	
+		var num := count;
+		print num \n;
+		while (num != 1) {
+			num := num / 2;
+			if(num == 8) {
+				break;
+			}
+			print num \n;
+		}
+		print num \n;
+	
+		count := count + 1;
+	}
+	print "done." \n;
+}
