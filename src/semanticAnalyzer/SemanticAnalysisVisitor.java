@@ -213,21 +213,27 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 
 	@Override
+	public void visitEnter(ForNode node) {
+		enterSubscope(node);
+	}
+	@Override
 	public void visitLeave(ForNode node) {
+
 		ParseNode initializer = node.child(0);
 		ParseNode boundary = node.child(1);
 
 		Type initializerType = initializer.getType();
 		Type boundaryType = boundary.getType();
 
-		if (initializerType != PrimitiveType.INTEGER && boundaryType != PrimitiveType.CHARACTER) {
+		if (initializerType != PrimitiveType.INTEGER) {
 			logError("Initializer in for loop at " + initializer.getToken().getLocation() + " is not an integer value");
 			node.setType(PrimitiveType.ERROR);
-		} else if (boundaryType != PrimitiveType.INTEGER && boundaryType != PrimitiveType.CHARACTER) {
+		} else if (boundaryType != PrimitiveType.INTEGER) {
 			logError("Boundary in for loop at " + boundary.getToken().getLocation() + " is not an integer value");
 			node.setType(PrimitiveType.ERROR);
 		} else {
 			node.setType(PrimitiveType.NO_TYPE);
+			leaveSubScope(node);
 		}
 	}
 
