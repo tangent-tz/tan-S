@@ -218,9 +218,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Type conditionType = condition.child(0).getType();
 		Token sample = LextantToken.make(condition.getToken().getLocation(), condition.getToken().getLexeme(), Punctuator.LESSER);
 		ParseNode test = OperatorNode.withChildren(sample, condition.child(0), condition.child(1));
-		node.appendChild(condition);
-		node.replaceChild(condition, test);
-		if (conditionType != PrimitiveType.INTEGER) {
+		ParseNode x = node.child(0).child(0);
+		node.removeChild(x);
+		if (conditionType != PrimitiveType.INTEGER && conditionType != PrimitiveType.CHARACTER) {
 			logError("Condition in for loop at " + node.getToken().getLocation() + " is not a integer value");
 			node.setType(PrimitiveType.ERROR);
 		} else {

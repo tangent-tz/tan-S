@@ -7,7 +7,7 @@ import logging.TanLogger;
 public class IntegerToken extends TokenImp {
     private int value;
 
-    protected IntegerToken(Locator locator, String lexeme) {
+    public IntegerToken(Locator locator, String lexeme) {
         super(locator, lexeme);
     }
     protected void setValue(int value) {

@@ -2,6 +2,7 @@ package parser;
 
 import java.util.Arrays;
 
+import inputHandler.TextLocation;
 import logging.TanLogger;
 import parseTree.*;
 import parseTree.nodeTypes.*;
@@ -317,36 +318,41 @@ public class Parser {
 		readToken();
 
 		// Creates new ForBlock scope, which includes the identifier and loop bound initializations
-		ParseNode forExpressionScope = parseForBlockStatement();
-
-		// Returns a new ForLoopDeclarationNode with the new scope and loop body
-		return ForNode.withChildren(forToken, forExpressionScope);
-	}
-
-	private ParseNode parseForBlockStatement() {
-		// Creates a new BlockStatementNode that will represent the For loop's scope
 		ParseNode codeBlock = new BlockStatementNode(nowReading);
 
 		expect(Punctuator.OPEN_PARENTHESIS);
 
 		// Adds the loop variable to the new scope
-		Token declarationToken = Keyword.CONST.prototype();
+		Token declarationToken = Keyword.VAR.prototype();
 		ParseNode identifier = parseIdentifier();
 		expect(Keyword.FROM);
 		ParseNode initializerFrom = parseExpression();
 		expect(Keyword.TO);
-		Token declarationTokenUpper = Keyword.CONST.prototype();
+		Token declarationTokenUpper = Keyword.VAR.prototype();
 		Token literalToken = new IdentifierToken(nowReading.getLocation(), "upperfor");
 		ParseNode initializerTo = parseExpression();
 		expect(Punctuator.CLOSE_PARENTHESIS);
 		ParseNode node = DeclarationNode.withChildren(declarationToken, identifier, initializerFrom);
 		ParseNode nodeUpper = DeclarationNode.withChildren(declarationTokenUpper, new IdentifierNode(literalToken), initializerTo);
-		ParseNode block = parseBlockStatement();
+		ParseNode comparison = OperatorNode.withChildren(Punctuator.LESSEREQUAL.prototype(), new IdentifierNode(identifier.getToken()), new IdentifierNode(literalToken));
+		ParseNode forBlock = parseBlockStatement();
+		Token integerToken = IntegerToken.make(nowReading.getLocation(), "1");
+		ParseNode increment = OperatorNode.withChildren(Punctuator.ADD.prototype(), new IdentifierNode(identifier.getToken()), new IntegerConstantNode(integerToken));
+		ParseNode assign = AssignmentStatementNode.withChildren(Punctuator.ASSIGN.prototype(), new IdentifierNode(identifier.getToken()), increment);
+		forBlock.appendChild(assign);
+		ParseNode whileBlock = WhileNode.withChildren(Keyword.WHILE.prototype(), comparison, forBlock);
+
 		codeBlock.appendChild(node);
 		codeBlock.appendChild(nodeUpper);
-		codeBlock.appendChild(block);
-		return codeBlock;
+		codeBlock.appendChild(whileBlock);
+		return ForNode.withChildren(forToken, codeBlock);
+
 	}
+
+//	private ParseNode parseForBlockStatement() {
+//		// Creates a new BlockStatementNode that will represent the For loop's scope
+//
+//	}
 
 	private boolean startsForStatement(Token token) {
 		return token.isLextant(Keyword.FOR);

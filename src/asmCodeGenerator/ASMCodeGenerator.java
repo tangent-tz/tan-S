@@ -347,13 +347,9 @@ public class ASMCodeGenerator {
 		}
 
 		public void visitLeave(ForNode node) {
-
-			newVoidCode(node);
-			for(ParseNode child : node.child(0).getChildren()) {
-				ASMCodeFragment childCode = removeVoidCode(child);
-				code.append(childCode);
-			}
-
+			newValueCode(node);
+			ASMCodeFragment init = removeVoidCode(node.child(0));
+			code.append(init);
 		}
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
