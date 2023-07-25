@@ -328,14 +328,21 @@ public class ASMCodeGenerator {
 			code.add(Label, endLabel); 
 		}
 
+
+		public void visitEnter(WhileNode node) {
+			Labeller labeller = new Labeller("while-statement");
+			String startLoopLabel = labeller.newLabel("startLoop");
+			String endLoopLabel = labeller.newLabel("endLoop");
+
+			node.storeLinkageLabels(startLoopLabel, endLoopLabel);
+		}
 		public void visitLeave(WhileNode node) {
 			newVoidCode(node);
 			ASMCodeFragment lvalue = removeValueCode(node.child(0));
 			ASMCodeFragment rvalue = removeVoidCode(node.child(1));
 
-			Labeller labeller = new Labeller("while-statement");
-			String startLabel = labeller.newLabel("-while-start");
-			String endLabel = labeller.newLabel("-while-end");
+			String startLabel = node.getStartLoopLabel();
+			String endLabel = node.getEndLoopLabel();
 
 			code.add(Label, startLabel);
 			code.append(lvalue);
@@ -343,7 +350,6 @@ public class ASMCodeGenerator {
 			code.append(rvalue);
 			code.add(Jump, startLabel);
 			code.add(Label, endLabel);
-
 		}
 
 		public void visitLeave(ForNode node) {
@@ -722,7 +728,7 @@ public class ASMCodeGenerator {
 		// array
 		public void visitLeave(ArrayNode node) {
 			boolean promoteCandidate = promoteCandidateArray(node);
-			int promoteLevel =0;
+			int promoteLevel = 0;
 			if(promoteCandidate){
 				promoteLevel = checkHighestPromotableArray(node);
 			}
@@ -975,7 +981,6 @@ public class ASMCodeGenerator {
 		}
 
 
-
 		@Override
 		public void visitLeave(TargetableArrayReferenceNode node) {
 			Labeller labeller = new Labeller("array-indexing");
@@ -1082,5 +1087,25 @@ public class ASMCodeGenerator {
 		}
 		public void visit(TypeIndicatorNode node) {
 		}
+
+		public void visit(BreakStatementNode node) {
+			if(node.getType() == PrimitiveType.ERROR) {
+				return;
+			}
+			String endLoopLabel = ((WhileNode)(node.getClosestLoopNode())).getEndLoopLabel();
+
+			newVoidCode(node);
+			code.add(Jump, endLoopLabel);
+		}
+
+		public void visit(ContinueStatementNode node) {
+			if(node.getType() == PrimitiveType.ERROR) {
+				return;
+			}
+			String startLoopLabel = ((WhileNode)(node.getClosestLoopNode())).getStartLoopLabel();
+			newVoidCode(node);
+			code.add(Jump, startLoopLabel);
+		}
+
 	}
 }

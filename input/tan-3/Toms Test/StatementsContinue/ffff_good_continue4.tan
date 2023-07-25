@@ -1,0 +1,9 @@
+main {
+    for (char count := 'a'; count <= 'h'; count := <char>(count+1)) {
+		if(count == 'a' || count == 'e') {
+			continue;
+		}
+		print count;
+	}
+	print " done." \n;
+}

@@ -1,0 +1,12 @@
+main {
+	const min := 10;
+	const max := 100;
+	
+	for (int count := min; count <= max; count := count+1) {
+		print count \s;
+		if(count == 15) {
+			break;
+		}
+	}
+	print "done." \n;
+}

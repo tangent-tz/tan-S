@@ -30,10 +30,9 @@ public enum PrimitiveType implements Type {
 		return infoString;
 	}
 	public boolean equivalent(Type otherType) {
-		return this == otherType;
+		return this == otherType.concreteType();
 	}
 	public void addTypeVariables(Set<TypeVariable> typeVariables) {
-		
 	}
 	
 	@Override

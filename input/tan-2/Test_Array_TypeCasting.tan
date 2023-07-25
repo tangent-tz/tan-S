@@ -1,0 +1,70 @@
+main {
+{
+    const ints := [1, 2, 3, 4, 5]; 
+    const castInts := <[int]>(ints); 
+    print ints \n castInts \n;
+    print <[int]>(ints) \n;
+    print <[int]>([1, 2, 3, 4, 5]) \n\n;
+    
+    const floats := [1.1, 2.2, 3.3, 4.4, 5.5]; 
+    const castFloats := <[float]>(floats); 
+    print floats \n castFloats \n; 
+    print <[float]>(floats) \n; 
+    print <[float]>([1.1, 2.2, 3.3, 4.4, 5.5]) \n\n;
+            
+    const chars := ['a', 'b', 'c', 'd', 'e']; 
+    const castChars := <[char]>(chars); 
+    print chars \n castChars \n;
+    print <[char]>(chars) \n; 
+    print <[char]>(['a', 'b', 'c', 'd', 'e']) \n\n; 
+    
+    const strings := ["hello", "hi", "bye", "world", "yellow"]; 
+    const castStrings := <[string]>(strings); 
+    print strings \n castStrings \n; 
+    print <[string]>(strings) \n;
+    print <[string]>(["hello", "hi", "bye", "world", "yellow"]) \n\n;
+    
+    const bools := [true, false, false, true, true]; 
+    const castBools := <[bool]>(bools); 
+    print bools \n castBools \n;
+    print <[bool]>(bools) \n; 
+    print <[bool]>([true, false, false, true, true]) \n\n; 
+}    
+    
+    #--------- Multidimensional arrays ---------------------------------------------------------------------
+{
+    var ints := [[[1, 2, 3], [4, 5]], [[3, 4], [7, 8, 9]], [[5, 6], [10, 12]]]; 
+    const castInts := <[[[int]]]>(ints); 
+    print ints \n castInts \n; 
+    print <[[[int]]]>(ints) \n; 
+    print <[[[int]]]>([[[1, 2, 3], [4, 5]], [[3, 4], [7, 8, 9]], [[5, 6], [10, 12]]]) \n\n; 
+
+    const floats := [[[[1.1, 1.2, 1.3], [1.4, 1.5, 1.6]]], [[[1.7, 1.8], [1.9, 2.1]]]]; 
+    const castFloats := <[[[[float]]]]>(floats); 
+    print floats \n castFloats \n; 
+    print <[[[[float]]]]>(floats) \n; 
+    print <[[[[float]]]]>([[[[1.1, 1.2, 1.3], [1.4, 1.5, 1.6]]], [[[1.7, 1.8], [1.9, 2.1]]]]) \n\n;
+            
+    const chars := [['a','b','c','d'],['e', %146]]; 
+    const castChars := <[[char]]>(chars); 
+    print chars \n castChars \n;
+    print <[[char]]>(chars) \n; 
+    print <[[char]]>([['a','b','c','d'],['e', %146]]) \n\n; 
+    
+    const strings := [[[["hello", "tanzil", "sarker"], ["it's", "me", "ivy :)"]]], [[["how", "r"], ["u", "??"]]]];
+    const castStrings := <[[[[string]]]]>(strings); 
+    print strings \n castStrings \n; 
+    print <[[[[string]]]]>(strings) \n;
+    print <[[[[string]]]]>([[[["hello", "tanzil", "sarker"], ["it's", "me", "ivy :)"]]], [[["how", "r"], ["u", "??"]]]]) \n\n;
+    
+    const bools := [[[true, true], [false, false]], [[true, false], [false, true]]]; 
+    const castBools := <[[[bool]]]>(bools); 
+    print bools \n castBools \n;
+    print <[[[bool]]]>(bools) \n; 
+    print <[[[bool]]]>([[[true, true], [false, false]], [[true, false], [false, true]]]) \n\n;     
+  
+}    
+    
+
+
+}

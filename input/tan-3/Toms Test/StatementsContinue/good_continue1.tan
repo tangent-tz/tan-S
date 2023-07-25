@@ -1,0 +1,15 @@
+main {
+	const min := 11;
+	const max := 17;
+	
+	var count := min;
+	while (count < max) {
+		if(count == 15) {
+			count := count + 1;
+			continue;
+		}
+		print count \s;
+		count := count + 1;
+	}
+	print "done." \n;
+}

@@ -1,0 +1,4 @@
+main {
+    const bools := [[[true, true], [false, false]], [[true, false], [false, true]]]; 
+    const castBools := <[[[[[[bool]]]]]]>(bools); 
+}

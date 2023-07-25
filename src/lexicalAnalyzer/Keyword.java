@@ -22,6 +22,8 @@ public enum Keyword implements Lextant {
 	ELSE("else"),
 	NEW("new"),
 	LENGTH("length"),
+	BREAK("break"),
+	CONTINUE("continue"),
 	FOR("for"),
 	FROM("from"),
 	TO("to"),

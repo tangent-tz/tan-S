@@ -1,0 +1,10 @@
+main {
+    {
+        var x := 10; 
+        print x \n;
+        continue;  
+        print "hello" \n; 
+    }
+    
+    #Expected error: SEVERE: continue statement used with no associated loop at: (Violations_ControlFlow_Continue.tan line 5, character 8)
+}

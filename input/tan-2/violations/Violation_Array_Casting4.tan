@@ -1,0 +1,4 @@
+main {
+    const strings := [[[["hello", "tanzil", "sarker"], ["it's", "me", "ivy :)"]]], [[["how", "r"], ["u", "??"]]]];
+    const castStrings := <[[[[[string]]]]]>(strings); 
+}

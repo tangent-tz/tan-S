@@ -87,6 +87,12 @@ public class Parser {
 		if(startsIfStatement(nowReading)) {
 			return parseIfStatement();
 		}
+		if(startsBreakStatement(nowReading)) {
+			return parseBreakStatement();
+		}
+		if(startsContinueStatement(nowReading)) {
+			return parseContinueStatement();
+		}
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
@@ -96,7 +102,9 @@ public class Parser {
 				startsBlockStatement(token) ||
 				startsWhileStatement(token) ||
 				startsForStatement(token) ||
-				startsIfStatement(token);
+				startsIfStatement(token)||
+				startsBreakStatement(token) ||
+				startsContinueStatement(token);
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
@@ -270,6 +278,8 @@ public class Parser {
 	private boolean startsTargetableParenthesesWrappedExpression(Token token) {
 		return token.isLextant(Punctuator.OPEN_PARENTHESIS);  
 	}
+	
+	
 
 	// block statement -> { statement* }
 	private ParseNode parseBlockStatement() {
@@ -289,6 +299,7 @@ public class Parser {
 	private boolean startsBlockStatement(Token token) {
 		return token.isLextant(Punctuator.OPEN_BRACE);
 	}
+
 
 	private ParseNode parseWhileStatement() {
 		if(!startsWhileStatement(nowReading)) {
@@ -359,6 +370,38 @@ public class Parser {
 	private boolean startsIfStatement(Token token) {
 		return token.isLextant(Keyword.IF);
 	}
+
+
+
+	private ParseNode parseBreakStatement() {
+		if(!startsBreakStatement(nowReading)) {
+			return syntaxErrorNode("breakStatement");
+		}
+		Token breakToken = nowReading;
+		readToken();
+		expect(Punctuator.TERMINATOR);
+
+		return new BreakStatementNode(breakToken);
+	}
+	private boolean startsBreakStatement(Token token) {
+		return token.isLextant(Keyword.BREAK);
+	}
+
+
+	private ParseNode parseContinueStatement() {
+		if(!startsContinueStatement(nowReading)){
+			return syntaxErrorNode("continueStatement");
+		}
+		Token continueToken = nowReading;
+		readToken();
+		expect(Punctuator.TERMINATOR);
+
+		return new ContinueStatementNode(continueToken);
+	}
+	private boolean startsContinueStatement(Token token) {
+		return token.isLextant(Keyword.CONTINUE);
+	}
+
 
 	///////////////////////////////////////////////////////////
 	// expressions
@@ -559,19 +602,27 @@ public class Parser {
 
 		LextantToken tokenForCasting = LextantToken.make(nowReading.getLocation(), Punctuator.CAST.getLexeme(), Punctuator.CAST);
 		expect(Punctuator.LESSER);
-		Token targetTypeToken = nowReading;
-		expect(Keyword.BOOL, Keyword.CHAR, Keyword.STRING, Keyword.INT, Keyword.FLOAT);
-		expect(Punctuator.GREATER);
 
+		ParseNode typeNode;
+		if(startsPrimitiveTypeKeyword(nowReading)) {
+			Token targetTypeToken = nowReading;
+			readToken();
+			typeNode = new TypeIndicatorNode(targetTypeToken);
+		} else {
+			typeNode = parseArrayType();
+		}
+
+		expect(Punctuator.GREATER);
 		ParseNode expressionNode = parseParenthesesWrappedExpression();
-		TypeIndicatorNode typeNode = new TypeIndicatorNode(targetTypeToken);
 
 		return OperatorNode.withChildren(tokenForCasting, typeNode, expressionNode);
 	}
 	private boolean startsTypeCastingExpression(Token token) {
 		return token.isLextant(Punctuator.LESSER);
 	}
-	
+	private boolean startsPrimitiveTypeKeyword(Token token) {
+		return token.isLextant(Keyword.BOOL, Keyword.CHAR, Keyword.STRING, Keyword.INT, Keyword.FLOAT);
+	}
 	
 	
 	// array: populated creation ==========================================================================

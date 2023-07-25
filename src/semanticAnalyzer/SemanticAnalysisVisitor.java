@@ -200,6 +200,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.setType(PrimitiveType.NO_TYPE);
 	}
 
+
 	@Override
 	public void visitLeave(WhileNode node) {
 		ParseNode condition = node.child(0);
@@ -447,7 +448,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Array arrayType = (Array) (node.child(0).getType());
 		Type sizeType = node.child(1).getType();
 
-		if(sizeType != PrimitiveType.INTEGER) {
+		if(sizeType != PrimitiveType.INTEGER && sizeType != PrimitiveType.CHARACTER) {
 			typeCheckError(node, Arrays.asList(arrayType, sizeType));
 			node.setType(PrimitiveType.ERROR);
 			return;
@@ -482,6 +483,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.ERROR);
 		}
 	}
+
 
 	///////////////////////////////////////////////////////////////////////////
 	// simple leaf nodes
@@ -522,6 +524,21 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visit(TypeIndicatorNode node) {
 		node.setType(node.getValue());
 	}
+	@Override
+	public void visit(BreakStatementNode node) {
+		visitLoopFlowDisruptorNode(node);
+	}
+	@Override
+	public void visit(ContinueStatementNode node) {
+		visitLoopFlowDisruptorNode(node);
+	}
+	private void visitLoopFlowDisruptorNode(LoopFlowDisruptorNode node) {
+		ParseNode parentLoopNode = node.findClosestLoopNode();
+		if(parentLoopNode == null) {
+			node.setType(PrimitiveType.ERROR);
+		}
+	}
+
 
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods
@@ -550,7 +567,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
 		Token token = node.getToken();
 		if (token.isLextant(Punctuator.CAST)) {
-			logError("casting from " + operandTypes.get(1) + " to " + operandTypes.get(0) + " is not allowed, at " + token.getLocation());
+			logError("casting from " + operandTypes.get(1).infoString() + " to " + operandTypes.get(0).infoString() + " is not allowed, at " + token.getLocation());
 			return;
 		}
 		if(token.isLextant(Punctuator.OPEN_BRACKETS)) {

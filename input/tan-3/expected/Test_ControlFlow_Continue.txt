@@ -1,0 +1,10 @@
+0	1	2	4	end of test 1.
+
+10 :	0	1	2	4	end inner loop
+20 :	0	1	2	4	end inner loop
+30 :	0	1	2	4	end inner loop
+40 :	0	1	2	4	end inner loop
+50 :	0	1	2	4	end inner loop
+60 :	0	1	2	4	end inner loop
+70 :	0	1	2	4	end inner loop
+end of test 2.
