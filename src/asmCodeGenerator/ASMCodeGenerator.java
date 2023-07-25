@@ -347,9 +347,10 @@ public class ASMCodeGenerator {
 		}
 
 		public void visitLeave(ForNode node) {
-			newValueCode(node);
-			ASMCodeFragment init = removeVoidCode(node.child(0));
-			code.append(init);
+			newVoidCode(node);
+			ASMCodeFragment arg1 = removeValueCode(node.child(3));
+			code.append(arg1);
+			code.add(PStack);
 		}
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
