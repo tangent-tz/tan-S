@@ -328,7 +328,6 @@ public class ASMCodeGenerator {
 			code.add(Label, endLabel); 
 		}
 
-
 		public void visitEnter(WhileNode node) {
 			Labeller labeller = new Labeller("while-statement");
 			String startLoopLabel = labeller.newLabel("startLoop");
@@ -356,9 +355,9 @@ public class ASMCodeGenerator {
 			newVoidCode(node);
 			ASMCodeFragment arg1 = removeVoidCode(node.child(0));
 			ASMCodeFragment arg2 = removeVoidCode(node.child(1));
-			ASMCodeFragment svalue = removeValueCode(node.child(2));
-			ASMCodeFragment evalue = removeVoidCode(node.child(3));
-			ASMCodeFragment bvalue = removeVoidCode(node.child(4));
+			ASMCodeFragment comparison = removeValueCode(node.child(2));
+			ASMCodeFragment loopBody = removeVoidCode(node.child(3));
+			ASMCodeFragment loopIncrementor = removeVoidCode(node.child(4));
 
 			Labeller labeller = new Labeller("for-statement");
 			String startLabel = labeller.newLabel("-for-start");
@@ -367,15 +366,14 @@ public class ASMCodeGenerator {
 			code.append(arg1);
 			code.append(arg2);
 			code.add(Label, startLabel);
-			code.append(svalue);
+			code.append(comparison);
 			code.add(JumpFalse, endLabel);
-			code.append(evalue);
-			code.append(bvalue);
+			code.append(loopBody);
+			code.append(loopIncrementor);
 			code.add(Jump, startLabel);
 			code.add(Label, endLabel);
-
-
 		}
+
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
 				return StoreI;
@@ -398,7 +396,6 @@ public class ASMCodeGenerator {
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
 		}
-
 
 		///////////////////////////////////////////////////////////////////////////
 		// expressions

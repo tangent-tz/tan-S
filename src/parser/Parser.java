@@ -334,18 +334,17 @@ public class Parser {
 		ParseNode initializerTo = parseExpression();
 		expect(Punctuator.CLOSE_PARENTHESIS);
 		ParseNode innerCodeBlock = parseBlockStatement();
-		ParseNode node = DeclarationNode.withChildren(Keyword.VAR.prototype(), identifier, initializerFrom);
-		ParseNode nodeUpper = DeclarationNode.withChildren(Keyword.VAR.prototype(), new IdentifierNode(new IdentifierToken(nowReading.getLocation(), "upperfor")), initializerTo);
-		ParseNode comparison = OperatorNode.withChildren(Punctuator.LESSEREQUAL.prototype(), new IdentifierNode(identifier.getToken()), new IdentifierNode(new IdentifierToken(nowReading.getLocation(), "upperfor")));
 
-		//WhileNode whileNode = WhileNode.withChildren(Keyword.WHILE.prototype(), comparison, innerCodeBlock);
 
-		IntegerToken test = IntegerToken.make(nowReading.getLocation(), "1");
-		IntegerConstantNode testNode = new IntegerConstantNode(test);
-		ParseNode increment = OperatorNode.withChildren(Punctuator.ADD.prototype(), new IdentifierNode(identifier.getToken()), testNode);
+		ParseNode loopIterator = DeclarationNode.withChildren(Keyword.VAR.prototype(), identifier, initializerFrom);
+		ParseNode loopBoundary = DeclarationNode.withChildren(Keyword.VAR.prototype(), new IdentifierNode(IdentifierToken.make(nowReading.getLocation(), "upperfor")), initializerTo);
+		ParseNode comparison = OperatorNode.withChildren(Punctuator.LESSEREQUAL.prototype(), new IdentifierNode(identifier.getToken()), new IdentifierNode(IdentifierToken.make(nowReading.getLocation(), "upperfor")));
+
+		IntegerConstantNode incrementValue = new IntegerConstantNode(IntegerToken.make(nowReading.getLocation(), "1"));
+		ParseNode increment = OperatorNode.withChildren(Punctuator.ADD.prototype(), new IdentifierNode(identifier.getToken()), incrementValue);
 		ParseNode assign = AssignmentStatementNode.withChildren(Punctuator.ASSIGN.prototype(), new IdentifierNode(identifier.getToken()), increment);
 
-		return ForNode.withChildren(forToken, node, nodeUpper,comparison, innerCodeBlock, assign);
+		return ForNode.withChildren(forToken, loopIterator, loopBoundary,comparison, innerCodeBlock, assign);
 	}
 
 	private boolean startsForStatement(Token token) {

@@ -1,0 +1,67 @@
+main {
+    # Test 1: Basic for loop
+    for(i from 1 to 5) {
+        print i \n;  # should print numbers 1 to 5, each on a new line
+    }
+
+    # Test 2: For loop with an operation inside
+    var sum := 0;
+    for(i from 1 to 10) {
+        sum := sum + i;
+    }
+    print sum \n;  # should print 55 (the sum of numbers from 1 to 10)
+
+    # Test 3: Nested for loop
+    for(i from 1 to 5) {
+        for(j from 1 to 5) {
+            print i*j;  # should print multiplication table for numbers 1 to 5
+            if(j != 5) {
+                print \s;
+            }
+        }
+        print \n;
+    }
+    # Test 4: For loop with array indexing
+    var arr := [10, 20, 30, 40, 50];
+    for(i from 0 to length(arr)-1) {
+        print [arr:i];  # should print array elements
+        if(i != length(arr)-1) {
+            print \s;
+        }
+    }
+    print \n;
+
+   # Test 5: For loop with function call inside
+    for(i from 1 to 5) {
+        print i*i;  # should print squares of numbers from 1 to 5
+        if(i != 5) {
+            print \s;
+        }
+    }
+    print \n;
+
+    # Test 6: For loop with nested array indexing
+    var arr2 := [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+    for(i from 0 to length(arr2)-1) {
+        for(j from 0 to length([arr2:i])-1) {
+            print [[arr2:i]:j];  # should print elements of 2D array
+            if(j != length([arr2:i])-1) {
+                print \s;
+            }
+        }
+        print \n;
+    }
+
+    # Test 8: For loop with array modifications
+    var arr3 := [1, 2, 3, 4, 5];
+    for(i from 0 to length(arr3)-1) {
+        [arr3:i] := [arr3:i] * [arr3:i];  # should square each element of the array
+    }
+    for(i from 0 to length(arr3)-1) {
+        print [arr3:i];  # should print squared elements of array
+        if(i != length(arr3)-1) {
+            print \s;
+        }
+    }
+    print \n;
+}

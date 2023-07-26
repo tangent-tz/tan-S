@@ -3,7 +3,7 @@ package tokens;
 import inputHandler.Locator;
 
 public class IdentifierToken extends TokenImp {
-	public IdentifierToken(Locator locator, String lexeme) {
+	protected IdentifierToken(Locator locator, String lexeme) {
 		super(locator, lexeme.intern());
 	}
 	
