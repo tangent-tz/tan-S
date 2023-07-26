@@ -1,5 +1,0 @@
-main {
-	for(i from 3 to 5) {
-		print i \s;
-	}
-}
