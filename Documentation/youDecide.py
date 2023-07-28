@@ -82,8 +82,8 @@ TOMS_3_TEST_STATEMENTS_BREAK_EXPECTED = "D:\\CMPT379\\input\\tan-3\\Toms Test Ex
 TOMS_3_TEST_STATEMENTS_CONTINUE = "D:\\CMPT379\\input\\tan-3\Toms Test\\StatementsContinue"
 TOMS_3_TEST_STATEMENTS_CONTINUE_EXPECTED = "D:\\CMPT379\\input\\tan-3\\Toms Test Expected\\StatementsContinue"
 
-TOMS_3_TEST_STATEMENTS_FORLOOP = "C:\\IdeaProjects\\CMPT379\\input\\tan-3\Toms Test\\StatementsForLoop"
-TOMS_3_TEST_STATEMENTS_FORLOOP_EXPECTED = "C:\\IdeaProjects\\CMPT379\\input\\tan-3\\Toms Test Expected\\StatementsForLoop"
+TOMS_3_TEST_STATEMENTS_FORLOOP = "D:\\CMPT379\\input\\tan-3\Toms Test\\StatementsForLoop"
+TOMS_3_TEST_STATEMENTS_FORLOOP_EXPECTED = "D:\\CMPT379\\input\\tan-3\\Toms Test Expected\\StatementsForLoop"
 
 TOMS_3_TEST_ALL = "Tom3_All"
 TOMS_3_TEST_ALL_EXPECTED = "Tom3_All_Expected"
