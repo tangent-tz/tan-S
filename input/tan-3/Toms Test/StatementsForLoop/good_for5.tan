@@ -1,0 +1,19 @@
+main {
+	for(k from 1 to 3) {
+		for(i from 1 to 5) {
+			for(j from 1 to 10) {
+				if(i*j*k < 10) {
+					print \s\s;
+				}
+				else {
+					if (i*j*k < 100) {
+						print \s;
+					}
+				}
+				print i*j*k \s;
+			}
+			print \n;
+		}
+		print \n;
+	}
+}

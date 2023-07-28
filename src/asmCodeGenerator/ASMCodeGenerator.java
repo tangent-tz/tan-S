@@ -328,19 +328,18 @@ public class ASMCodeGenerator {
 			code.add(Label, endLabel); 
 		}
 
-		
 		public void visitEnter(WhileNode node) {
-			Labeller labeller = new Labeller("while-statement"); 
-			String startLoopLabel = labeller.newLabel("startLoop"); 
-			String endLoopLabel = labeller.newLabel("endLoop"); 
-			
+			Labeller labeller = new Labeller("while-statement");
+			String startLoopLabel = labeller.newLabel("startLoop");
+			String endLoopLabel = labeller.newLabel("endLoop");
+
 			node.storeLinkageLabels(startLoopLabel, endLoopLabel);
 		}
 		public void visitLeave(WhileNode node) {
 			newVoidCode(node);
 			ASMCodeFragment lvalue = removeValueCode(node.child(0));
 			ASMCodeFragment rvalue = removeVoidCode(node.child(1));
-			
+
 			String startLabel = node.getStartLoopLabel();
 			String endLabel = node.getEndLoopLabel();
 
@@ -351,8 +350,30 @@ public class ASMCodeGenerator {
 			code.add(Jump, startLabel);
 			code.add(Label, endLabel);
 		}
-		
-		
+
+		public void visitLeave(ForNode node) {
+			newVoidCode(node);
+			ASMCodeFragment arg1 = removeVoidCode(node.child(0));
+			ASMCodeFragment arg2 = removeVoidCode(node.child(1));
+			ASMCodeFragment comparison = removeValueCode(node.child(2));
+			ASMCodeFragment loopBody = removeVoidCode(node.child(3));
+			ASMCodeFragment loopIncrementor = removeVoidCode(node.child(4));
+
+			Labeller labeller = new Labeller("for-statement");
+			String startLabel = labeller.newLabel("-for-start");
+			String endLabel = labeller.newLabel("-for-end");
+
+			code.append(arg1);
+			code.append(arg2);
+			code.add(Label, startLabel);
+			code.append(comparison);
+			code.add(JumpFalse, endLabel);
+			code.append(loopBody);
+			code.append(loopIncrementor);
+			code.add(Jump, startLabel);
+			code.add(Label, endLabel);
+		}
+
 		private ASMOpcode opcodeForStore(Type type) {
 			if(type == PrimitiveType.INTEGER) {
 				return StoreI;
@@ -375,7 +396,6 @@ public class ASMCodeGenerator {
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
 		}
-
 
 		///////////////////////////////////////////////////////////////////////////
 		// expressions
@@ -1064,17 +1084,17 @@ public class ASMCodeGenerator {
 		}
 		public void visit(TypeIndicatorNode node) {
 		}
-		
+
 		public void visit(BreakStatementNode node) {
 			if(node.getType() == PrimitiveType.ERROR) {
 				return;
 			}
 			String endLoopLabel = ((WhileNode)(node.getClosestLoopNode())).getEndLoopLabel();
-			
+
 			newVoidCode(node);
 			code.add(Jump, endLoopLabel);
 		}
-		
+
 		public void visit(ContinueStatementNode node) {
 			if(node.getType() == PrimitiveType.ERROR) {
 				return;
@@ -1083,6 +1103,6 @@ public class ASMCodeGenerator {
 			newVoidCode(node);
 			code.add(Jump, startLoopLabel);
 		}
-		
+
 	}
 }

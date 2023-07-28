@@ -82,13 +82,16 @@ TOMS_3_TEST_STATEMENTS_BREAK_EXPECTED = "C:\\IdeaProjects\\CMPT379\\input\\tan-3
 TOMS_3_TEST_STATEMENTS_CONTINUE = "C:\\IdeaProjects\\CMPT379\\input\\tan-3\Toms Test\\StatementsContinue"
 TOMS_3_TEST_STATEMENTS_CONTINUE_EXPECTED = "C:\\IdeaProjects\\CMPT379\\input\\tan-3\\Toms Test Expected\\StatementsContinue"
 
+TOMS_3_TEST_STATEMENTS_FORLOOP = "C:\\IdeaProjects\\CMPT379\\input\\tan-3\Toms Test\\StatementsForLoop"
+TOMS_3_TEST_STATEMENTS_FORLOOP_EXPECTED = "C:\\IdeaProjects\\CMPT379\\input\\tan-3\\Toms Test Expected\\StatementsForLoop"
+
 TOMS_3_TEST_ALL = "Tom3_All"
 TOMS_3_TEST_ALL_EXPECTED = "Tom3_All_Expected"
 
 test_expected_dict3 = {TOMS_3_TEST_STATEMENTS_BREAK: TOMS_3_TEST_STATEMENTS_BREAK_EXPECTED,
-                       TOMS_3_TEST_STATEMENTS_CONTINUE: TOMS_3_TEST_STATEMENTS_CONTINUE_EXPECTED
+                       TOMS_3_TEST_STATEMENTS_CONTINUE: TOMS_3_TEST_STATEMENTS_CONTINUE_EXPECTED,
+                       TOMS_3_TEST_STATEMENTS_FORLOOP: TOMS_3_TEST_STATEMENTS_FORLOOP_EXPECTED
                        }
-
 
 # ---------------- GENERAL's ---------------------------------------------
 GENERAL_TEST_1 = "C:\\IdeaProjects\\CMPT379\input\\tan-1"
@@ -114,7 +117,8 @@ EXIT = "exit"
 
 
 def run_java_file(java_file_path, java_class, file):
-    command = ['javac', '-cp', "C:\\IdeaProjects\\CMPT379\\src\\", '-d', BIN_PATH, "C:\\IdeaProjects\\CMPT379\\src\\applications\\TanCompiler.java"]
+    command = ['javac', '-cp', "C:\\IdeaProjects\\CMPT379\\src\\", '-d', BIN_PATH,
+               "C:\\IdeaProjects\\CMPT379\\src\\applications\\TanCompiler.java"]
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     command = ['java', '-cp', java_file_path, java_class, f"{TAN_PATH}\{file}", OUTPUT_PATH]
@@ -306,13 +310,16 @@ def test_to_run():
         else:
             return None, None
     elif user_input.lower() == "tom3":
-        user_input = input("System: Please choose Test: [Break, Continue, All]\nYou: ")
+        user_input = input("System: Please choose Test: [Break, Continue, ForLoop, All]\nYou: ")
         if user_input.lower() == "break":
             tan_path = TOMS_3_TEST_STATEMENTS_BREAK
             expected_path = TOMS_3_TEST_STATEMENTS_BREAK_EXPECTED
         elif user_input.lower() == "continue":
             tan_path = TOMS_3_TEST_STATEMENTS_CONTINUE
             expected_path = TOMS_3_TEST_STATEMENTS_CONTINUE_EXPECTED
+        elif user_input.lower() == "forloop":
+            tan_path = TOMS_3_TEST_STATEMENTS_FORLOOP
+            expected_path = TOMS_3_TEST_STATEMENTS_FORLOOP_EXPECTED
         elif user_input.lower() == "all":
             tan_path = TOMS_3_TEST_ALL
             expected_path = TOMS_3_TEST_ALL_EXPECTED

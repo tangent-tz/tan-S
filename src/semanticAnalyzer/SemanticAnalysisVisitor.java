@@ -200,7 +200,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.setType(PrimitiveType.NO_TYPE);
 	}
 
-	
+
 	@Override
 	public void visitLeave(WhileNode node) {
 		ParseNode condition = node.child(0);
@@ -210,6 +210,31 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.ERROR);
 		} else {
 			node.setType(PrimitiveType.NO_TYPE);
+		}
+	}
+
+	@Override
+	public void visitEnter(ForNode node) {
+		enterSubscope(node);
+	}
+	@Override
+	public void visitLeave(ForNode node) {
+
+		ParseNode initializer = node.child(0);
+		ParseNode boundary = node.child(1);
+
+		Type initializerType = initializer.getType();
+		Type boundaryType = boundary.getType();
+
+		if (initializerType != PrimitiveType.INTEGER) {
+			logError("Initializer in for loop at " + initializer.getToken().getLocation() + " is not an integer value");
+			node.setType(PrimitiveType.ERROR);
+		} else if (boundaryType != PrimitiveType.INTEGER) {
+			logError("Boundary in for loop at " + boundary.getToken().getLocation() + " is not an integer value");
+			node.setType(PrimitiveType.ERROR);
+		} else {
+			node.setType(PrimitiveType.NO_TYPE);
+			leaveSubScope(node);
 		}
 	}
 
@@ -458,7 +483,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.ERROR);
 		}
 	}
-	
+
 
 	///////////////////////////////////////////////////////////////////////////
 	// simple leaf nodes
@@ -513,7 +538,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.ERROR);
 		}
 	}
-	
+
 
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods
@@ -521,7 +546,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visit(IdentifierNode node) {
 		if(!isBeingDeclared(node)) {
 			Binding binding = node.findVariableBinding();
-			
 			node.setType(binding.getType());
 			node.setBinding(binding);
 		}

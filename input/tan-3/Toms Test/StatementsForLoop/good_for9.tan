@@ -1,0 +1,7 @@
+main {
+	for(i from 2 to 5) {
+		var i := 3;
+		print i*i \s;
+	}
+	print \n;
+}

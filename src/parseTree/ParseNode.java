@@ -143,6 +143,14 @@ public class ParseNode implements Locator {
 			}
 		}	
 	}
+	public void removeChild(ParseNode Child) {
+		for (int index = 0; index < nChildren(); index++) {
+			if (child(index) == Child) {
+				children.remove(index);
+				break;
+			}
+		}
+	}
 	public int nChildren() {
 		return children.size();
 	}

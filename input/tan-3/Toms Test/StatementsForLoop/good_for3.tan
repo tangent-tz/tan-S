@@ -1,0 +1,11 @@
+main {
+	for(i from 1 to 5) {
+		for(j from 1 to 10) {
+			if(i*j < 10) {
+				print \s;
+			}
+			print i*j \s;
+		}
+		print \n;
+	}
+}

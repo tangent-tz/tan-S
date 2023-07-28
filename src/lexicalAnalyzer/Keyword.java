@@ -22,8 +22,11 @@ public enum Keyword implements Lextant {
 	ELSE("else"),
 	NEW("new"),
 	LENGTH("length"),
-	BREAK("break"), 
+	BREAK("break"),
 	CONTINUE("continue"),
+	FOR("for"),
+	FROM("from"),
+	TO("to"),
 	NULL_KEYWORD("");
 
 	private String lexeme;

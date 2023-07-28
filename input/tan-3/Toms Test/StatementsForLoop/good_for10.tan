@@ -1,0 +1,8 @@
+main {
+	const i := 4.12;
+	
+	for(i from 2 to 5) {
+		print i*i \s;
+	}
+	print i*i \n;
+}

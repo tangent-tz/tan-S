@@ -1,0 +1,6 @@
+main {
+	for(i from 'a' to 'z') {
+		print i;
+	}
+	print \n;
+}
