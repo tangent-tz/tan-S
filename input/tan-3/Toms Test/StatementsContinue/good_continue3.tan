@@ -2,7 +2,7 @@ main {
 	const min := 10;
 	const max := 20;
 	
-	for (int count:=min; count <= max; count:=count+1) {
+	for (count from min to max) {
 		if(count == 15) {
 			continue;
 		}
