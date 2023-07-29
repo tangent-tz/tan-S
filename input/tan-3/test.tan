@@ -1,11 +1,11 @@
-subr void printTwoPlaces(int number) {
+subr void printTwoPlaces(int number, float floatNum, char some_char, string someString, [[int]] intArr) {
 	if(number < 10) {
 		print \s number;
 	}
 	else {
 		print number;
 	}
-	return;
+	return 1+28*20;
 }
 
 subr void printFiboLine(int i, int fiboNumber) {

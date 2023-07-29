@@ -2,7 +2,6 @@ package parser;
 
 import java.util.Arrays;
 
-import inputHandler.TextLocation;
 import logging.TanLogger;
 import parseTree.*;
 import parseTree.nodeTypes.*;
@@ -224,6 +223,12 @@ public class Parser {
 		if(startsContinueStatement(nowReading)) {
 			return parseContinueStatement();
 		}
+		if(startsReturnStatement(nowReading)) {
+			return parseReturnStatement(); 
+		}
+		if(startsCallStatement(nowReading)) {
+			return parseCallStatement(); 
+		}
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
@@ -235,7 +240,9 @@ public class Parser {
 				startsForStatement(token) ||
 				startsIfStatement(token)||
 				startsBreakStatement(token) ||
-				startsContinueStatement(token);
+				startsContinueStatement(token) ||
+				startsReturnStatement(token) ||
+				startsCallStatement(token); 
 	}
 	
 	// printStmt -> PRINT printExpressionList TERMINATOR
@@ -502,7 +509,42 @@ public class Parser {
 	}
 
 
-
+	private ParseNode parseReturnStatement() {
+		if(!startsReturnStatement(nowReading)) {
+			return syntaxErrorNode("return-statement"); 
+		}
+		Token returnToken = nowReading; 
+		readToken();
+		
+		if(nowReading.isLextant(Punctuator.TERMINATOR)) {
+			readToken();
+			return new ReturnStatementNode(returnToken); 
+		}
+		
+		ParseNode returnedExpression = parseExpression(); 
+		expect(Punctuator.TERMINATOR);
+		return ReturnStatementNode.withChild(returnToken, returnedExpression);
+	}
+	private boolean startsReturnStatement(Token token) {
+		return token.isLextant(Keyword.RETURN); 
+	}
+	
+	
+	private ParseNode parseCallStatement() {
+		if(!startsCallStatement(nowReading)) {
+			return syntaxErrorNode("call-statement"); 
+		}
+		Token callToken = nowReading; 
+		readToken();
+		ParseNode functionInvocation = parseFunctionInvocationExpression();
+		expect(Punctuator.TERMINATOR);
+		return CallStatementNode.withChild(callToken, functionInvocation);
+	}
+	private boolean startsCallStatement(Token token) {
+		return token.isLextant(Keyword.CALL); 
+	}
+	
+	
 	private ParseNode parseBreakStatement() {
 		if(!startsBreakStatement(nowReading)) {
 			return syntaxErrorNode("breakStatement");
@@ -682,15 +724,22 @@ public class Parser {
 		if(startsEmptyArrayCreationExpression(nowReading)) {
 			return parseEmptyArrayCreationExpression(); 
 		}
+		if(startsFunctionInvocationExpression(nowReading)) {
+			//IMPORTANT: check and parse function-invocation-expression ALWAYS have to go BEFORE parse-literal
+			//because: parse-function-invocation-expression will handle an identifier-literal case for us,
+			//if parse-literal is processed first, then parse-literal cannot handle function-invocation-expression.
+			return parseFunctionInvocationExpression(); 
+		}
 		return parseLiteral();
 	}
 	private boolean startsAtomicExpression(Token token) {
-		return startsLiteral(token) ||
-				startsUnaryExpression(token) ||
+		return startsUnaryExpression(token) ||
 				startsParenthesesWrappedExpression(token) ||
 				startsTypeCastingExpression(token) ||
 				startsPopulatedArrayCreationExpression(token) ||
-				startsEmptyArrayCreationExpression(token); 
+				startsEmptyArrayCreationExpression(token) ||
+				startsFunctionInvocationExpression(token) ||
+				startsLiteral(token); 
 	}
 
 	// unaryExpression			-> UNARYOP atomicExpression
@@ -796,8 +845,6 @@ public class Parser {
 	}
 
 	
-
-
 	// array: indexing ==========================================================================
 	private ParseNode parseArrayIndexingExpression(Token token, ParseNode leftChild) {
 		Token indexingToken = LextantToken.make(token.getLocation(), Punctuator.INDEXING.getLexeme(), Punctuator.INDEXING);
@@ -810,8 +857,6 @@ public class Parser {
 	private boolean startsArrayIndexingExpression(Token token) {
 		return token.isLextant(Punctuator.INDEXING);
 	}
-	
-	
 	
 	
 	// array: empty creation ==========================================================================
@@ -864,13 +909,48 @@ public class Parser {
 	}
 
 
- 
+ 	
+	// function invocation ==================================================================================
+	private ParseNode parseFunctionInvocationExpression() {
+		if(!startsFunctionInvocationExpression(nowReading)) {
+			return syntaxErrorNode("function-invocation-expression");
+		}
+		
+		Token funcInvocToken = LextantToken.make(nowReading.getLocation(), Keyword.FUNCTION_INVOCATION.getLexeme(), Keyword.FUNCTION_INVOCATION); 
+		ParseNode identifier = parseIdentifier(); 
+		if(!nowReading.isLextant(Punctuator.OPEN_PARENTHESIS)) {
+			return identifier; 
+		}
+		
+		expect(Punctuator.OPEN_PARENTHESIS);
+		ParseNode expressionList = parseExpressionList();
+		expect(Punctuator.CLOSE_PARENTHESIS);
+		return FunctionInvocationNode.withChildren(funcInvocToken, identifier, expressionList);
+	}
+	private boolean startsFunctionInvocationExpression(Token token) {
+		return startsIdentifier(token); 
+	}
+	
+	private ParseNode parseExpressionList() {
+		Token tokenForExpressionListNode = LextantToken.make(nowReading.getLocation(), Keyword.FUNCTION_EXPRESSION_LIST.getLexeme(), Keyword.FUNCTION_EXPRESSION_LIST);
+		ParseNode expressionListNode = new ExpressionListNode(tokenForExpressionListNode); 
+		
+		while(startsExpression(nowReading)) {
+			ParseNode funcArg = parseExpression(); 
+			expressionListNode.appendChild(funcArg);
+			if(nowReading.isLextant(Punctuator.CLOSE_PARENTHESIS)) {
+				return expressionListNode; 
+			}
+			expect(Punctuator.COMMA); 
+		}
+		return expressionListNode; 
+	}
 	
 
 	
 
 	
-	// literal -> number | character | identifier | booleanConstant | string
+	// literal -> number | character | identifier | booleanConstant | string ================================
 	private ParseNode parseLiteral() {
 		if(!startsLiteral(nowReading)) {
 			return syntaxErrorNode("literal");

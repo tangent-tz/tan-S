@@ -32,6 +32,10 @@ public enum Keyword implements Lextant {
 	PARAMETER_LIST("paramList.keyword.lexicalAnalyzer"), 
 	PARAMETER_SPECIFICATION("paramSpecs.keyword.lexicalAnalyzer"),
 	VOID("void"),
+	RETURN("return"), 
+	CALL("call"), 
+	FUNCTION_INVOCATION("functionInvocation.keyword.lexicalAnalyzer"),
+	FUNCTION_EXPRESSION_LIST("functionExpressionList.keyword.lexicalAnalyzer"),
 	NULL_KEYWORD("");
 
 	private String lexeme;

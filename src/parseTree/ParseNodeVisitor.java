@@ -60,6 +60,7 @@ public interface ParseNodeVisitor {
 	void visit(TypeIndicatorNode node);
 	void visit(BreakStatementNode node);
 	void visit(ContinueStatementNode node);
+	void visit(VoidReturnTypeNode node); 
 
 
 
@@ -194,6 +195,9 @@ public interface ParseNodeVisitor {
 			defaultVisitForLeaf(node);
 		}
 		public void visit(ContinueStatementNode node) {
+			defaultVisitForLeaf(node);
+		}
+		public void visit(VoidReturnTypeNode node) {
 			defaultVisitForLeaf(node);
 		}
 
