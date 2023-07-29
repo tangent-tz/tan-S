@@ -43,6 +43,12 @@ public interface ParseNodeVisitor {
 	
 	void visitEnter(TargetableArrayReferenceNode node); 
 	void visitLeave(TargetableArrayReferenceNode node); 
+	
+	void visitEnter(FunctionNode node); 
+	void visitLeave(FunctionNode node); 
+	
+	void visitEnter(MainFunctionNode node); 
+	void visitLeave(MainFunctionNode node); 
 
 
 
@@ -155,8 +161,20 @@ public interface ParseNodeVisitor {
 		public void visitLeave(TargetableArrayReferenceNode node) {
 			defaultVisitLeave(node);
 		}
-		
-		
+		public void visitEnter(FunctionNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(FunctionNode node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(MainFunctionNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(MainFunctionNode node) {
+			defaultVisitLeave(node);
+		}
+
+
 
 		public void visit(BooleanConstantNode node) {
 			defaultVisitForLeaf(node);

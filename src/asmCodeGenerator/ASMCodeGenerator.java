@@ -226,9 +226,22 @@ public class ASMCodeGenerator {
 		public void visitLeave(ProgramNode node) {
 			newVoidCode(node);
 			for(ParseNode child : node.getChildren()) {
-				ASMCodeFragment childCode = removeVoidCode(child);
-				code.append(childCode);
+				//todo: handle functions node so we can have void code to get. For now, this temporary code is just to make our main function works as usual,
+				if(child instanceof MainFunctionNode) {
+					ASMCodeFragment childCode = removeVoidCode(child);
+					code.append(childCode);
+				}
 			}
+		}
+		
+		
+		//////////////////////////////////////////////////////////////////////////
+		// functions
+		public void visitLeave(MainFunctionNode node) {
+			newVoidCode(node);
+			ParseNode mainBlock = node.child(0); 
+			ASMCodeFragment mainBlockCode = removeVoidCode(mainBlock);
+			code.append(mainBlockCode);
 		}
 
 

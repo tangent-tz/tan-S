@@ -160,12 +160,6 @@ public class Parser {
 	
 	
 	
-	
-	
-	
-	
-	
-	
 	// parse main function (direct and also the last child of the program node)
 	private ParseNode parseMainFunction() {
 		if(!startsMainFunction(nowReading)) {
