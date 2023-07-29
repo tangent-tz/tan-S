@@ -27,6 +27,11 @@ public enum Keyword implements Lextant {
 	FOR("for"),
 	FROM("from"),
 	TO("to"),
+	SUBR("subr"),
+	PROGRAM("program.keyword.lexicalAnalyzer"),
+	PARAMETER_LIST("paramList.keyword.lexicalAnalyzer"), 
+	PARAMETER_SPECIFICATION("paramSpecs.keyword.lexicalAnalyzer"),
+	VOID("void"),
 	NULL_KEYWORD("");
 
 	private String lexeme;

@@ -33,26 +33,158 @@ public class Parser {
 	}
 
 	////////////////////////////////////////////////////////////
-	// "program" is the start symbol S
-	// S -> MAIN mainBlock
-	
+	// parse program (the largest unit)
 	private ParseNode parseProgram() {
 		if(!startsProgram(nowReading)) {
-			return syntaxErrorNode("program");
+			return syntaxErrorNode("program"); 
 		}
-		ParseNode program = new ProgramNode(nowReading);
+		Token programToken = LextantToken.make(nowReading.getLocation(), Keyword.PROGRAM.getLexeme(), Keyword.PROGRAM);
+		ParseNode programNode = new ProgramNode(programToken); 
+		
+		while(startsFunction(nowReading)) {
+			ParseNode functionNode = parseFunction(); 
+			programNode.appendChild(functionNode);
+		}
+		ParseNode mainFunctionNode = parseMainFunction(); 
+		programNode.appendChild(mainFunctionNode);
+		
+		return programNode;
+	}
+	private boolean startsProgram(Token token) {
+		return startsFunction(token) || startsMainFunction(token); 
+ 	}
+
+	///////////////////////////////////////////////////////////
+	// parse a non-main function (direct child of the program node)
+	private ParseNode parseFunction() {
+		if(!startsFunction(nowReading)) {
+			return syntaxErrorNode("subr-function");
+		}
+		Token functionToken = nowReading;
+		readToken();
+		
+		ParseNode returnType = parseReturnType(); 
+		ParseNode functionName = parseIdentifier(); 
+		expect(Punctuator.OPEN_PARENTHESIS);
+		ParseNode paramList = parseParameterList();
+		expect(Punctuator.CLOSE_PARENTHESIS); 
+		ParseNode functionBody = parseBlockStatement();
+		
+		return FunctionNode.withChildren(functionToken, returnType, functionName, paramList, functionBody);
+	}
+	private boolean startsFunction(Token token) {
+		return token.isLextant(Keyword.SUBR); 
+	}
+	private ParseNode parseReturnType() {
+		if(!startsReturnType(nowReading)) {
+			return syntaxErrorNode("function-return-type");
+		}
+		if(startsPrimitiveType(nowReading)) {
+			return parseTypeIndicator();
+		}
+		if(startsArrayType(nowReading)) {
+			return parseArrayType(); 
+		}
+		return parseVoidReturnType();
+	}
+	private boolean startsReturnType(Token token) {
+		return startsPrimitiveType(token) ||
+				startsArrayType(token) ||
+				startsVoidType(token);
+	}
+	private boolean startsVoidType(Token token) {
+		return token.isLextant(Keyword.VOID);
+	}
+	private ParseNode parseTypeIndicator() {
+		if(!startsPrimitiveType(nowReading)) {
+			return syntaxErrorNode("primitive-type-indicator");
+		}
+		Token typeToken = nowReading;
+		readToken();
+		return new TypeIndicatorNode(typeToken);
+	}
+	private ParseNode parseVoidReturnType() {
+		if(!startsVoidType(nowReading)) {
+			return syntaxErrorNode("void-return-type");
+		}
+		Token typeToken = nowReading;
+		readToken();
+		return new VoidReturnTypeNode(typeToken);		
+	}
+	private ParseNode parseParameterList() {
+		if(!startsParameterList(nowReading)) {
+			return syntaxErrorNode("function-parameter-list");
+		}
+		
+		ParseNode paramListNode = new ParameterListNode(LextantToken.make(nowReading.getLocation(), Keyword.PARAMETER_LIST.getLexeme(), Keyword.PARAMETER_LIST));
+		while(startsParameterSpecification(nowReading)) {
+			paramListNode.appendChild(parseParameterSpecification());
+			if(nowReading.isLextant(Punctuator.CLOSE_PARENTHESIS)){
+				return paramListNode;
+			}
+			expect(Punctuator.COMMA);
+		}
+		return paramListNode;
+	}
+	private boolean startsParameterList(Token token) {
+		return startsParameterSpecification(token);
+	}
+	
+	private ParseNode parseParameterSpecification() {
+		if(!startsParameterSpecification(nowReading)) {
+			return syntaxErrorNode("function-parameter-specification");
+		}
+		
+		Token paramSpecsToken = LextantToken.make(nowReading.getLocation(), Keyword.PARAMETER_SPECIFICATION.getLexeme(), Keyword.PARAMETER_SPECIFICATION);
+		ParseNode paramType = parseParameterType();
+		ParseNode paramIdentifier = parseIdentifier();
+		
+		return ParameterSpecificationNode.withChildren(paramSpecsToken, paramType, paramIdentifier);
+	}
+	private boolean startsParameterSpecification(Token token) {
+		return startsParameterType(token);
+	}
+	private ParseNode parseParameterType() {
+		if(!startsParameterType(nowReading)) {
+			return syntaxErrorNode("function-parameter-type");
+		}
+		if(startsPrimitiveType(nowReading)) {
+			return parseTypeIndicator();
+		}
+		return parseArrayType();
+	}
+	private boolean startsParameterType(Token token) {
+		return startsPrimitiveType(token) || startsArrayType(token);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// parse main function (direct and also the last child of the program node)
+	private ParseNode parseMainFunction() {
+		if(!startsMainFunction(nowReading)) {
+			return syntaxErrorNode("main-function");
+		}
+		ParseNode mainNode = new MainFunctionNode(nowReading);
 		
 		expect(Keyword.MAIN);
 		ParseNode mainBlock = parseBlockStatement();
-		program.appendChild(mainBlock);
+		mainNode.appendChild(mainBlock);
 		
 		if(!(nowReading instanceof NullToken)) {
 			return syntaxErrorNode("end of program");
 		}
 		
-		return program;
+		return mainNode;
 	}
-	private boolean startsProgram(Token token) {
+	private boolean startsMainFunction(Token token) {
 		return token.isLextant(Keyword.MAIN);
 	}
 
@@ -60,7 +192,6 @@ public class Parser {
 	
 	///////////////////////////////////////////////////////////
 	// statements
-	
 	// statement-> declaration | assignmentStatement | printStmt | blockStatement
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {

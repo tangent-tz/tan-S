@@ -1,13 +1,15 @@
 package parseTree.nodeTypes;
 
+import lexicalAnalyzer.Keyword;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import tokens.Token;
 
-public class ProgramNode extends ParseNode {
 
+public class ProgramNode extends ParseNode {
 	public ProgramNode(Token token) {
 		super(token);
+		assert(token.isLextant(Keyword.PROGRAM));
 	}
 	public ProgramNode(ParseNode node) {
 		super(node);
