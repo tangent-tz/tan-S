@@ -27,6 +27,7 @@ public enum Keyword implements Lextant {
 	FOR("for"),
 	FROM("from"),
 	TO("to"),
+	SUBROUTINE("subr"),
 	NULL_KEYWORD("");
 
 	private String lexeme;
