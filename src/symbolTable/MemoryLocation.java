@@ -27,6 +27,10 @@ public class MemoryLocation {
 	public int getOffset() {
 		return offset;
 	}
+
+	public void adjustOffset(int size) {
+		this.offset += size;
+	}
 	public String toString() {
 		return "M-" + accessor + "(" + baseAddress + ") +" + offset + "  ";
 	}
