@@ -120,4 +120,14 @@ public class Scope {
 				" used outside of any scope at " + token.getLocation());
 	}
 
+	public Scope createFunctionScope() {
+		MemoryAllocator newAllocator;
+			newAllocator = new NegativeMemoryAllocator(
+					MemoryAccessMethod.DIRECT_ACCESS_BASE,
+					MemoryLocation.FRAME_POINTER, // Assume you have defined FUNCTION_SCOPE_BLOCK
+					this.getAllocatedSize()); // Assuming the starting offset for the new subscope should be the size of the current scope
+
+		return new Scope(newAllocator, this);
+	}
+
 }
