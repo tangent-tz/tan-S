@@ -35,13 +35,18 @@ public class Parser {
 	////////////////////////////////////////////////////////////
 	// "program" is the start symbol S
 	// S -> MAIN mainBlock
-	
+
 	private ParseNode parseProgram() {
+		ParseNode program = new ProgramNode(nowReading);
+		while (startsSubroutine(nowReading)) {
+			ParseNode functionDefinition = parseSubroutine();
+			program.appendChild(functionDefinition);
+		}
 		if(!startsProgram(nowReading)) {
 			return syntaxErrorNode("program");
 		}
-		ParseNode program = new ProgramNode(nowReading);
-		
+
+
 		expect(Keyword.MAIN);
 		ParseNode mainBlock = parseBlockStatement();
 		program.appendChild(mainBlock);
@@ -56,8 +61,23 @@ public class Parser {
 		return token.isLextant(Keyword.MAIN);
 	}
 
+	////////////////////////////////////////////////////////////
+	//subroutines
+	private ParseNode parseSubroutine() {
+		if(!startsSubroutine(nowReading)) {
+			return syntaxErrorNode("program");
+		}
+		expect(Keyword.SUBROUTINE);
+		ParseNode functionName = parseIdentifier();
+		expect(Punctuator.OPEN_PARENTHESIS);
+		expect(Punctuator.CLOSE_PARENTHESIS);
+		return FunctionDefinitionNode.withChildren(Keyword.SUBROUTINE.prototype(),functionName);
+	}
 
-	
+	private boolean startsSubroutine(Token token) {
+		return token.isLextant(Keyword.SUBROUTINE);
+	}
+
 	///////////////////////////////////////////////////////////
 	// statements
 	
