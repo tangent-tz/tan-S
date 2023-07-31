@@ -48,13 +48,15 @@ public class Parser {
 
 
 		expect(Keyword.MAIN);
+		ParseNode mainNode = new MainNode(previouslyRead);
 		ParseNode mainBlock = parseBlockStatement();
-		program.appendChild(mainBlock);
-		
+		mainNode.appendChild(mainBlock);
+		program.appendChild(mainNode);
+
 		if(!(nowReading instanceof NullToken)) {
 			return syntaxErrorNode("end of program");
 		}
-		
+
 		return program;
 	}
 	private boolean startsProgram(Token token) {
@@ -64,18 +66,59 @@ public class Parser {
 	////////////////////////////////////////////////////////////
 	//subroutines
 	private ParseNode parseSubroutine() {
-		if(!startsSubroutine(nowReading)) {
+		if (!startsSubroutine(nowReading)) {
 			return syntaxErrorNode("program");
 		}
 		expect(Keyword.SUBROUTINE);
+
+		ParseNode returnType = parseType();
 		ParseNode functionName = parseIdentifier();
+
 		expect(Punctuator.OPEN_PARENTHESIS);
+
+		ParseNode parameterListNode = new ParameterListNode(nowReading);
+		while (!nowReading.isLextant(Punctuator.CLOSE_PARENTHESIS)) {
+			ParseNode parameter = parseParameter();
+			parameterListNode.appendChild(parameter);
+
+			// If the next token is a comma, consume it and continue to the next parameter
+			if (nowReading.isLextant(Punctuator.COMMA)) {
+				readToken();
+			} else if (!nowReading.isLextant(Punctuator.CLOSE_PARENTHESIS)) {
+				return syntaxErrorNode("close parenthesis or comma");
+			}
+		}
+
 		expect(Punctuator.CLOSE_PARENTHESIS);
-		return FunctionDefinitionNode.withChildren(Keyword.SUBROUTINE.prototype(),functionName);
+
+		ParseNode functionBlock = parseBlockStatement();
+
+		return FunctionDefinitionNode.withChildren(Keyword.SUBROUTINE.prototype(),returnType,functionName,returnType, parameterListNode, functionBlock);
 	}
+
+	private ParseNode parseType() {
+		if (!startsType(nowReading)) {
+			return syntaxErrorNode("type");
+		}
+
+		Token typeToken = nowReading;
+		readToken();
+		return new TypeIndicatorNode(typeToken);
+	}
+
+	private boolean startsType(Token token) {
+		return token.isLextant(Keyword.INT, Keyword.FLOAT, Keyword.STRING, Keyword.CHAR);
+	}
+
 
 	private boolean startsSubroutine(Token token) {
 		return token.isLextant(Keyword.SUBROUTINE);
+	}
+
+	private ParseNode parseParameter() {
+		ParseNode type = parseType();
+		ParseNode identifier = parseIdentifier();
+		return ParameterNode.withChildren(type.getToken(), type, identifier);
 	}
 
 	///////////////////////////////////////////////////////////

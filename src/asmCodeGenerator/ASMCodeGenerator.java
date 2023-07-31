@@ -292,6 +292,14 @@ public class ASMCodeGenerator {
 				code.append(childCode);
 			}
 		}
+
+		public void visitLeave(MainNode node) {
+			newVoidCode(node);
+			for(ParseNode child : node.getChildren()) {
+				ASMCodeFragment childCode = removeVoidCode(child);
+				code.append(childCode);
+			}
+		}
 		
 		public void visitLeave(IfStatementNode node) {
 			newVoidCode(node);

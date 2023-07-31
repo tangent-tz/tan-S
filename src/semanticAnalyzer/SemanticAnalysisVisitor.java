@@ -41,6 +41,14 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		leaveScope(node);
 	}
 
+	@Override
+	public void visitEnter(MainNode node) {
+		enterProgramScope(node);
+	}
+	public void visitLeave(MainNode node) {
+		leaveScope(node);
+	}
+
 	///////////////////////////////////////////////////////////////////////////
 	// helper methods for scoping.
 	private void enterProgramScope(ParseNode node) {
@@ -238,6 +246,16 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 	}
 
+	@Override
+	public void visitEnter(FunctionDefinitionNode node) {
+		enterSubscope(node);
+	}
+
+	@Override
+	public void visitLeave(FunctionDefinitionNode node) {
+
+		leaveScope(node);
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// expressions

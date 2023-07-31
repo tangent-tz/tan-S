@@ -29,7 +29,7 @@ public class Scope {
 	public Scope createProcedureScope() {
 		MemoryAllocator procedureAllocator = new ParameterMemoryAllocator(
 				MemoryAccessMethod.DIRECT_ACCESS_BASE,
-				MemoryLocation.GLOBAL_VARIABLE_BLOCK, -8);
+				MemoryLocation.FRAME_POINTER, -8);
 
 		return new Scope(procedureAllocator, this);
 	}
