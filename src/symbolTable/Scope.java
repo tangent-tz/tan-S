@@ -26,6 +26,13 @@ public class Scope {
 				MemoryAccessMethod.DIRECT_ACCESS_BASE, 
 				MemoryLocation.GLOBAL_VARIABLE_BLOCK);
 	}
+	public Scope createProcedureScope() {
+		MemoryAllocator procedureAllocator = new ParameterMemoryAllocator(
+				MemoryAccessMethod.DIRECT_ACCESS_BASE,
+				MemoryLocation.GLOBAL_VARIABLE_BLOCK, -8);
+
+		return new Scope(procedureAllocator, this);
+	}
 	
 //////////////////////////////////////////////////////////////////////
 // private constructor.	
@@ -119,15 +126,4 @@ public class Scope {
 		log.severe("variable " + token.getLexeme() + 
 				" used outside of any scope at " + token.getLocation());
 	}
-
-	public Scope createFunctionScope() {
-		MemoryAllocator newAllocator;
-			newAllocator = new NegativeMemoryAllocator(
-					MemoryAccessMethod.DIRECT_ACCESS_BASE,
-					MemoryLocation.FRAME_POINTER, // Assume you have defined FUNCTION_SCOPE_BLOCK
-					this.getAllocatedSize()); // Assuming the starting offset for the new subscope should be the size of the current scope
-
-		return new Scope(newAllocator, this);
-	}
-
 }
