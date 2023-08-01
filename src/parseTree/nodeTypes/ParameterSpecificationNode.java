@@ -14,6 +14,15 @@ public class ParameterSpecificationNode extends ParseNode {
         super(node);
     }
     
+    
+    //////////////////////////////////////////////////////////
+    // attributes
+    public ParseNode getChildNode_paramType() {
+        return child(0); 
+    }
+    
+    
+    
     ///////////////////////////////////////////////////////
     // convenience factory
     public static ParameterSpecificationNode withChildren(Token token, ParseNode paramType, ParseNode paramName) {

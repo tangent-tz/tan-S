@@ -35,7 +35,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	// constructs larger than statements
 	@Override
 	public void visitEnter(ProgramNode node) {
-		enterProgramScope(node);
+		//do nothing: because we already created the program scope in the first pass. 
 	}
 	public void visitLeave(ProgramNode node) {
 		leaveScope(node);
@@ -66,10 +66,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 	///////////////////////////////////////////////////////////////////////////
 	// helper methods for scoping.
-	private void enterProgramScope(ParseNode node) {
-		Scope scope = Scope.createProgramScope();
-		node.setScope(scope);
-	}
 	private void enterSubscope(ParseNode node) {
 		Scope baseScope = node.getLocalScope();
 		Scope scope = baseScope.createSubscope();
@@ -189,10 +185,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 		node.setType(targetType);
 	}
-
-
-
-
+	
 
 
 	// blockStatement

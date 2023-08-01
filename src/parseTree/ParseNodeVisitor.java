@@ -49,6 +49,21 @@ public interface ParseNodeVisitor {
 	
 	void visitEnter(MainFunctionNode node); 
 	void visitLeave(MainFunctionNode node); 
+	
+	void visitEnter(CallStatementNode node); 
+	void visitLeave(CallStatementNode node);
+	
+	void visitEnter(FunctionInvocationNode node); 
+	void visitLeave(FunctionInvocationNode node); 
+	
+	void visitEnter(ParameterListNode node); 
+	void visitLeave(ParameterListNode node); 
+	
+	void visitEnter(ParameterSpecificationNode node); 
+	void visitLeave(ParameterSpecificationNode node); 
+	
+	void visitEnter(ReturnStatementNode node); 
+	void visitLeave(ReturnStatementNode node);
 
 
 
@@ -173,9 +188,40 @@ public interface ParseNodeVisitor {
 		public void visitLeave(MainFunctionNode node) {
 			defaultVisitLeave(node);
 		}
+		public void visitEnter(CallStatementNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(CallStatementNode node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(FunctionInvocationNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(FunctionInvocationNode node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(ParameterListNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ParameterListNode node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(ParameterSpecificationNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ParameterSpecificationNode node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(ReturnStatementNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ReturnStatementNode node) {
+			defaultVisitLeave(node);
+		}
+		
 
-
-
+		
+		//---------- leaf nodes -----------------------------------------------------
 		public void visit(BooleanConstantNode node) {
 			defaultVisitForLeaf(node);
 		}

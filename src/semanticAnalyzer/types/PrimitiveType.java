@@ -10,6 +10,7 @@ public enum PrimitiveType implements Type {
 	INTEGER(4, "Integer"),
 	FLOAT(8, "Float"),
 	ERROR(0, "Error"),			// use as a value when a syntax error has occurred
+	VOID(0, "Void"),		// use only as a return-type for function
 	NO_TYPE(0, "");		// use as a value when no type has been assigned.
 
 	private int sizeInBytes;

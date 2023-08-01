@@ -14,7 +14,15 @@ public class FunctionNode extends ParseNode {
 
     ////////////////////////////////////////////////////////////
     // no attributes
-
+    public ParseNode getChildNode_returnType() {
+        return child(0);
+    }
+    public ParseNode getChildNode_functionName() {
+        return child(1); 
+    }
+    public ParseNode getChildNode_paramList() {
+        return child(2); 
+    }
 
     
     
@@ -29,6 +37,8 @@ public class FunctionNode extends ParseNode {
         
         return node; 
     }
+    
+
     
     
     
