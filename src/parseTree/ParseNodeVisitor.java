@@ -64,6 +64,9 @@ public interface ParseNodeVisitor {
 	
 	void visitEnter(ReturnStatementNode node); 
 	void visitLeave(ReturnStatementNode node);
+	
+	void visitEnter(ExpressionListNode node);
+	void visitLeave(ExpressionListNode node);
 
 
 
@@ -218,9 +221,15 @@ public interface ParseNodeVisitor {
 		public void visitLeave(ReturnStatementNode node) {
 			defaultVisitLeave(node);
 		}
-		
+		public void visitEnter(ExpressionListNode node){
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ExpressionListNode node){
+			defaultVisitLeave(node);
+		}
 
-		
+
+
 		//---------- leaf nodes -----------------------------------------------------
 		public void visit(BooleanConstantNode node) {
 			defaultVisitForLeaf(node);

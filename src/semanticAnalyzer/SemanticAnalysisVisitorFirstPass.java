@@ -1,5 +1,6 @@
 package semanticAnalyzer;
 
+import logging.TanLogger;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.*;
@@ -10,6 +11,7 @@ import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
+import tokens.Token;
 
 public class SemanticAnalysisVisitorFirstPass extends ParseNodeVisitor.Default {
     
@@ -23,8 +25,18 @@ public class SemanticAnalysisVisitorFirstPass extends ParseNodeVisitor.Default {
         Scope scope = Scope.createProgramScope();
         node.setScope(scope);
     }
-    
-    
+
+
+    @Override
+    public void visitEnter(FunctionNode node) {
+        //todo:implement scope for this
+        enterSubscope(node);
+    }
+    private void enterSubscope(ParseNode node) {
+        Scope baseScope = node.getLocalScope();
+        Scope scope = baseScope.createSubscope();
+        node.setScope(scope);
+    }
     
     
     //////////////////////////////////////////////////////////////////////////
@@ -39,10 +51,10 @@ public class SemanticAnalysisVisitorFirstPass extends ParseNodeVisitor.Default {
         FunctionSignature functionSignature = new FunctionSignature(paramTypes, returnType);
         new FunctionSignatures(functionName.getToken().getLexeme(), functionSignature);
 
-        addBindingForFunctionIdentifier(functionName, returnType, functionSignature);
+        addBindingForFunctionIdentifier(node, functionName, returnType, functionSignature);
     }
-    private void addBindingForFunctionIdentifier(IdentifierNode identifierNode, Type type, FunctionSignature functionSignature) {
-        Scope scope = identifierNode.getLocalScope();
+    private void addBindingForFunctionIdentifier(FunctionNode functionNode, IdentifierNode identifierNode, Type type, FunctionSignature functionSignature) {
+        Scope scope = functionNode.getLocalScope();
         Binding binding = scope.createBindingForFunctionIdentifier(identifierNode, type, functionSignature);
         identifierNode.setBinding(binding);
     }
@@ -60,8 +72,29 @@ public class SemanticAnalysisVisitorFirstPass extends ParseNodeVisitor.Default {
     
     @Override 
     public void visitLeave(ParameterSpecificationNode node) {
-        Type paramType = node.getChildNode_paramType().getType(); 
+        if(node.getChildNode_paramType() instanceof ErrorNode) {
+            node.setType(PrimitiveType.ERROR);
+            return;
+        }
+        
+        ParseNode paramTypeNode = node.getChildNode_paramType(); 
+        Type paramType = paramTypeNode.getType();
+        if(paramType == PrimitiveType.VOID) {
+            invalidVoidUsage(paramTypeNode);
+            node.setType(PrimitiveType.ERROR);
+            return;
+        }
+        
+        IdentifierNode paramName = (IdentifierNode) node.getChildNode_paramName();
+        paramName.setType(paramType);
+        addBinding(paramName, paramType, Binding.Constancy.IS_CONSTANT); 
+        
         node.setType(paramType);
+    }
+    private void addBinding(IdentifierNode identifierNode, Type type, Binding.Constancy constancy) {
+        Scope scope = identifierNode.getLocalScope();
+        Binding binding = scope.createBinding(identifierNode, type, constancy);
+        identifierNode.setBinding(binding);
     }
     
     
@@ -82,8 +115,20 @@ public class SemanticAnalysisVisitorFirstPass extends ParseNodeVisitor.Default {
     public void visit(VoidReturnTypeNode node) {
         node.setType(PrimitiveType.VOID);
     }
-    
-    
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // error logging/printing
+    private void invalidVoidUsage(ParseNode voidTypeNode) {
+        Token voidToken = voidTypeNode.getToken(); 
+        logError("Invalid '" + voidToken.getLexeme() + "' usage, at: " + voidToken.getLocation() + 
+                " (type '" + voidToken.getLexeme() + "' can only be used as a return type of a function).");
+    }
+    private void logError(String message) {
+        TanLogger log = TanLogger.getLogger("compiler.semanticAnalyzer");
+        log.severe(message);
+    }
     
     
 }

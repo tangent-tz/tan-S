@@ -20,6 +20,9 @@ public class ParameterSpecificationNode extends ParseNode {
     public ParseNode getChildNode_paramType() {
         return child(0); 
     }
+    public ParseNode getChildNode_paramName() {
+        return child(1); 
+    }
     
     
     

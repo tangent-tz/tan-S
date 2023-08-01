@@ -126,7 +126,8 @@ public class Parser {
 		return paramListNode;
 	}
 	private boolean startsParameterList(Token token) {
-		return startsParameterSpecification(token);
+		return startsParameterSpecification(token) ||
+				token.isLextant(Punctuator.CLOSE_PARENTHESIS); 
 	}
 	
 	private ParseNode parseParameterSpecification() {
@@ -150,10 +151,15 @@ public class Parser {
 		if(startsPrimitiveType(nowReading)) {
 			return parseTypeIndicator();
 		}
+		if(startsVoidType(nowReading)) {
+			return parseVoidReturnType();
+		}
 		return parseArrayType();
 	}
 	private boolean startsParameterType(Token token) {
-		return startsPrimitiveType(token) || startsArrayType(token);
+		return startsPrimitiveType(token) || 
+				startsVoidType(token) || 
+				startsArrayType(token); 
 	}
 	
 	

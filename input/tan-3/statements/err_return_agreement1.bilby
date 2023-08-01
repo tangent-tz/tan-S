@@ -1,4 +1,4 @@
-func int mod (int number, int modulus) {
+subr int mod (int number, int modulus) {
 	if(number <= 0) {
 		return 0;
 	}

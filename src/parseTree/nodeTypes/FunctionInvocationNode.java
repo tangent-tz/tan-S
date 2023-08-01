@@ -13,6 +13,16 @@ public class FunctionInvocationNode extends ParseNode {
     }
     
     
+    
+    /////////////////////////////////////////////////////////////
+    // attributes
+    public ParseNode getChildNode_functionName() {
+        return child(0); 
+    }
+    public ParseNode getChildNode_expressionList() {
+        return child(1); 
+    }
+    
     //////////////////////////////////////////////////////////////
     // convenience factory
     public static FunctionInvocationNode withChildren(Token token, ParseNode identifier, ParseNode expressionList) {
