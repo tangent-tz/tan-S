@@ -12,7 +12,6 @@ public class AssignmentStatementNode extends ParseNode {
 
     public AssignmentStatementNode(Token token) {
         super(token);
-        //TODO:check if identifier exist before??
         assert(token.isLextant(Punctuator.ASSIGN));
     }
 
