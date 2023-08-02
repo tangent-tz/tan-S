@@ -1,0 +1,19 @@
+subr int syrup (int number){
+	if(number / 2 == 0) {
+		return number / 2;
+	} 
+	else {
+		return 3.1 * number + 1;
+	}
+}
+
+main {
+	const min := 90;
+	const max := 100;
+	
+	var count := min;
+	while (count < max) {
+		count := count + 1;
+	}
+	print "done." \n;
+}

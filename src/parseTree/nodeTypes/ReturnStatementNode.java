@@ -21,7 +21,7 @@ public class ReturnStatementNode extends ParseNode {
     // Speciality functions    
     public FunctionNode findParentFunctionNode() {
         for(ParseNode node: pathToRoot()) {
-            if(node instanceof FunctionNode) {
+            if(node instanceof FunctionNode && !(node instanceof MainFunctionNode)) {
                 parentFunctionNode = (FunctionNode) node; 
                 return parentFunctionNode; 
             }

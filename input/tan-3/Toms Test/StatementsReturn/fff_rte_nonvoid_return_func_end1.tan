@@ -1,0 +1,31 @@
+subr int syracuse(int number) {
+	if((number / 2)*2 == number) {
+		return number / 2;
+	} 
+	else {
+		return 3 * number + 1;
+	}
+}
+
+subr int sequence(int startingNumber) {
+	print \n;
+	
+	var num := startingNumber;
+	while (num != 1) {
+		print num \s;
+		num := syracuse(num);
+	}
+	print num \n;
+}
+
+main {
+	const min := 90;
+	const max := 100;
+	
+	var count := min;
+	while (count < max) {
+		call sequence(count);
+		count := count + 1;
+	}
+	print "done." \n;
+}

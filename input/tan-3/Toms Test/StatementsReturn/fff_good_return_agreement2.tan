@@ -1,0 +1,49 @@
+subr int mod (int number, int modulus) {
+	if(number <= 0) {
+		return 0;
+	}
+	const dividend := number / modulus;
+	const remainder := number - (dividend * modulus);
+	return remainder;
+}
+
+subr int syrup (int number) {
+	if(number < 0) {
+		return 42;
+	}
+	if(mod(number, 7) == 0) {
+		return 5 * number + 3;
+	}
+	else {
+		if(mod(number, 2) == 0) {
+			return number / 2;
+		} 
+		else {
+			return 3 * number + 1;
+		}
+	}
+}
+
+subr void sequence(int startingNumber) {
+	print \n;
+	
+	var num := startingNumber;
+	while (num != 1) {
+		print num \s;
+		num := syrup(num);
+	}
+	print num \n;
+	return;
+}
+
+main {
+	const min := 90;
+	const max := 100;
+	
+	var count := min;
+	while (count < max) {
+		call sequence(count);
+		count := count + 1;
+	}
+	print "done." \n;
+}

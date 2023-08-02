@@ -677,7 +677,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	
 	private void functionReturnTypeCheckError(FunctionNode node, ReturnStatementNode returnNode, Type expectedReturnType, Type actualReturnType) {
 		String functionNameString = node.getChildNode_functionName().getToken().getLexeme();
-		logError("function '" + functionNameString + "' expects " + expectedReturnType + " return type; but currently returning " + actualReturnType + ", at: " + returnNode.getToken().getLocation());
+		logError("function '" + functionNameString + "' should have " + expectedReturnType.infoString() + " return type; but currently returning " + actualReturnType.infoString() + " type, at: " + returnNode.getToken().getLocation());
 	}
 	
 	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
