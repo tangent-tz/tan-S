@@ -26,15 +26,15 @@ public class Scope {
 				MemoryAccessMethod.DIRECT_ACCESS_BASE, 
 				MemoryLocation.GLOBAL_VARIABLE_BLOCK);
 	}
-	public Scope createProcedureScope() {
-		MemoryAllocator procedureAllocator = new ParameterMemoryAllocator(
-				MemoryAccessMethod.DIRECT_ACCESS_BASE,
+	public Scope createParameterScope() {
+		MemoryAllocator parameterAllocator = new ParameterMemoryAllocator(
+				MemoryAccessMethod.INDIRECT_ACCESS_BASE,
 				MemoryLocation.FRAME_POINTER, -8);
-
-		return new Scope(procedureAllocator, this);
+		return new Scope(parameterAllocator, this);
 	}
-	
-//////////////////////////////////////////////////////////////////////
+
+
+	//////////////////////////////////////////////////////////////////////
 // private constructor.	
 	private Scope(MemoryAllocator allocator, Scope baseScope) {
 		super();
@@ -116,6 +116,7 @@ public class Scope {
 		public Scope createSubscope() {
 			return new Scope(programScopeAllocator(), this);
 		}
+
 	}
 
 

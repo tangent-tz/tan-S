@@ -300,6 +300,24 @@ public class ASMCodeGenerator {
 				code.append(childCode);
 			}
 		}
+		public void visitLeave(FunctionDefinitionNode node) {
+			newVoidCode(node);
+			for(ParseNode child : node.getChildren()) {
+				ASMCodeFragment childCode = removeVoidCode(child);
+				code.append(childCode);
+			}
+		}
+		public void visitLeave(ParameterListNode node) {
+			newValueCode(node);
+		}
+
+		public void visitLeave(ParameterNode node) {
+			newVoidCode(node);
+			for(ParseNode child : node.getChildren()) {
+				ASMCodeFragment childCode = removeVoidCode(child);
+				code.append(childCode);
+			}
+		}
 		
 		public void visitLeave(IfStatementNode node) {
 			newVoidCode(node);

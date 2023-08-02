@@ -6,6 +6,7 @@ import inputHandler.TextLocation;
 import logging.TanLogger;
 import parseTree.*;
 import parseTree.nodeTypes.*;
+import semanticAnalyzer.types.PrimitiveType;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
@@ -73,6 +74,8 @@ public class Parser {
 
 		ParseNode returnType = parseType();
 		ParseNode functionName = parseIdentifier();
+		functionName.setType(PrimitiveType.INTEGER);
+
 
 		expect(Punctuator.OPEN_PARENTHESIS);
 
@@ -92,8 +95,9 @@ public class Parser {
 		expect(Punctuator.CLOSE_PARENTHESIS);
 
 		ParseNode functionBlock = parseBlockStatement();
-
-		return FunctionDefinitionNode.withChildren(Keyword.SUBROUTINE.prototype(),returnType,functionName,returnType, parameterListNode, functionBlock);
+		ParseNode declaration = DeclarationNode.withChildren(Keyword.VAR.prototype(), functionName, parameterListNode, functionBlock);
+		declaration.setType(PrimitiveType.INTEGER);
+		return FunctionDefinitionNode.withChildren(Keyword.SUBROUTINE.prototype(),returnType,declaration);
 	}
 
 	private ParseNode parseType() {
