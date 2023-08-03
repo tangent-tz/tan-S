@@ -193,7 +193,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitEnter(BlockStatementNode node) {
 		enterSubscope(node);
 	}
-
 	@Override
 	public void visitLeave(BlockStatementNode node) {
 		leaveSubScope(node);
