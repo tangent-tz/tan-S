@@ -66,6 +66,14 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private void leaveSubScope(ParseNode node) {
 		leaveScope(node);
 	}
+	private void enterParameterScope(ParseNode node) {
+		Scope baseScope = node.getLocalScope();
+		Scope scope = baseScope.createParameterScope();
+		node.setScope(scope);
+	}
+	private void leaveParameterScope(ParseNode node) {
+		leaveScope(node);
+	}
 	
 	///////////////////////////////////////////////////////////////////////////
 	// statements: declarations, assignmentStatement, blockStatement
@@ -246,15 +254,40 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 	}
 
-	@Override
 	public void visitEnter(FunctionDefinitionNode node) {
-		enterSubscope(node);
+		// Assume the children are [IdentifierNode, TypeIndicatorNode, ParameterListNode, BlockStatementNode]
+		IdentifierNode identifierNode = (IdentifierNode) node.child(0);
+		Type returnType = ((TypeIndicatorNode) node.child(1)).getType(); // Assuming TypeIndicatorNode has a getType method
+		ParameterListNode parametersNode = (ParameterListNode) node.child(2);
+		BlockStatementNode blockNode = (BlockStatementNode) node.child(3);
+
+		// Create a function type
+		List<Type> parameterTypes = new ArrayList<>();
+		for (ParseNode child : parametersNode.getChildren()) {
+			parameterTypes.add(child.getType()); // Assuming each child is a ParameterNode and has a getType method
+		}
+
+		// Add binding to the scope
+		addBinding(identifierNode, returnType, Binding.Constancy.IS_CONSTANT);
+
+		enterParameterScope(node);
+
+		// Add bindings for parameters
+		int index = 0;
+		for (ParseNode child : parametersNode.getChildren()) {
+			IdentifierNode parameterIdentifier = (IdentifierNode) child.child(0); // Assuming structure is [IdentifierNode, ...]
+			addBinding(parameterIdentifier, parameterTypes.get(index), Binding.Constancy.IS_VARIABLE);
+			index++;
+		}
+
+		// Process the function body
+		blockNode.accept(this);
 	}
+
 
 	@Override
 	public void visitLeave(FunctionDefinitionNode node) {
-
-		leaveScope(node);
+		leaveParameterScope(node);
 	}
 
 	///////////////////////////////////////////////////////////////////////////

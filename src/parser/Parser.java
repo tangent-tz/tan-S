@@ -95,9 +95,8 @@ public class Parser {
 		expect(Punctuator.CLOSE_PARENTHESIS);
 
 		ParseNode functionBlock = parseBlockStatement();
-		ParseNode declaration = DeclarationNode.withChildren(Keyword.VAR.prototype(), functionName, parameterListNode, functionBlock);
-		declaration.setType(PrimitiveType.INTEGER);
-		return FunctionDefinitionNode.withChildren(Keyword.SUBROUTINE.prototype(),returnType,declaration);
+		return FunctionDefinitionNode.withChildren(Keyword.SUBROUTINE.prototype(),returnType,functionName,returnType, parameterListNode, functionBlock);
+
 	}
 
 	private ParseNode parseType() {
@@ -106,8 +105,18 @@ public class Parser {
 		}
 
 		Token typeToken = nowReading;
+		ParseNode typeNode = new TypeIndicatorNode(typeToken);
+		if(typeToken.isLextant(Keyword.INT)){
+			typeNode.setType(PrimitiveType.INTEGER);
+		}
+		else if (typeToken.isLextant(Keyword.FLOAT)){
+			typeNode.setType(PrimitiveType.FLOAT);
+		}
+		else if (typeToken.isLextant(Keyword.CHAR)){
+			typeNode.setType(PrimitiveType.CHARACTER);
+		}
 		readToken();
-		return new TypeIndicatorNode(typeToken);
+		return typeNode;
 	}
 
 	private boolean startsType(Token token) {

@@ -302,10 +302,6 @@ public class ASMCodeGenerator {
 		}
 		public void visitLeave(FunctionDefinitionNode node) {
 			newVoidCode(node);
-			for(ParseNode child : node.getChildren()) {
-				ASMCodeFragment childCode = removeVoidCode(child);
-				code.append(childCode);
-			}
 		}
 		public void visitLeave(ParameterListNode node) {
 			newValueCode(node);
