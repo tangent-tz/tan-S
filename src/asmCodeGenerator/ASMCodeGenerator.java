@@ -226,24 +226,39 @@ public class ASMCodeGenerator {
 		public void visitLeave(ProgramNode node) {
 			newVoidCode(node);
 			for(ParseNode child : node.getChildren()) {
-				//todo: handle functions node so we can have void code to get. For now, this temporary code is just to make our main function works as usual,
-				if(child instanceof MainFunctionNode) {
-					ASMCodeFragment childCode = removeVoidCode(child);
-					code.append(childCode);
-				}
+				ASMCodeFragment childCode = removeVoidCode(child);
+				code.append(childCode);
 			}
 		}
 		
 		
 		//////////////////////////////////////////////////////////////////////////
 		// functions
+		
+		// main function -------------------------------------------
 		public void visitLeave(MainFunctionNode node) {
 			newVoidCode(node);
 			ParseNode mainBlock = node.child(0); 
 			ASMCodeFragment mainBlockCode = removeVoidCode(mainBlock);
 			code.append(mainBlockCode);
 		}
-
+		
+		// non-main function ---------------------------------------
+		public void visitLeave(FunctionNode node){
+			newVoidCode(node);
+		}
+		
+		public void visitLeave(CallStatementNode node) {
+			newVoidCode(node);
+		}
+		public void visitLeave(ReturnStatementNode node) {
+			newVoidCode(node);
+		}
+		
+		public void visitLeave(FunctionInvocationNode node) {
+			newValueCode(node);
+		}
+		
 
 		///////////////////////////////////////////////////////////////////////////
 		// statements & declarations & assignments & blockStatements
@@ -1104,8 +1119,8 @@ public class ASMCodeGenerator {
 			code.add(DataS, node.getValue());
 			code.add(PushD, strAddressLabel);
 		}
-		public void visit(TypeIndicatorNode node) {
-		}
+		public void visit(TypeIndicatorNode node) {}
+		public void visit(VoidReturnTypeNode node) {}
 
 		public void visit(BreakStatementNode node) {
 			if(node.getType() == PrimitiveType.ERROR) {

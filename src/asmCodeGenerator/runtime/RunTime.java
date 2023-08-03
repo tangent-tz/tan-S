@@ -16,6 +16,7 @@ public class RunTime {
 	public static final String BOOLEAN_FALSE_STRING   = "$boolean-false-string";
 	public static final String EMPTY_STRING 		  = "$empty-string";
 	public static final String GLOBAL_MEMORY_BLOCK    = "$global-memory-block";
+	public static final String FRAME_MEMORY_BLOCK	  = "$frame-memory-block"; 
 	public static final String USABLE_MEMORY_START    = "$usable-memory-start";
 	public static final String MAIN_PROGRAM_LABEL     = "$$main";
 	

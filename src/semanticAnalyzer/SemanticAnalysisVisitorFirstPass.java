@@ -30,14 +30,13 @@ public class SemanticAnalysisVisitorFirstPass extends ParseNodeVisitor.Default {
     @Override
     public void visitEnter(FunctionNode node) {
         //todo:implement scope for this
-        enterSubscope(node);
+        enterParameterScope(node);
     }
-    private void enterSubscope(ParseNode node) {
-        Scope baseScope = node.getLocalScope();
-        Scope scope = baseScope.createSubscope();
+    private void enterParameterScope(ParseNode node) {
+        Scope baseScope = node.getLocalScope(); 
+        Scope scope = baseScope.createParameterScope(); 
         node.setScope(scope);
     }
-    
     
     //////////////////////////////////////////////////////////////////////////
     // function definition

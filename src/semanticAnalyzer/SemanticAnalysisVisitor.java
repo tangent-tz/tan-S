@@ -40,8 +40,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitLeave(ProgramNode node) {
 		leaveScope(node);
 	}
-
-
+	
 	@Override
 	public void visitEnter(FunctionNode node) {
 		//do nothing: because we already created the function scope in the first pass. 
@@ -49,8 +48,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	@Override
 	public void visitLeave(FunctionNode node) {
 		//todo:implement scope for this
-		leaveSubScope(node);
+		leaveParameterScope(node);
 	}
+	
 	
 	@Override
 	public void visitEnter(MainFunctionNode node) {
@@ -75,6 +75,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.getScope().leave();
 	}
 	private void leaveSubScope(ParseNode node) {
+		leaveScope(node);
+	}
+	private void leaveParameterScope(ParseNode node) {
+		//todo: not sure about this!
 		leaveScope(node);
 	}
 	
@@ -574,12 +578,6 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	
 	
 	
-	
-	
-	
-	
-	
-
 
 	///////////////////////////////////////////////////////////////////////////
 	// simple leaf nodes
