@@ -17,7 +17,7 @@ public class LoopFlowDisruptorNode extends ParseNode {
     // Speciality functions
     public ParseNode findClosestLoopNode() {
         for(ParseNode node : pathToRoot()) {
-            if (node instanceof WhileNode) {
+            if (node instanceof LoopNode) {
                 closestLoopNode = node;
                 return closestLoopNode;
             }

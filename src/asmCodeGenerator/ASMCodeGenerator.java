@@ -351,6 +351,14 @@ public class ASMCodeGenerator {
 			code.add(Label, endLabel);
 		}
 
+		public void visitEnter(ForNode node) {
+			Labeller labeller = new Labeller("for-statement");
+			String startLabel = labeller.newLabel("-for-start");
+			String incrementLabel = labeller.newLabel("-for-increment");
+			String endLabel = labeller.newLabel("-for-end");
+			
+			node.storeLinkageLabels(startLabel, endLabel, incrementLabel);
+		}
 		public void visitLeave(ForNode node) {
 			newVoidCode(node);
 			ASMCodeFragment arg1 = removeVoidCode(node.child(0));
@@ -358,10 +366,10 @@ public class ASMCodeGenerator {
 			ASMCodeFragment comparison = removeValueCode(node.child(2));
 			ASMCodeFragment loopBody = removeVoidCode(node.child(3));
 			ASMCodeFragment loopIncrementor = removeVoidCode(node.child(4));
-
-			Labeller labeller = new Labeller("for-statement");
-			String startLabel = labeller.newLabel("-for-start");
-			String endLabel = labeller.newLabel("-for-end");
+			
+			String startLabel = node.getStartLoopLabel();
+			String incrementLabel = node.getIncrementLabel();
+			String endLabel = node.getEndLoopLabel();
 
 			code.append(arg1);
 			code.append(arg2);
@@ -369,6 +377,7 @@ public class ASMCodeGenerator {
 			code.append(comparison);
 			code.add(JumpFalse, endLabel);
 			code.append(loopBody);
+			code.add(Label, incrementLabel);
 			code.append(loopIncrementor);
 			code.add(Jump, startLabel);
 			code.add(Label, endLabel);
@@ -1089,7 +1098,7 @@ public class ASMCodeGenerator {
 			if(node.getType() == PrimitiveType.ERROR) {
 				return;
 			}
-			String endLoopLabel = ((WhileNode)(node.getClosestLoopNode())).getEndLoopLabel();
+			String endLoopLabel = ((LoopNode)(node.getClosestLoopNode())).getEndLoopLabel();
 
 			newVoidCode(node);
 			code.add(Jump, endLoopLabel);
@@ -1099,9 +1108,17 @@ public class ASMCodeGenerator {
 			if(node.getType() == PrimitiveType.ERROR) {
 				return;
 			}
-			String startLoopLabel = ((WhileNode)(node.getClosestLoopNode())).getStartLoopLabel();
+			
+			String targetLabel; 
+			LoopNode loopNode = (LoopNode) (node.getClosestLoopNode());
+			if(loopNode instanceof WhileNode) {
+				targetLabel = loopNode.getStartLoopLabel();
+			} else {
+				targetLabel = loopNode.getIncrementLabel();
+			}
+			
 			newVoidCode(node);
-			code.add(Jump, startLoopLabel);
+			code.add(Jump, targetLabel);
 		}
 
 	}
