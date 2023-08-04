@@ -93,6 +93,7 @@ public class ASMCodeGenerator {
 
 		code.add(    Label, "test");
 		code.append( functionCode());
+		code.add(	Return);
 		code.add(    Halt );
 		return code;
 	}
@@ -277,6 +278,7 @@ public class ASMCodeGenerator {
 		}
 		public void visitLeave(CallStatementNode node) {
 			newVoidCode(node);
+			code.add(Call, "test");
 		}
 		public void visitLeave(ReturnStatementNode node) {
 			newVoidCode(node);
