@@ -17,6 +17,7 @@ public class Binding {
 	}
 	private Constancy constancy;
 	private FunctionSignature functionSignature; 
+	private String functionLabel;
 
 
 	
@@ -27,7 +28,7 @@ public class Binding {
 		this.memoryLocation = memoryLocation;
 		this.lexeme = lexeme;
 		this.constancy = constancy;
-		this.functionSignature = FunctionSignature.nullInstance(); 
+		this.functionSignature = FunctionSignature.nullInstance();
 	}
 
 	public Binding(Type type, TextLocation location, MemoryLocation memoryLocation, String lexeme, Constancy constancy, FunctionSignature functionSignature) {
@@ -67,6 +68,12 @@ public class Binding {
 	}
 	public FunctionSignature getFunctionSignature() {
 		return this.functionSignature; 
+	}
+	public void setFunctionLabel(String label) {
+		this.functionLabel = label; 
+	}
+	public String getFunctionLabel() {
+		return functionLabel; 
 	}
 	
 	

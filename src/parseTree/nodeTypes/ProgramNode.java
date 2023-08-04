@@ -16,7 +16,11 @@ public class ProgramNode extends ParseNode {
 	}
 	
 	////////////////////////////////////////////////////////////
-	// no attributes
+	// attributes
+	public ParseNode getChildNode_Main() {
+		assert(nChildren() >= 1); 
+		return child(nChildren()-1); 
+	}
 
 	
 	///////////////////////////////////////////////////////////

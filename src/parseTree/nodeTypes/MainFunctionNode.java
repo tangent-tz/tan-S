@@ -7,6 +7,8 @@ import parseTree.ParseNodeVisitor;
 import tokens.Token;
 
 public class MainFunctionNode extends FunctionNode {
+    private String asmLabel;
+    
     public MainFunctionNode(Token token) {
         super(token); 
         assert(token.isLextant(Keyword.MAIN)); 
@@ -16,7 +18,14 @@ public class MainFunctionNode extends FunctionNode {
     }
 
     ////////////////////////////////////////////////////////////
-    // no attributes
+    // attributes
+    @Override
+    public void setASMLabel(String label) {
+        this.asmLabel = label;
+    }
+    public String getAsmLabel() {
+        return asmLabel;
+    }
 
 
     ///////////////////////////////////////////////////////////

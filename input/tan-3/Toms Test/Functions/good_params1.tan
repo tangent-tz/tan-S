@@ -1,22 +1,30 @@
-subr void holler(bool truth)  {
-	var n := 0;
-	const number := 2;
-	print truth \n;
-	if(truth) {
-		while (n < number) {
-			print "Yoo hoo!!!!" \n;
-			n := n + 1;
-		}
-	}
-	return;
+subr void holler(bool truth) {
+    var h := 12; 
+    print \n "start holler" \n; 
+    if(truth == true) {
+        print true \n; 
+    } else {
+        print false \n; 
+    }
+    print "end holler" \n\n; 
+}
+
+subr int callPlus(int a, int b, int c) {
+    return plus(a, b, c); 
+}
+
+subr int plus(int x, int y, int z) {
+    return x + y + z;
 }
 
 main {
-	const max := 6;
-	call holler(true);
-	
-	var n := 0.34;
-	call holler(false);
+    print "start main" \n;
+    call holler(false); 
+    call holler(true); 
+    
+    const x := -5 + plus(10, 20, 30); 
+    print x \n; 
+    
 	
 	print "all done." \n;
 }

@@ -42,6 +42,13 @@ public class IdentifierNode extends ParseNode {
 		return binding;
 	}
 	
+	public void setFunctionLabel(String label) {
+		binding.setFunctionLabel(label); 
+	}
+	public String getFunctionLabel() {
+		return binding.getFunctionLabel(); 
+	}
+	
 ////////////////////////////////////////////////////////////
 // Speciality functions
 

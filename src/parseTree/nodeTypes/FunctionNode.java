@@ -13,7 +13,7 @@ public class FunctionNode extends ParseNode {
     }
 
     ////////////////////////////////////////////////////////////
-    // no attributes
+    // attributes
     public ParseNode getChildNode_returnType() {
         return child(0);
     }
@@ -23,8 +23,15 @@ public class FunctionNode extends ParseNode {
     public ParseNode getChildNode_paramList() {
         return child(2); 
     }
+    public ParseNode getChildNode_functionBody() {
+        return child(3); 
+    }
 
-    
+    public void setASMLabel(String label) {
+        IdentifierNode functionNameNode = (IdentifierNode) getChildNode_functionName(); 
+        functionNameNode.setFunctionLabel(label);
+    }
+
     
     ////////////////////////////////////////////////////////////
     // convenience factory
@@ -38,11 +45,7 @@ public class FunctionNode extends ParseNode {
         return node; 
     }
     
-
     
-    
-    
-
 
     ///////////////////////////////////////////////////////////
     // boilerplate for visitors

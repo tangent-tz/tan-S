@@ -225,6 +225,9 @@ public class ASMCodeGenerator {
 		// constructs larger than statements
 		public void visitLeave(ProgramNode node) {
 			newVoidCode(node);
+			String mainLabel = ((MainFunctionNode) (node.getChildNode_Main())).getAsmLabel(); 
+			code.add(Jump, mainLabel); 
+			
 			for(ParseNode child : node.getChildren()) {
 				ASMCodeFragment childCode = removeVoidCode(child);
 				code.append(childCode);
@@ -240,28 +243,75 @@ public class ASMCodeGenerator {
 			newVoidCode(node);
 			ParseNode mainBlock = node.child(0); 
 			ASMCodeFragment mainBlockCode = removeVoidCode(mainBlock);
+			
+			Labeller labeller = new Labeller("subr-main");
+			String mainStartLabel = labeller.newLabel("start");
+			node.setASMLabel(mainStartLabel);
+			
+			code.add(Label, mainStartLabel); 
 			code.append(mainBlockCode);
 		}
 		
 		// non-main function ---------------------------------------
-		public void visitLeave(FunctionNode node){
+		public void visitLeave(FunctionNode node) {
 			newVoidCode(node);
-			ParseNode functionBodyNode = node.child(node.nChildren()-1); 
+
+			String functionNameString = node.getChildNode_functionName().getToken().getLexeme();
+			Labeller labeller = new Labeller("subr-" + functionNameString); 
+			String functionStartLabel = labeller.newLabel("start"); 
+			node.setASMLabel(functionStartLabel);
+			
+			ParseNode functionBodyNode = node.getChildNode_functionBody(); 
 			ASMCodeFragment functionBodyCode = removeVoidCode(functionBodyNode); 
+			
+			code.add(Label, functionStartLabel); 
 			code.append(functionBodyCode);
+			
+			if(node.getChildNode_returnType().getType() != PrimitiveType.VOID) {
+				code.add(Exchange);
+			}
+			code.add(Return);
 		}
 		public void visitLeave(CallStatementNode node) {
 			newVoidCode(node);
+			code.append(removeValueCode(node.child(0)));
 		}
 		public void visitLeave(ReturnStatementNode node) {
 			newVoidCode(node);
+			ASMCodeFragment returnedExpression = removeValueCode(node.child(0)); 
+			code.append(returnedExpression);
 		}
 		
 		public void visitLeave(FunctionInvocationNode node) {
 			newValueCode(node);
+			ParseNode functionNameNode = node.getChildNode_functionName(); 
+			
+			//pass arguments into function
+			String functionDataBlock_StartAddressLabel = RunTime.FRAME_MEMORY_BLOCK; 
+			
+			ExpressionListNode expressionListNode = (ExpressionListNode) node.getChildNode_expressionList(); 
+			List<Type> argTypeList = expressionListNode.getChildTypes(); 
+			int offset = -8;
+			for(int i=0; i < expressionListNode.nChildren(); i++) {
+				ParseNode expressionNode = expressionListNode.child(i); 
+				ASMCodeFragment expressionCode = removeValueCode(expressionNode); 
+				
+				Type type = argTypeList.get(i); 
+				int typeByteSize = type.getSize(); 
+				offset -= typeByteSize; 
+				
+				code.add(PushD, functionDataBlock_StartAddressLabel); 
+				code.add(LoadI); 
+				code.add(PushI, offset); 
+				code.add(Add);
+				code.append(expressionCode);
+				code.add(opcodeForStore(type));
+			}
+			
+			code.append(removeVoidCode(functionNameNode)); //this should be last
 		}
 		
-
+		
 		///////////////////////////////////////////////////////////////////////////
 		// statements & declarations & assignments & blockStatements
 
@@ -1091,12 +1141,36 @@ public class ASMCodeGenerator {
 			newValueCode(node);
 			code.add(PushI, node.getValue() ? 1 : 0);
 		}
+		
 		public void visit(IdentifierNode node) {
+			if(isFunctionNameBeingDeclared(node) || isParameterBeingDeclared(node)) {
+				return; 
+			}
+			if(isFunctionNameBeingInvoked(node)) {
+				newVoidCode(node);
+				String functionStartLabel = node.getFunctionLabel();
+				code.add(Call, functionStartLabel); 
+				return;
+			}
+			
 			newAddressCode(node);
 			Binding binding = node.getBinding();
-
 			binding.generateAddress(code);
 		}
+		private boolean isFunctionNameBeingDeclared(IdentifierNode node) {
+			ParseNode parent = node.getParent(); 
+			return (parent instanceof FunctionNode) && (node == ((FunctionNode) parent).getChildNode_functionName()); 
+		}
+		private boolean isParameterBeingDeclared(IdentifierNode node) {
+			ParseNode parent = node.getParent(); 
+			return (parent instanceof ParameterSpecificationNode); 
+		}
+		private boolean isFunctionNameBeingInvoked(IdentifierNode node) {
+			ParseNode parent = node.getParent(); 
+			return parent instanceof FunctionInvocationNode; 
+		}
+		
+		
 		public void visit(IntegerConstantNode node) {
 			newValueCode(node);
 
