@@ -41,8 +41,10 @@ public class ASMCodeGenerator {
 	public ASMCodeFragment makeASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 		code.append( RunTime.getEnvironment() );
+		code.append(frameVariableBlockASM());
+		code.append( functionASM());
 		code.append( globalVariableBlockASM() );
-		code.append( programASM() );
+		code.append( mainASM() );
 		code.append( MemoryManager.codeForAfterApplication() );
 		return code;
 	}
@@ -56,21 +58,44 @@ public class ASMCodeGenerator {
 		code.add(DataZ, globalBlockSize);
 		return code;
 	}
-	private ASMCodeFragment programASM() {
+
+	private ASMCodeFragment frameVariableBlockASM() {
+		assert root.hasScope();
+		Scope scope = root.getScope();
+		int frameBlockSize = scope.getAllocatedSize();
+
+		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
+		code.add(DLabel, RunTime.FRAME_MEMORY_BLOCK);
+		code.add(DataZ, frameBlockSize);
+		return code;
+	}
+	private ASMCodeFragment mainASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 
 		code.add(    Label, RunTime.MAIN_PROGRAM_LABEL);
-		code.append( programCode());
+		code.append( mainCode());
 		code.add(    Halt );
 
 		return code;
 	}
-	private ASMCodeFragment programCode() {
+	private ASMCodeFragment mainCode() {
 		CodeVisitor visitor = new CodeVisitor();
-		root.accept(visitor);
-		return visitor.removeRootCode(root);
+		root.child(1).accept(visitor);
+		return visitor.removeRootCode(root.child(1));
 	}
+	private ASMCodeFragment functionCode() {
+		CodeVisitor visitor = new CodeVisitor();
+		root.child(0).accept(visitor);
+		return visitor.removeRootCode(root.child(0));
+	}
+	private ASMCodeFragment functionASM() {
+		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 
+		code.add(    Label, "test");
+		code.append( functionCode());
+		code.add(    Halt );
+		return code;
+	}
 
 	protected class CodeVisitor extends ParseNodeVisitor.Default {
 		private Map<ParseNode, ASMCodeFragment> codeMap;
