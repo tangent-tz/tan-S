@@ -246,8 +246,10 @@ public class ASMCodeGenerator {
 		// non-main function ---------------------------------------
 		public void visitLeave(FunctionNode node){
 			newVoidCode(node);
+			ParseNode functionBodyNode = node.child(node.nChildren()-1); 
+			ASMCodeFragment functionBodyCode = removeVoidCode(functionBodyNode); 
+			code.append(functionBodyCode);
 		}
-		
 		public void visitLeave(CallStatementNode node) {
 			newVoidCode(node);
 		}
