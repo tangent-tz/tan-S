@@ -5,6 +5,6 @@ subr int printXNum(int x, [void] number) {
 
 main {
 	const max := 77;
-%	call printXNum(max, printXNum);
+	call printXNum(max, printXNum);
 }
 

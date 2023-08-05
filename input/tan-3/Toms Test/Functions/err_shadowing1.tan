@@ -1,0 +1,22 @@
+subr int pax(int a, int b) {
+	if (a < b) {
+	    return a;
+	}
+	return b + pax(a, 3*b);
+}
+
+main {
+	const max := 5;
+	
+	if(max > 3) {
+		const pax := pax(88, 2);
+		const twopax := 2 * pax(176, 2);
+		print pax \s twopax \n;
+		
+	}
+	
+	var count := 0;
+	print pax(1234, 4) \n;
+	
+	print "all done." \n;
+}

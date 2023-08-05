@@ -31,9 +31,17 @@ public class FunctionNode extends ParseNode {
         IdentifierNode functionNameNode = (IdentifierNode) getChildNode_functionName();
         functionNameNode.setFunctionLabel(label);
     }
+    public String getASMLabel() {
+        IdentifierNode functionNameNode = (IdentifierNode) getChildNode_functionName();
+        return functionNameNode.getFunctionLabel();
+    }
     public void setAllocatedSize(int size) {
         IdentifierNode functionNameNode = (IdentifierNode) getChildNode_functionName();
         functionNameNode.setAllocatedSize(size);
+    }
+    public int getAllocatedSize() {
+        IdentifierNode functionNameNode = (IdentifierNode) getChildNode_functionName();
+        return functionNameNode.getAllocatedSize();
     }
     
     ////////////////////////////////////////////////////////////

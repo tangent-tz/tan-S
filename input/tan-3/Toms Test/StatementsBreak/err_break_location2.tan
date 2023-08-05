@@ -1,5 +1,5 @@
-func int syrup(int number) {
-	mut habanero := 0;
+subr int syrup(int number) {
+	var habanero := 0;
 	if((number / 2) * 2 == number) {
 		habanero := number / 2;
 	} 
@@ -11,13 +11,13 @@ func int syrup(int number) {
 }
 
 main {
-	imm min := 10;
-	imm max := 100;
+	const min := 10;
+	const max := 100;
 	
-	mut count := min;
+	var count := min;
 	while (count < max) {
 		call syrup(count);
 		count := count + 1;
 	}
-	print "done." $n;
+	print "done." \n;
 }

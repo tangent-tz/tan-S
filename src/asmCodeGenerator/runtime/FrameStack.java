@@ -14,7 +14,7 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.Add;
 public class FrameStack {
      public static final String FRAME_POINTER = RunTime.FRAME_POINTER; 
      public static final String STACK_POINTER = RunTime.STACK_POINTER; 
-     public static final String PREV_FRAME_POINTER = RunTime.PREV_FRAME_POINTER; 
+     public static final String TEMP_FRAME_POINTER = RunTime.PREV_FRAME_POINTER; 
      public static final int SIZE_DYNAMIC_LINK = 4; 
      public static final int SIZE_RETURN_ADDRESS = 4; 
      private static int count = 0; 
@@ -45,20 +45,21 @@ public class FrameStack {
           code.add(LoadI); 
           code.add(PushI, -SIZE_DYNAMIC_LINK);
           code.add(Add);
-          loadIFrom(code, PREV_FRAME_POINTER);
+          loadIFrom(code, FRAME_POINTER);
           code.add(StoreI); 
           
-//          if(count == 0) {
-//               code.add(PushI, -1);
-//               code.add(StoreI);
-//               count++; 
-//          } else {
-//               code.add(PushD, FRAME_POINTER); 
-//               code.add(LoadI); 
-//               code.add(StoreI); 
-//          }
 
           moveStackPointerBy(code, -SIZE_DYNAMIC_LINK);
+          
+          setFPtoTempFP(code);
+          
+          
+     }
+     
+     private static void setFPtoTempFP(ASMCodeFragment code) {
+          code.add(PushD, FRAME_POINTER); 
+          loadIFrom(code, TEMP_FRAME_POINTER);
+          code.add(StoreI); 
      }
      
      public static void saveReturnAddress(ASMCodeFragment code) {
@@ -70,6 +71,15 @@ public class FrameStack {
           code.add(Exchange);
           code.add(StoreI);
           moveStackPointerBy(code, -SIZE_RETURN_ADDRESS);
+          
+          updateTempFramePointer(code); 
+     }
+     
+     private static void updateTempFramePointer(ASMCodeFragment code) {
+          //make tempFP = SP
+          code.add(PushD, TEMP_FRAME_POINTER); 
+          loadIFrom(code, STACK_POINTER);
+          code.add(StoreI);
      }
      public static void loadReturnAddress(ASMCodeFragment code) {
           code.add(PushD, STACK_POINTER);
@@ -88,6 +98,11 @@ public class FrameStack {
           
           //restore stack pointer
           moveStackPointerBy(code, totalSize);
+          
+          //todo:reset tempFP to point to the top of the latest frame
+          code.add(PushD, TEMP_FRAME_POINTER); 
+          loadIFrom(code, FRAME_POINTER);
+          code.add(StoreI); 
      }
      
      
@@ -120,20 +135,23 @@ public class FrameStack {
           moveStackPointerBy(code, returnType.getSize());
      }
      
-     
-     public static void performEntranceHandshake(ASMCodeFragment code) {
-          //1. store current FP to prev
-          code.add(PushD, PREV_FRAME_POINTER); 
-          loadIFrom(code, FRAME_POINTER);
-          code.add(StoreI); 
-          
-          
-          //2. move FP to SP
-          code.add(PushD, FRAME_POINTER); 
-          loadIFrom(code, STACK_POINTER);
-          code.add(StoreI);
-     }
-     
+//     public static void storeFPtoPrev(ASMCodeFragment code) {
+//          code.add(PushD, PREV_FRAME_POINTER);
+//          loadIFrom(code, FRAME_POINTER);
+//          code.add(StoreI);
+//     }
+//     
+//     public static void moveFPtoSP(ASMCodeFragment code) {
+//          code.add(PushD, FRAME_POINTER);
+//          loadIFrom(code, STACK_POINTER);
+//          code.add(StoreI);
+//     }
+//     
+//     public static void performEntranceHandshake(ASMCodeFragment code) {
+//          storeFPtoPrev(code);
+//          moveFPtoSP(code);
+//     }
+
      
      
      

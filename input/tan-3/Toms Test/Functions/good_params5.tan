@@ -1,0 +1,20 @@
+subr void holler(char c) {
+	print c \n;
+	
+	var n := 0;
+	
+	while (n < c - <int>(%000)) {
+		print "Yoo hoo!!!!" \n;
+		n := n + 1;
+	}
+	return;
+}
+
+main {
+	call holler( %004 );
+	
+	var m := 0.34;
+	call holler( %002 );
+	
+	print "all done." \n;
+}

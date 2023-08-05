@@ -1,5 +1,5 @@
 main {
-    for (char count := 'a'; count <= 'h'; count := <char>(count+1)) {
+    for (count from <int>('a') to <int>('h')) {
 		if(count == 'a' || count == 'e') {
 			continue;
 		}

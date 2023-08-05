@@ -47,7 +47,7 @@ public class ASMCodeGenerator {
 	public ASMCodeFragment makeASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 		code.append( RunTime.getEnvironment() );
-		code.append( setUpFrameStack());
+		//code.append( setUpFrameStack());
 		code.append( frameVariableBlockASM());
 		code.append( functionASM());
 		code.append( globalVariableBlockASM() );
@@ -80,13 +80,27 @@ public class ASMCodeGenerator {
 	// function ASM ------------------------------------------------------
 	private ASMCodeFragment functionASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
+		
+		//1. do the first pass to generate function labels and setup byte consumption:
+		for(int i=0; i < root.nChildren()-1; i++) {
+			FunctionNode node = (FunctionNode) root.child(i);
+			
+			String functionNameString = node.getChildNode_functionName().getToken().getLexeme();
+			Labeller labeller = new Labeller("subr-" + functionNameString);
+			String functionStartLabel = labeller.newLabel("start");
+			node.setASMLabel(functionStartLabel);
 
+			
+			int totalByteConsumption = node.getScope().getAllocatedSize();
+			node.setAllocatedSize(totalByteConsumption);
+		}
+		//-------------------------------------------------------------------------------------
+		
+		//2. do the second pass to append each function code one by one:
 		for(int i=0; i < root.nChildren()-1; i++) {
 			code.append(functionCode(i));
 			code.add(	Return);
 		}
-		
-//		code.add(    Halt );
 		return code;
 	}
 	private ASMCodeFragment functionCode(int i) {
@@ -116,8 +130,8 @@ public class ASMCodeGenerator {
 		code.add(StoreI);
 		
 		//initialize previous frame pointer 
-		code.add(PushD, RunTime.PREV_FRAME_POINTER); 
-		code.add(PushI, -1); 
+		code.add(PushD, RunTime.PREV_FRAME_POINTER);
+		code.add(Memtop);
 		code.add(StoreI); 
 		
 		return code; 
@@ -319,16 +333,10 @@ public class ASMCodeGenerator {
 
 		public void visitLeave(FunctionNode node) {
 			newVoidCode(node);
-
-			String functionNameString = node.getChildNode_functionName().getToken().getLexeme();
-			Labeller labeller = new Labeller("subr-" + functionNameString);
-			String functionStartLabel = labeller.newLabel("start");
-			node.setASMLabel(functionStartLabel);
 			
-			////////////////////////////////
-			int totalByteConsumption = node.getScope().getAllocatedSize(); 
-			node.setAllocatedSize(totalByteConsumption); 
+			String functionStartLabel = node.getASMLabel();
 			Type returnType = node.getChildNode_returnType().getType(); 
+			int totalByteConsumption = node.getAllocatedSize(); 
 			////////////////////////
 
 			ParseNode functionBodyNode = node.getChildNode_functionBody();
@@ -375,8 +383,7 @@ public class ASMCodeGenerator {
 			ExpressionListNode expressionListNode = (ExpressionListNode) node.getChildNode_expressionList();
 			List<Type> argTypeList = expressionListNode.getChildTypes();
 			
-			//entrance for nested function
-			FrameStack.performEntranceHandshake(code);
+			
 			
 			//////////////////////////////////////////////
 			
@@ -388,6 +395,9 @@ public class ASMCodeGenerator {
 				totalOffset -= type.getSize();
 				FrameStack.passInParameter(code, totalOffset, type, expressionCode);
 			}
+
+			//entrance for nested function
+			//FrameStack.performEntranceHandshake(code);
 			
 			//update stack pointer after all local variables were allocated:
 			int offset = -( ((IdentifierNode) functionNameNode).getAllocatedSize() ); 
@@ -396,11 +406,10 @@ public class ASMCodeGenerator {
 			
 			////////////////////////////////
 			
-			code.append(removeVoidCode(functionNameNode)); //this should be last
-			//the stack: [... returnAddress]
+			code.append(removeVoidCode(functionNameNode)); //the stack: [... returnAddress]
+			
 			//after function is executed: it comes back here.
 			//stack: [...]
-			
 			Type returnType = functionNameNode.getType(); 
 			if(returnType != PrimitiveType.VOID) {
 				FrameStack.loadReturnValue(code, returnType);

@@ -1,4 +1,4 @@
-func int syrup (int number) {
+subr int syrup (int number) {
 	if(number < 0) {
 		return 42;
 	}
@@ -14,30 +14,30 @@ func int syrup (int number) {
 		}
 	}
 }
-func void sequence(int startingNumber) {
-	print $n;
+subr void sequence(int startingNumber) {
+	print \n;
 	
-	mut num := startingNumber;
-	print num $n;
+	var num := startingNumber;
+	print num \n;
 	while (num != 1) {
 		num := syrup(num);
 		if(num == 4 || num == 16) {
 			continue;
 		}
-		print num $n;
+		print num \n;
 	}
-	print num $n;
+	print num \n;
 	return;
 }
 
 main {
-	imm min := 12;
-	imm max := 15;
+	const min := 12;
+	const max := 15;
 	
-	mut count := min;
+	var count := min;
 	while (count < max) {
 		call sequence(count);
 		count := count + 1;
 	}
-	print "done." $n;
+	print "done." \n;
 }

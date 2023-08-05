@@ -32,13 +32,41 @@ public class RunTime {
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
 		result.append(MemoryManager.codeForInitialization()); //todo: added this line here by trial and error. And somehow, it works. May need further investigation.
+		result.append(setUpFrameStack());
 		result.append(jumpToMain());
 		result.append(stringsForPrintf());
 		result.append(runtimeErrors());
 		result.add(DLabel, USABLE_MEMORY_START);
 		return result;
 	}
-	
+	// frame stack ------------------------------------------------------
+	private ASMCodeFragment setUpFrameStack() {
+		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
+		code.add(DLabel, RunTime.FRAME_POINTER);
+		code.add(DataZ, 4);
+		code.add(DLabel, RunTime.STACK_POINTER);
+		code.add(DataZ, 4);
+		code.add(DLabel, RunTime.PREV_FRAME_POINTER);
+		code.add(DataZ, 4);
+
+		//initialize frame pointer 
+		code.add(PushD, RunTime.FRAME_POINTER);
+		code.add(Memtop);
+		code.add(StoreI);
+
+		//initialize stack pointer
+		code.add(PushD, RunTime.STACK_POINTER);
+		code.add(Memtop);
+		code.add(StoreI);
+
+		//initialize previous frame pointer 
+		code.add(PushD, RunTime.PREV_FRAME_POINTER);
+		code.add(Memtop);
+		code.add(StoreI);
+
+		return code;
+	}
+
 	private ASMCodeFragment jumpToMain() {
 		ASMCodeFragment frag = new ASMCodeFragment(GENERATES_VOID);
 		frag.add(Jump, MAIN_PROGRAM_LABEL);
