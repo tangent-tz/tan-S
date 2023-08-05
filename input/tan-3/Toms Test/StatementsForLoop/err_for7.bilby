@@ -1,7 +1,0 @@
-main {
-	for(i in <#a..#d>) {
-		i := #z;
-		print i $s;
-	}
-	print $n;
-}

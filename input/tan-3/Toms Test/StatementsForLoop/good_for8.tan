@@ -1,6 +1,0 @@
-main {
-	for(i from 3 to 2+10/2) {
-		print i*i \s;
-	}
-	print \n;
-}
