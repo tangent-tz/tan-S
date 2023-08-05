@@ -1,32 +1,21 @@
-subr void printTwoPlaces(int number, float floatNum, char some_char, string someString, [[int]] intArr) {
-	if(number < 10) {
-		print \s number;
-	}
-	else {
-		print number;
-	}
-	return 1+28*20;
+subr void test(int x) {
+    print x \n;
+    var y := 1.1; 
+    var str := "hehllo"; 
+    print str \t; 
+    var someB := true; 
 }
 
-subr void printFiboLine(int i, int fiboNumber) {
-	call printTwoPlaces(i);
-	print \s fiboNumber \n;
-	return;
+subr void foo(int n) {
+print n \n; 
+    print "foo" \n; 
+}
+
+subr int sum() {
+    return 12; 
 }
 
 main {
-	const max := 40;
-	var prevFib := 0;
-	var thisFib := 1;
-	var n := 1;
-	print \s 0 \s prevFib \n;
-	print \s 1 \s thisFib \n;
-	while (n < max) {
-		const prevHolder := thisFib;
-		thisFib := thisFib + prevFib;
-		prevFib := prevHolder;
-		n := n + 1;
-		
-		call printFiboLine(n, thisFib);
-	}
+    call test(10); 
+    print \n sum() + 100 \n; 
 }

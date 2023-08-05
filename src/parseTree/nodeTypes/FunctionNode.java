@@ -23,7 +23,14 @@ public class FunctionNode extends ParseNode {
     public ParseNode getChildNode_paramList() {
         return child(2); 
     }
+    public ParseNode getChildNode_functionBody() {
+        return child(3);
+    }
 
+    public void setASMLabel(String label) {
+        IdentifierNode functionNameNode = (IdentifierNode) getChildNode_functionName();
+        functionNameNode.setFunctionLabel(label);
+    }
     
     
     ////////////////////////////////////////////////////////////

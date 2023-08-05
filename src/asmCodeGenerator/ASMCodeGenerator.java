@@ -41,7 +41,7 @@ public class ASMCodeGenerator {
 	public ASMCodeFragment makeASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 		code.append( RunTime.getEnvironment() );
-		code.append(frameVariableBlockASM());
+		code.append( frameVariableBlockASM());
 		code.append( functionASM());
 		code.append( globalVariableBlockASM() );
 		code.append( mainASM() );
@@ -69,6 +69,29 @@ public class ASMCodeGenerator {
 		code.add(DataZ, frameBlockSize);
 		return code;
 	}
+
+	// function ASM ------------------------------------------------------
+	private ASMCodeFragment functionASM() {
+		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
+
+		for(int i=0; i < root.nChildren()-1; i++) {
+			code.append(functionCode(i));
+			code.add(	Return);
+		}
+		
+//		code.add(    Halt );
+		return code;
+	}
+	private ASMCodeFragment functionCode(int i) {
+		CodeVisitor visitor = new CodeVisitor();
+		root.child(i).accept(visitor);
+		return visitor.removeRootCode(root.child(i));
+	}
+
+
+	
+	
+	// main ASM ------------------------------------------------------
 	private ASMCodeFragment mainASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 
@@ -80,23 +103,13 @@ public class ASMCodeGenerator {
 	}
 	private ASMCodeFragment mainCode() {
 		CodeVisitor visitor = new CodeVisitor();
-		root.child(1).accept(visitor);
-		return visitor.removeRootCode(root.child(1));
+		
+		int mainIndex = root.nChildren()-1; 
+		root.child(mainIndex).accept(visitor);
+		return visitor.removeRootCode(root.child(mainIndex));
 	}
-	private ASMCodeFragment functionCode() {
-		CodeVisitor visitor = new CodeVisitor();
-		root.child(0).accept(visitor);
-		return visitor.removeRootCode(root.child(0));
-	}
-	private ASMCodeFragment functionASM() {
-		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
+	
 
-		code.add(    Label, "test");
-		code.append( functionCode());
-		code.add(	Return);
-		code.add(    Halt );
-		return code;
-	}
 
 	protected class CodeVisitor extends ParseNodeVisitor.Default {
 		private Map<ParseNode, ASMCodeFragment> codeMap;
@@ -270,22 +283,64 @@ public class ASMCodeGenerator {
 		}
 		
 		// non-main function ---------------------------------------
-		public void visitLeave(FunctionNode node){
+
+		public void visitLeave(FunctionNode node) {
 			newVoidCode(node);
-			ParseNode functionBodyNode = node.child(node.nChildren()-1); 
-			ASMCodeFragment functionBodyCode = removeVoidCode(functionBodyNode); 
+
+			String functionNameString = node.getChildNode_functionName().getToken().getLexeme();
+			Labeller labeller = new Labeller("subr-" + functionNameString);
+			String functionStartLabel = labeller.newLabel("start");
+			node.setASMLabel(functionStartLabel);
+
+			ParseNode functionBodyNode = node.getChildNode_functionBody();
+			ASMCodeFragment functionBodyCode = removeVoidCode(functionBodyNode);
+
+			code.add(Label, functionStartLabel);
 			code.append(functionBodyCode);
+
+			if(node.getChildNode_returnType().getType() != PrimitiveType.VOID) {
+				code.add(Exchange);
+			}
 		}
+		
+
 		public void visitLeave(CallStatementNode node) {
 			newVoidCode(node);
-			code.add(Call, "test");
+			code.append(removeValueCode(node.child(0)));
 		}
 		public void visitLeave(ReturnStatementNode node) {
 			newVoidCode(node);
+			ASMCodeFragment returnedExpression = removeValueCode(node.child(0));
+			code.append(returnedExpression);
 		}
-		
+
 		public void visitLeave(FunctionInvocationNode node) {
 			newValueCode(node);
+			ParseNode functionNameNode = node.getChildNode_functionName();
+//
+//			//pass arguments into function
+//			String functionDataBlock_StartAddressLabel = RunTime.FRAME_MEMORY_BLOCK;
+//
+//			ExpressionListNode expressionListNode = (ExpressionListNode) node.getChildNode_expressionList();
+//			List<Type> argTypeList = expressionListNode.getChildTypes();
+//			int offset = -8;
+//			for(int i=0; i < expressionListNode.nChildren(); i++) {
+//				ParseNode expressionNode = expressionListNode.child(i);
+//				ASMCodeFragment expressionCode = removeValueCode(expressionNode);
+//
+//				Type type = argTypeList.get(i);
+//				int typeByteSize = type.getSize();
+//				offset -= typeByteSize;
+//
+//				code.add(PushD, functionDataBlock_StartAddressLabel);
+//				code.add(LoadI);
+//				code.add(PushI, offset);
+//				code.add(Add);
+//				code.append(expressionCode);
+//				code.add(opcodeForStore(type));
+//			}
+//
+			code.append(removeVoidCode(functionNameNode)); //this should be last
 		}
 		
 
@@ -1119,11 +1174,38 @@ public class ASMCodeGenerator {
 			code.add(PushI, node.getValue() ? 1 : 0);
 		}
 		public void visit(IdentifierNode node) {
+			if(isFunctionNameBeingDeclared(node) || isParameterBeingDeclared(node)) {
+				return;
+			}
+			if(isFunctionNameBeingInvoked(node)) {
+				newVoidCode(node);
+				String functionStartLabel = node.getFunctionLabel();
+				code.add(Call, functionStartLabel);
+				return;
+			}
+
 			newAddressCode(node);
 			Binding binding = node.getBinding();
-
 			binding.generateAddress(code);
 		}
+		private boolean isFunctionNameBeingDeclared(IdentifierNode node) {
+			ParseNode parent = node.getParent();
+			return (parent instanceof FunctionNode) && (node == ((FunctionNode) parent).getChildNode_functionName());
+		}
+		private boolean isParameterBeingDeclared(IdentifierNode node) {
+			ParseNode parent = node.getParent();
+			return (parent instanceof ParameterSpecificationNode);
+		}
+		private boolean isFunctionNameBeingInvoked(IdentifierNode node) {
+			ParseNode parent = node.getParent();
+			return parent instanceof FunctionInvocationNode;
+		}
+
+
+
+
+
+
 		public void visit(IntegerConstantNode node) {
 			newValueCode(node);
 

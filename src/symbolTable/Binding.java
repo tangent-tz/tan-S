@@ -16,7 +16,8 @@ public class Binding {
 		IS_VARIABLE,
 	}
 	private Constancy constancy;
-	private FunctionSignature functionSignature; 
+	private FunctionSignature functionSignature;
+	private String functionLabel;
 
 
 	
@@ -67,6 +68,12 @@ public class Binding {
 	}
 	public FunctionSignature getFunctionSignature() {
 		return this.functionSignature; 
+	}
+	public void setFunctionLabel(String label) {
+		this.functionLabel = label;
+	}
+	public String getFunctionLabel() {
+		return functionLabel;
 	}
 	
 	
