@@ -18,6 +18,7 @@ public class Binding {
 	private Constancy constancy;
 	private FunctionSignature functionSignature;
 	private String functionLabel;
+	private int allocatedSizeForFunction = -1; 
 
 
 	
@@ -28,7 +29,7 @@ public class Binding {
 		this.memoryLocation = memoryLocation;
 		this.lexeme = lexeme;
 		this.constancy = constancy;
-		this.functionSignature = FunctionSignature.nullInstance(); 
+		this.functionSignature = FunctionSignature.nullInstance();
 	}
 
 	public Binding(Type type, TextLocation location, MemoryLocation memoryLocation, String lexeme, Constancy constancy, FunctionSignature functionSignature) {
@@ -75,7 +76,12 @@ public class Binding {
 	public String getFunctionLabel() {
 		return functionLabel;
 	}
-	
+	public void setAllocatedSize(int size) {
+		this.allocatedSizeForFunction = size; 
+	}
+	public int getAllocatedSize() {
+		return allocatedSizeForFunction; 
+	}
 	
 ////////////////////////////////////////////////////////////////////////////////////
 //Null Binding object

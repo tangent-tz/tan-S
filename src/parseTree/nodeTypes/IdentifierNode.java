@@ -47,6 +47,12 @@ public class IdentifierNode extends ParseNode {
 	public String getFunctionLabel() {
 		return binding.getFunctionLabel();
 	}
+	public void setAllocatedSize(int size) {
+		binding.setAllocatedSize(size); 
+	}
+	public int getAllocatedSize() {
+		return binding.getAllocatedSize(); 
+	}
 	
 ////////////////////////////////////////////////////////////
 // Speciality functions

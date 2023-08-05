@@ -1,10 +1,13 @@
 package asmCodeGenerator;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.SimpleCodeGenerator;
+import asmCodeGenerator.runtime.FrameStack;
 import asmCodeGenerator.runtime.MemoryManager;
 import asmCodeGenerator.runtime.RunTime;
 import static asmCodeGenerator.Macros.*;
@@ -22,6 +25,9 @@ import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
+
+import javax.sound.sampled.DataLine;
+
 import static asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType.*;
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
@@ -41,6 +47,7 @@ public class ASMCodeGenerator {
 	public ASMCodeFragment makeASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 		code.append( RunTime.getEnvironment() );
+		code.append( setUpFrameStack());
 		code.append( frameVariableBlockASM());
 		code.append( functionASM());
 		code.append( globalVariableBlockASM() );
@@ -88,7 +95,33 @@ public class ASMCodeGenerator {
 		return visitor.removeRootCode(root.child(i));
 	}
 
-
+	// frame stack ------------------------------------------------------
+	private ASMCodeFragment setUpFrameStack() {
+		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
+		code.add(DLabel, RunTime.FRAME_POINTER); 
+		code.add(DataZ, 4); 
+		code.add(DLabel, RunTime.STACK_POINTER); 
+		code.add(DataZ, 4); 
+		code.add(DLabel, RunTime.PREV_FRAME_POINTER); 
+		code.add(DataZ, 4); 
+		
+		//initialize frame pointer 
+		code.add(PushD, RunTime.FRAME_POINTER); 
+		code.add(Memtop); 
+		code.add(StoreI); 
+		
+		//initialize stack pointer
+		code.add(PushD, RunTime.STACK_POINTER); 
+		code.add(Memtop); 
+		code.add(StoreI);
+		
+		//initialize previous frame pointer 
+		code.add(PushD, RunTime.PREV_FRAME_POINTER); 
+		code.add(PushI, -1); 
+		code.add(StoreI); 
+		
+		return code; 
+	}
 	
 	
 	// main ASM ------------------------------------------------------
@@ -291,16 +324,34 @@ public class ASMCodeGenerator {
 			Labeller labeller = new Labeller("subr-" + functionNameString);
 			String functionStartLabel = labeller.newLabel("start");
 			node.setASMLabel(functionStartLabel);
+			
+			////////////////////////////////
+			int totalByteConsumption = node.getScope().getAllocatedSize(); 
+			node.setAllocatedSize(totalByteConsumption); 
+			Type returnType = node.getChildNode_returnType().getType(); 
+			////////////////////////
 
 			ParseNode functionBodyNode = node.getChildNode_functionBody();
 			ASMCodeFragment functionBodyCode = removeVoidCode(functionBodyNode);
 
 			code.add(Label, functionStartLabel);
+			// the stack: [... returnAddress]
+			FrameStack.saveReturnAddress(code);
 			code.append(functionBodyCode);
-
+			
 			if(node.getChildNode_returnType().getType() != PrimitiveType.VOID) {
-				code.add(Exchange);
+				// stack: [... returnValue]
+				FrameStack.loadReturnAddress(code);        //stack: [... returnValue, returnAddress]
+				code.add(Exchange);                        //stack: [...  returnAddress, returnValue]
+
+				FrameStack.restorePointers(code, totalByteConsumption);
+				FrameStack.saveReturnValue(code, returnType);    //stack: [... returnAddress]
+			} else {
+				//stack: [...]
+				FrameStack.loadReturnAddress(code);			//stack: [... returnAddress]
+				FrameStack.restorePointers(code, totalByteConsumption);
 			}
+			
 		}
 		
 
@@ -310,37 +361,50 @@ public class ASMCodeGenerator {
 		}
 		public void visitLeave(ReturnStatementNode node) {
 			newVoidCode(node);
-			ASMCodeFragment returnedExpression = removeValueCode(node.child(0));
-			code.append(returnedExpression);
+			if(node.nChildren() == 1) {
+				ASMCodeFragment returnedExpression = removeValueCode(node.child(0));
+				code.append(returnedExpression);
+			}
 		}
 
 		public void visitLeave(FunctionInvocationNode node) {
 			newValueCode(node);
 			ParseNode functionNameNode = node.getChildNode_functionName();
-//
-//			//pass arguments into function
-//			String functionDataBlock_StartAddressLabel = RunTime.FRAME_MEMORY_BLOCK;
-//
-//			ExpressionListNode expressionListNode = (ExpressionListNode) node.getChildNode_expressionList();
-//			List<Type> argTypeList = expressionListNode.getChildTypes();
-//			int offset = -8;
-//			for(int i=0; i < expressionListNode.nChildren(); i++) {
-//				ParseNode expressionNode = expressionListNode.child(i);
-//				ASMCodeFragment expressionCode = removeValueCode(expressionNode);
-//
-//				Type type = argTypeList.get(i);
-//				int typeByteSize = type.getSize();
-//				offset -= typeByteSize;
-//
-//				code.add(PushD, functionDataBlock_StartAddressLabel);
-//				code.add(LoadI);
-//				code.add(PushI, offset);
-//				code.add(Add);
-//				code.append(expressionCode);
-//				code.add(opcodeForStore(type));
-//			}
-//
+
+			//pass arguments into function
+			ExpressionListNode expressionListNode = (ExpressionListNode) node.getChildNode_expressionList();
+			List<Type> argTypeList = expressionListNode.getChildTypes();
+			
+			//entrance for nested function
+			FrameStack.performEntranceHandshake(code);
+			
+			//////////////////////////////////////////////
+			
+			int totalOffset = 0;
+			for(int i=0; i < expressionListNode.nChildren(); i++) {
+				ParseNode expressionNode = expressionListNode.child(i);
+				ASMCodeFragment expressionCode = removeValueCode(expressionNode);
+				Type type = argTypeList.get(i);
+				totalOffset -= type.getSize();
+				FrameStack.passInParameter(code, totalOffset, type, expressionCode);
+			}
+			
+			//update stack pointer after all local variables were allocated:
+			int offset = -( ((IdentifierNode) functionNameNode).getAllocatedSize() ); 
+			FrameStack.moveStackPointerBy(code, offset);
+			FrameStack.createDynamicLink(code);
+			
+			////////////////////////////////
+			
 			code.append(removeVoidCode(functionNameNode)); //this should be last
+			//the stack: [... returnAddress]
+			//after function is executed: it comes back here.
+			//stack: [...]
+			
+			Type returnType = functionNameNode.getType(); 
+			if(returnType != PrimitiveType.VOID) {
+				FrameStack.loadReturnValue(code, returnType);
+			}
 		}
 		
 

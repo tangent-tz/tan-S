@@ -17,6 +17,9 @@ public class RunTime {
 	public static final String EMPTY_STRING 		  = "$empty-string";
 	public static final String GLOBAL_MEMORY_BLOCK    = "$global-memory-block";
 	public static final String FRAME_MEMORY_BLOCK	  = "$frame-memory-block"; 
+	public static final String FRAME_POINTER 		  = "$frame-pointer"; 
+	public static final String STACK_POINTER          = "$stack-pointer"; 
+	public static final String PREV_FRAME_POINTER     = "$prev-frame-pointer"; 
 	public static final String USABLE_MEMORY_START    = "$usable-memory-start";
 	public static final String MAIN_PROGRAM_LABEL     = "$$main";
 	

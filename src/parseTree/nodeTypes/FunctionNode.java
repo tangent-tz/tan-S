@@ -31,7 +31,10 @@ public class FunctionNode extends ParseNode {
         IdentifierNode functionNameNode = (IdentifierNode) getChildNode_functionName();
         functionNameNode.setFunctionLabel(label);
     }
-    
+    public void setAllocatedSize(int size) {
+        IdentifierNode functionNameNode = (IdentifierNode) getChildNode_functionName();
+        functionNameNode.setAllocatedSize(size);
+    }
     
     ////////////////////////////////////////////////////////////
     // convenience factory

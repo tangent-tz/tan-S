@@ -1,5 +1,6 @@
 package symbolTable;
 
+import asmCodeGenerator.runtime.RunTime;
 import inputHandler.TextLocation;
 import logging.TanLogger;
 import parseTree.nodeTypes.IdentifierNode;
@@ -34,8 +35,7 @@ public class Scope {
 	private MemoryAllocator parameterScopeAllocator() {
 		return new ParameterMemoryAllocator(
 				MemoryAccessMethod.INDIRECT_ACCESS_BASE,
-				MemoryLocation.FRAME_POINTER,
-				-8);
+				RunTime.FRAME_POINTER);
 	}
 	
 //////////////////////////////////////////////////////////////////////
