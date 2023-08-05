@@ -61,10 +61,10 @@ public class ParameterMemoryAllocator implements MemoryAllocator {
         
         if(bookmarks.size() == 0) {
             int allocatedSize = getMaxAllocatedSize();
-            for(MemoryLocation location : allocatedLocations) {
-                location.adjustOffset(allocatedSize); 
-            }
-            // Clear the list of MemoryLocations for the next state
+//            for(MemoryLocation location : allocatedLocations) {
+//                location.adjustOffset(allocatedSize);
+//            }
+//            // Clear the list of MemoryLocations for the next state
             allocatedLocations.clear();
         }
     }

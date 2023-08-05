@@ -288,8 +288,8 @@ public class ASMCodeGenerator {
 			newVoidCode(node);
 
 			String functionNameString = node.getChildNode_functionName().getToken().getLexeme();
-			Labeller labeller = new Labeller("subr-" + functionNameString);
-			String functionStartLabel = labeller.newLabel("start");
+			//Labeller labeller = new Labeller("subr-" + functionNameString);
+			String functionStartLabel = functionNameString;
 			node.setASMLabel(functionStartLabel);
 
 			ParseNode functionBodyNode = node.getChildNode_functionBody();
@@ -310,36 +310,39 @@ public class ASMCodeGenerator {
 		}
 		public void visitLeave(ReturnStatementNode node) {
 			newVoidCode(node);
-			ASMCodeFragment returnedExpression = removeValueCode(node.child(0));
-			code.append(returnedExpression);
+			if(node.nChildren() == 1) {
+				ASMCodeFragment returnedExpression = removeValueCode(node.child(0));
+				code.append(returnedExpression);
+			}
 		}
+
 
 		public void visitLeave(FunctionInvocationNode node) {
 			newValueCode(node);
 			ParseNode functionNameNode = node.getChildNode_functionName();
 //
-//			//pass arguments into function
-//			String functionDataBlock_StartAddressLabel = RunTime.FRAME_MEMORY_BLOCK;
-//
-//			ExpressionListNode expressionListNode = (ExpressionListNode) node.getChildNode_expressionList();
-//			List<Type> argTypeList = expressionListNode.getChildTypes();
-//			int offset = -8;
-//			for(int i=0; i < expressionListNode.nChildren(); i++) {
-//				ParseNode expressionNode = expressionListNode.child(i);
-//				ASMCodeFragment expressionCode = removeValueCode(expressionNode);
-//
-//				Type type = argTypeList.get(i);
-//				int typeByteSize = type.getSize();
-//				offset -= typeByteSize;
-//
-//				code.add(PushD, functionDataBlock_StartAddressLabel);
-//				code.add(LoadI);
-//				code.add(PushI, offset);
-//				code.add(Add);
-//				code.append(expressionCode);
-//				code.add(opcodeForStore(type));
-//			}
-//
+			//pass arguments into function
+			String functionNameString = node.getChildNode_functionName().getToken().getLexeme();
+			String functionDataBlock_StartAddressLabel = functionNameString;
+
+			ExpressionListNode expressionListNode = (ExpressionListNode) node.getChildNode_expressionList();
+			List<Type> argTypeList = expressionListNode.getChildTypes();
+			int offset = -8;
+			for(int i=0; i < expressionListNode.nChildren(); i++) {
+				ParseNode expressionNode = expressionListNode.child(i);
+				ASMCodeFragment expressionCode = removeValueCode(expressionNode);
+
+				Type type = argTypeList.get(i);
+				int typeByteSize = type.getSize();
+				offset = offset- typeByteSize;
+
+				code.add(PushD, functionDataBlock_StartAddressLabel);
+				code.add(LoadI);
+				code.add(PushI, offset);
+				code.add(Add);
+				code.append(expressionCode);
+				code.add(opcodeForStore(type));
+			}
 			code.append(removeVoidCode(functionNameNode)); //this should be last
 		}
 		
