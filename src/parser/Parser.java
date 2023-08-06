@@ -466,12 +466,25 @@ public class Parser {
 		readToken();
 		expect(Punctuator.OPEN_PARENTHESIS);
 		ParseNode identifier = parseIdentifier();
+		if(identifier instanceof ErrorNode) {
+			return syntaxErrorNode("forStatement");
+		}
 		expect(Keyword.FROM);
 		ParseNode initializerFrom = parseExpression();
+		if(initializerFrom instanceof ErrorNode) {
+			return syntaxErrorNode("forStatement");
+		}
 		expect(Keyword.TO);
 		ParseNode initializerTo = parseExpression();
+		if(initializerTo instanceof ErrorNode) {
+			return syntaxErrorNode("forStatement");
+		}
 		expect(Punctuator.CLOSE_PARENTHESIS);
 		ParseNode innerCodeBlock = parseBlockStatement();
+		if(innerCodeBlock instanceof ErrorNode) {
+			return syntaxErrorNode("forStatement");
+		}
+
 
 
 		ParseNode loopIterator = DeclarationNode.withChildren(Keyword.VAR.prototype(), identifier, initializerFrom);
@@ -1025,6 +1038,7 @@ public class Parser {
 	private ParseNode parseIdentifier() {
 		if(!startsIdentifier(nowReading)) {
 			return syntaxErrorNode("identifier");
+
 		}
 		readToken();
 		return new IdentifierNode(previouslyRead);
