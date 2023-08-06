@@ -1,0 +1,21 @@
+subr int pax(int a, int b) {
+	if (a < b) {
+	    return a;
+	}
+	return b + pax(a, 3*b);
+}
+subr float pax(float a, float b) {
+	if (a < b) {
+	    return a;
+	}
+	return b + pax(a, 3*b);
+}
+
+main {
+	const max := 5;
+	
+	var count := 0;
+	print pax(128.0, 4.0) \n;
+	
+	print "all done." \n;
+}

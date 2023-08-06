@@ -1,0 +1,33 @@
+subr void printTwoPlaces(int number) {
+	if(number < 10) {
+		print \s number;
+	}
+	else {
+		print number;
+	}
+	return;
+}
+
+subr void printFiboLine(int i, int fiboNumber) {
+	call printTwoPlaces(i);
+	print \s fiboNumber \n;
+	return;
+}
+
+main {
+	const max := 40;
+	var prevFib := 0;
+	var thisFib := 1;
+	
+	call printFiboLine(0, prevFib);
+	call printFiboLine(1, thisFib);
+	
+	for(n from 2 to max) {
+		const prevHolder := thisFib;
+		thisFib := thisFib + prevFib;
+		prevFib := prevHolder;
+		call printFiboLine(n, thisFib);
+	}
+	
+	print "all done." \n;
+}

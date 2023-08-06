@@ -1,10 +1,13 @@
 package asmCodeGenerator;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import asmCodeGenerator.operators.SimpleCodeGenerator;
+import asmCodeGenerator.runtime.FrameStack;
 import asmCodeGenerator.runtime.MemoryManager;
 import asmCodeGenerator.runtime.RunTime;
 import static asmCodeGenerator.Macros.*;
@@ -22,6 +25,9 @@ import semanticAnalyzer.types.ReferenceType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
 import symbolTable.Scope;
+
+import javax.sound.sampled.DataLine;
+
 import static asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType.*;
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 
@@ -41,8 +47,11 @@ public class ASMCodeGenerator {
 	public ASMCodeFragment makeASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 		code.append( RunTime.getEnvironment() );
+		//code.append( setUpFrameStack());
+		code.append( frameVariableBlockASM());
+		code.append( functionASM());
 		code.append( globalVariableBlockASM() );
-		code.append( programASM() );
+		code.append( mainASM() );
 		code.append( MemoryManager.codeForAfterApplication() );
 		return code;
 	}
@@ -56,20 +65,97 @@ public class ASMCodeGenerator {
 		code.add(DataZ, globalBlockSize);
 		return code;
 	}
-	private ASMCodeFragment programASM() {
+
+	private ASMCodeFragment frameVariableBlockASM() {
+		assert root.hasScope();
+		Scope scope = root.getScope();
+		int frameBlockSize = scope.getAllocatedSize();
+
+		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
+		code.add(DLabel, RunTime.FRAME_MEMORY_BLOCK);
+		code.add(DataZ, frameBlockSize);
+		return code;
+	}
+
+	// function ASM ------------------------------------------------------
+	private ASMCodeFragment functionASM() {
+		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
+		
+		//1. do the first pass to generate function labels and setup byte consumption:
+		for(int i=0; i < root.nChildren()-1; i++) {
+			FunctionNode node = (FunctionNode) root.child(i);
+			
+			String functionNameString = node.getChildNode_functionName().getToken().getLexeme();
+			Labeller labeller = new Labeller("subr-" + functionNameString);
+			String functionStartLabel = labeller.newLabel("start");
+			node.setASMLabel(functionStartLabel);
+
+			
+			int totalByteConsumption = node.getScope().getAllocatedSize();
+			node.setAllocatedSize(totalByteConsumption);
+		}
+		//-------------------------------------------------------------------------------------
+		
+		//2. do the second pass to append each function code one by one:
+		for(int i=0; i < root.nChildren()-1; i++) {
+			code.append(functionCode(i));
+			code.add(	Return);
+		}
+		return code;
+	}
+	private ASMCodeFragment functionCode(int i) {
+		CodeVisitor visitor = new CodeVisitor();
+		root.child(i).accept(visitor);
+		return visitor.removeRootCode(root.child(i));
+	}
+
+	// frame stack ------------------------------------------------------
+//	private ASMCodeFragment setUpFrameStack() {
+//		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
+//		code.add(DLabel, RunTime.FRAME_POINTER); 
+//		code.add(DataZ, 4); 
+//		code.add(DLabel, RunTime.STACK_POINTER); 
+//		code.add(DataZ, 4); 
+//		code.add(DLabel, RunTime.PREV_FRAME_POINTER); 
+//		code.add(DataZ, 4); 
+//		
+//		//initialize frame pointer 
+//		code.add(PushD, RunTime.FRAME_POINTER); 
+//		code.add(Memtop); 
+//		code.add(StoreI); 
+//		
+//		//initialize stack pointer
+//		code.add(PushD, RunTime.STACK_POINTER); 
+//		code.add(Memtop); 
+//		code.add(StoreI);
+//		
+//		//initialize previous frame pointer 
+//		code.add(PushD, RunTime.PREV_FRAME_POINTER);
+//		code.add(Memtop);
+//		code.add(StoreI); 
+//		
+//		return code; 
+//	}
+	
+	
+	// main ASM ------------------------------------------------------
+	private ASMCodeFragment mainASM() {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 
 		code.add(    Label, RunTime.MAIN_PROGRAM_LABEL);
-		code.append( programCode());
+		code.append( mainCode());
 		code.add(    Halt );
 
 		return code;
 	}
-	private ASMCodeFragment programCode() {
+	private ASMCodeFragment mainCode() {
 		CodeVisitor visitor = new CodeVisitor();
-		root.accept(visitor);
-		return visitor.removeRootCode(root);
+		
+		int mainIndex = root.nChildren()-1; 
+		root.child(mainIndex).accept(visitor);
+		return visitor.removeRootCode(root.child(mainIndex));
 	}
+	
 
 
 	protected class CodeVisitor extends ParseNodeVisitor.Default {
@@ -230,7 +316,125 @@ public class ASMCodeGenerator {
 				code.append(childCode);
 			}
 		}
+		
+		
+		//////////////////////////////////////////////////////////////////////////
+		// functions
+		
+		// main function -------------------------------------------
+		public void visitLeave(MainFunctionNode node) {
+			newVoidCode(node);
+			ParseNode mainBlock = node.child(0); 
+			ASMCodeFragment mainBlockCode = removeVoidCode(mainBlock);
+			code.append(mainBlockCode);
+		}
+		
+		// non-main function ---------------------------------------
 
+		public void visitLeave(FunctionNode node) {
+			newVoidCode(node);
+			
+			String functionStartLabel = node.getASMLabel();
+			Type returnType = node.getChildNode_returnType().getType();
+			////////////////////////
+
+			ParseNode functionBodyNode = node.getChildNode_functionBody();
+			ASMCodeFragment functionBodyCode = removeVoidCode(functionBodyNode);
+
+			code.add(Label, functionStartLabel);
+			// the stack: [... returnAddress]
+			FrameStack.saveReturnAddress(code);
+			code.append(functionBodyCode);
+			
+			
+			//if we reach this point, meaning we did not reach any return statement in the function body
+			//this can only be 2 cases:
+			if(node.getChildNode_returnType().getType() != PrimitiveType.VOID) {
+				//the function fails to return any value even though it is not a void function, so we throw runtime error:
+				// stack: [...]
+				code.add(Jump, RunTime.MISSING_RETURN_STATEMENT);
+			} else {
+				//the function is indeed a void function as expected, so we proceed with the return protocol:
+				//stack: [...]
+				FrameStack.loadReturnAddress(code);			//stack: [... returnAddress]
+				FrameStack.restorePointers(code);
+			}
+			
+			//the default 'Return' opcode is appended in the functionASM() above already!
+		}
+		
+
+		public void visitLeave(CallStatementNode node) {
+			newVoidCode(node);
+			code.append(removeValueCode(node.child(0)));
+			Type returnType = node.child(0).getType(); 
+			if(returnType != PrimitiveType.VOID) {
+				code.add(Pop);
+			}
+		}
+		public void visitLeave(ReturnStatementNode node) {
+			newVoidCode(node);
+			if(node.nChildren() == 1) {
+				ASMCodeFragment returnedExpression = removeValueCode(node.child(0));
+				code.append(returnedExpression);
+				// stack: [... returnValue]
+				FrameStack.loadReturnAddress(code);        //stack: [... returnValue, returnAddress]
+				code.add(Exchange);                        //stack: [...  returnAddress, returnValue]
+
+				FrameStack.restorePointers(code);
+				FrameStack.saveReturnValue(code, node.getType());    //stack: [... returnAddress]
+				code.add(Return);
+			} else {
+				//stack: [...]
+				FrameStack.loadReturnAddress(code);			//stack: [... returnAddress]
+				FrameStack.restorePointers(code);
+				code.add(Return); 
+			}
+		}
+
+		public void visitLeave(FunctionInvocationNode node) {
+			newValueCode(node);
+			ParseNode functionNameNode = node.getChildNode_functionName();
+
+			//pass arguments into function
+			ExpressionListNode expressionListNode = (ExpressionListNode) node.getChildNode_expressionList();
+			List<Type> argTypeList = expressionListNode.getChildTypes();
+			
+			
+			//////////////////////////////////////////////
+			for(int i=expressionListNode.nChildren()-1; i >= 0; i--) {
+				ParseNode expressionNode = expressionListNode.child(i);
+				ASMCodeFragment expressionCode = removeValueCode(expressionNode);
+				code.append(expressionCode);
+			}
+			
+			//////////////////////////////////////////////
+			
+			int totalOffset = 0;
+			for(int i=0; i < expressionListNode.nChildren(); i++) {
+				Type type = argTypeList.get(i);
+				totalOffset -= type.getSize();
+				FrameStack.passInParameter(code, totalOffset, type);
+			}
+			
+			
+			//update stack pointer after all local variables were allocated:
+			int offset = -( ((IdentifierNode) functionNameNode).getAllocatedSize() ); 
+			FrameStack.moveStackPointerBy(code, offset);
+			FrameStack.createDynamicLink(code);
+			
+			////////////////////////////////
+			
+			code.append(removeVoidCode(functionNameNode)); //the stack: [... returnAddress]
+			
+			//after function is executed: it comes back here.
+			//stack: [...]
+			Type returnType = functionNameNode.getType(); 
+			if(returnType != PrimitiveType.VOID) {
+				FrameStack.loadReturnValue(code, returnType);
+			}
+		}
+		
 
 		///////////////////////////////////////////////////////////////////////////
 		// statements & declarations & assignments & blockStatements
@@ -1062,11 +1266,38 @@ public class ASMCodeGenerator {
 			code.add(PushI, node.getValue() ? 1 : 0);
 		}
 		public void visit(IdentifierNode node) {
+			if(isFunctionNameBeingDeclared(node) || isParameterBeingDeclared(node)) {
+				return;
+			}
+			if(isFunctionNameBeingInvoked(node)) {
+				newVoidCode(node);
+				String functionStartLabel = node.getFunctionLabel();
+				code.add(Call, functionStartLabel);
+				return;
+			}
+
 			newAddressCode(node);
 			Binding binding = node.getBinding();
-
 			binding.generateAddress(code);
 		}
+		private boolean isFunctionNameBeingDeclared(IdentifierNode node) {
+			ParseNode parent = node.getParent();
+			return (parent instanceof FunctionNode) && (node == ((FunctionNode) parent).getChildNode_functionName());
+		}
+		private boolean isParameterBeingDeclared(IdentifierNode node) {
+			ParseNode parent = node.getParent();
+			return (parent instanceof ParameterSpecificationNode);
+		}
+		private boolean isFunctionNameBeingInvoked(IdentifierNode node) {
+			ParseNode parent = node.getParent();
+			return parent instanceof FunctionInvocationNode;
+		}
+
+
+
+
+
+
 		public void visit(IntegerConstantNode node) {
 			newValueCode(node);
 
@@ -1091,8 +1322,8 @@ public class ASMCodeGenerator {
 			code.add(DataS, node.getValue());
 			code.add(PushD, strAddressLabel);
 		}
-		public void visit(TypeIndicatorNode node) {
-		}
+		public void visit(TypeIndicatorNode node) {}
+		public void visit(VoidReturnTypeNode node) {}
 
 		public void visit(BreakStatementNode node) {
 			if(node.getType() == PrimitiveType.ERROR) {

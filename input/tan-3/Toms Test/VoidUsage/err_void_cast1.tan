@@ -1,0 +1,11 @@
+subr void printXNum(int x) {
+	print '#' \s '$' \s 10;
+	const voo := <void>(10);
+	return;
+}
+
+main {
+	const max := 77;
+	call printXNum(max);
+}
+

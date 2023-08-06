@@ -1,0 +1,30 @@
+
+subr [float] apply([int] a) {
+	const result := new [float](length a);
+	
+	var i := 0;
+	while (i < length a) {
+		[result:i] := pax([a:i], false);
+		i := i + 1;
+	}
+	return result;
+}
+
+subr float pax(int b, bool c) {
+	if (c) {
+	    return 3.14;
+	}
+	return b / 3.0 ;
+}
+
+main {
+	const max := 5;
+	
+	var AA := [1, 3, 5, 7, 11];
+	print AA \n;
+	print apply(AA) \n;	
+	var count := 0;
+	print  \n;
+	
+	print "all done." \n;
+}

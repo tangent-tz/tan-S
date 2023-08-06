@@ -1,0 +1,9 @@
+0 false `
+1 true a
+2 false b
+3 true c
+4 false d
+5 true e
+6 false f
+36 false
+all done.

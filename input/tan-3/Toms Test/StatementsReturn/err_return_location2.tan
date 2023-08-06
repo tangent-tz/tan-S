@@ -1,0 +1,15 @@
+subr void foo(string someString) {
+    print "foo" \n; 
+}
+
+main {
+	const min := 90;
+	const max := 100;
+	
+	var count := min;
+	return;
+	while (count < max) {
+		count := count + 1;
+	}
+	print "done." \n;
+}

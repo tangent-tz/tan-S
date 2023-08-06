@@ -1,0 +1,10 @@
+subr void printNum(void number) {
+	print 10;
+	return;
+}
+
+main {
+	const max := 10;
+	call printNum(max);
+}
+

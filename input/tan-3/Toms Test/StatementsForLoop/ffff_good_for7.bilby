@@ -1,7 +1,0 @@
-main {
-	imm R := <#c..#h>;
-	for(i in R) {
-		print i;
-	}
-	print $n;
-}

@@ -1,0 +1,9 @@
+subr void printNum(int number) {
+	print \s number \n;
+	return;
+}
+
+main {
+	const max := 40;
+	call printNum(max);
+}

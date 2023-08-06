@@ -16,6 +16,10 @@ public class RunTime {
 	public static final String BOOLEAN_FALSE_STRING   = "$boolean-false-string";
 	public static final String EMPTY_STRING 		  = "$empty-string";
 	public static final String GLOBAL_MEMORY_BLOCK    = "$global-memory-block";
+	public static final String FRAME_MEMORY_BLOCK	  = "$frame-memory-block"; 
+	public static final String FRAME_POINTER 		  = "$frame-pointer"; 
+	public static final String STACK_POINTER          = "$stack-pointer"; 
+	public static final String PREV_FRAME_POINTER     = "$prev-frame-pointer"; 
 	public static final String USABLE_MEMORY_START    = "$usable-memory-start";
 	public static final String MAIN_PROGRAM_LABEL     = "$$main";
 	
@@ -24,17 +28,46 @@ public class RunTime {
 	public static final String FLOAT_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$f-divide-by-zero";
 	public static final String ARRAY_NEGATIVE_NUMBER_OF_ELEMENTS = "$$-array-negative-number-of-elements";
 	public static final String ARRAY_INDEX_OUT_OF_BOUNDS = "$$-array-index-out-of-bounds";
+	public static final String MISSING_RETURN_STATEMENT = "$$-missing-return-statement"; 
 
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
 		result.append(MemoryManager.codeForInitialization()); //todo: added this line here by trial and error. And somehow, it works. May need further investigation.
+		result.append(setUpFrameStack());
 		result.append(jumpToMain());
 		result.append(stringsForPrintf());
 		result.append(runtimeErrors());
 		result.add(DLabel, USABLE_MEMORY_START);
 		return result;
 	}
-	
+	// frame stack ------------------------------------------------------
+	private ASMCodeFragment setUpFrameStack() {
+		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
+		code.add(DLabel, RunTime.FRAME_POINTER);
+		code.add(DataZ, 4);
+		code.add(DLabel, RunTime.STACK_POINTER);
+		code.add(DataZ, 4);
+		code.add(DLabel, RunTime.PREV_FRAME_POINTER);
+		code.add(DataZ, 4);
+
+		//initialize frame pointer 
+		code.add(PushD, RunTime.FRAME_POINTER);
+		code.add(Memtop);
+		code.add(StoreI);
+
+		//initialize stack pointer
+		code.add(PushD, RunTime.STACK_POINTER);
+		code.add(Memtop);
+		code.add(StoreI);
+
+		//initialize previous frame pointer 
+		code.add(PushD, RunTime.PREV_FRAME_POINTER);
+		code.add(Memtop);
+		code.add(StoreI);
+
+		return code;
+	}
+
 	private ASMCodeFragment jumpToMain() {
 		ASMCodeFragment frag = new ASMCodeFragment(GENERATES_VOID);
 		frag.add(Jump, MAIN_PROGRAM_LABEL);
@@ -80,6 +113,7 @@ public class RunTime {
 		floatDivideByZeroError(frag);
 		arrayNegativeNumberOfElements(frag);
 		arrayIndexOutOfBounds(frag);
+		missingReturnStatement(frag); 
 		
 		return frag;
 	}
@@ -136,6 +170,16 @@ public class RunTime {
 
 		frag.add(Label, ARRAY_INDEX_OUT_OF_BOUNDS);
 		frag.add(PushD, arrayIndexOutOfBoundsMessage);
+		frag.add(Jump, GENERAL_RUNTIME_ERROR);
+	}
+	private void missingReturnStatement(ASMCodeFragment frag) {
+		String missingReturnStatementMessage = "$errors-missing-function-return-statement";
+
+		frag.add(DLabel, missingReturnStatementMessage);
+		frag.add(DataS, "missing function return statement");
+
+		frag.add(Label, MISSING_RETURN_STATEMENT);
+		frag.add(PushD, missingReturnStatementMessage);
 		frag.add(Jump, GENERAL_RUNTIME_ERROR);
 	}
 	

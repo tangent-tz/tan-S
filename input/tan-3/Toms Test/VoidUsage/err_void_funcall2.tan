@@ -1,0 +1,10 @@
+subr void printXNum(int x, void number) {
+	print "### $" \n x;
+	return;
+}
+
+main {
+	const max := 77;
+	call printXNum(max, max);
+}
+

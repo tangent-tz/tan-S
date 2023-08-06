@@ -1,8 +1,10 @@
 package symbolTable;
 
+import asmCodeGenerator.runtime.RunTime;
 import inputHandler.TextLocation;
 import logging.TanLogger;
 import parseTree.nodeTypes.IdentifierNode;
+import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.types.Type;
 import tokens.Token;
 
@@ -17,14 +19,23 @@ public class Scope {
 	public static Scope createProgramScope() {
 		return new Scope(programScopeAllocator(), nullInstance());
 	}
+	public Scope createParameterScope() {
+		return new Scope(parameterScopeAllocator(), this); 
+	}
 	public Scope createSubscope() {
 		return new Scope(allocator, this);
 	}
 	
+
 	private static MemoryAllocator programScopeAllocator() {
 		return new PositiveMemoryAllocator(
 				MemoryAccessMethod.DIRECT_ACCESS_BASE, 
 				MemoryLocation.GLOBAL_VARIABLE_BLOCK);
+	}
+	private MemoryAllocator parameterScopeAllocator() {
+		return new ParameterMemoryAllocator(
+				MemoryAccessMethod.INDIRECT_ACCESS_BASE,
+				RunTime.FRAME_POINTER);
 	}
 	
 //////////////////////////////////////////////////////////////////////
@@ -75,6 +86,23 @@ public class Scope {
 		MemoryLocation memoryLocation = allocator.allocate(type.getSize());
 		return new Binding(type, textLocation, memoryLocation, lexeme, constancy);
 	}
+	
+	
+	// bindings for functions --------------------------------
+	public Binding createBindingForFunctionIdentifier(IdentifierNode identifierNode, Type type, FunctionSignature functionSignature) {
+		Token token = identifierNode.getToken(); 
+		symbolTable.errorIfAlreadyDefined(token);
+		
+		String lexeme = token.getLexeme(); 
+		Binding binding = allocateNewBindingForFunctionIdentifier(type, token.getLocation(), lexeme, functionSignature); 
+		symbolTable.install(lexeme, binding); 
+		return binding;
+	}
+	private Binding allocateNewBindingForFunctionIdentifier(Type type, TextLocation textLocation, String lexeme, FunctionSignature functionSignature) {
+		MemoryLocation memoryLocation = allocator.allocate(type.getSize()); 
+		return new Binding(type, textLocation, memoryLocation, lexeme, Binding.Constancy.IS_CONSTANT, functionSignature); 
+	}
+	
 	
 ///////////////////////////////////////////////////////////////////////
 //toString

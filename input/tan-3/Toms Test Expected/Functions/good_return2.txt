@@ -1,0 +1,9 @@
+0 false 0.000000
+1 true 0.500000
+2 false 1.000000
+3 true 1.500000
+4 false 2.000000
+5 true 2.500000
+6 false 3.000000
+36 false
+all done.

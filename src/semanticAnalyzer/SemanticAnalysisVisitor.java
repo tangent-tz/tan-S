@@ -35,18 +35,37 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	// constructs larger than statements
 	@Override
 	public void visitEnter(ProgramNode node) {
-		enterProgramScope(node);
+		//do nothing: because we already created the program scope in the first pass. 
 	}
 	public void visitLeave(ProgramNode node) {
 		leaveScope(node);
 	}
+	
+	@Override
+	public void visitEnter(FunctionNode node) {
+		//do nothing: because we already created the function scope in the first pass. 
+	}
+	@Override
+	public void visitLeave(FunctionNode node) {
+		//todo:implement scope for this
+		leaveParameterScope(node);
+	}
+	
+	
+	@Override
+	public void visitEnter(MainFunctionNode node) {
+		//todo:implement scope for this
+		enterSubscope(node);
+	}
+	@Override
+	public void visitLeave(MainFunctionNode node) {
+		//todo:implement scope for this
+		leaveSubScope(node);
+	}
+	
 
 	///////////////////////////////////////////////////////////////////////////
 	// helper methods for scoping.
-	private void enterProgramScope(ParseNode node) {
-		Scope scope = Scope.createProgramScope();
-		node.setScope(scope);
-	}
 	private void enterSubscope(ParseNode node) {
 		Scope baseScope = node.getLocalScope();
 		Scope scope = baseScope.createSubscope();
@@ -58,6 +77,12 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	private void leaveSubScope(ParseNode node) {
 		leaveScope(node);
 	}
+	private void leaveParameterScope(ParseNode node) {
+		//todo: not sure about this!
+		leaveScope(node);
+	}
+	
+	
 	
 	///////////////////////////////////////////////////////////////////////////
 	// statements: declarations, assignmentStatement, blockStatement
@@ -140,6 +165,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 
 	private void typeCheckAssignment_ArrayReference(AssignmentStatementNode node) {
+//		if(node.child(1) instanceof FunctionInvocationNode) {
+//			logError("promotion not allowed for functions");
+//			return;
+//		}
 		List<Type> childTypes = Arrays.asList(node.child(0).getType(), node.child(1).getType());
 
 		TargetableArrayReferenceNode target = (TargetableArrayReferenceNode) (node.child(0));
@@ -148,8 +177,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Type targetType = target.getType();
 		Type expressionType = expression.getType();
 
-		if (!(expressionType.equivalent(targetType))) {
-			if (promotableTypesAssignment(childTypes) != 0) {
+		if (!(expressionType.equivalent(targetType)) ) {
+			if (promotableTypesAssignment(childTypes) != 0 && !(node.child(1) instanceof FunctionInvocationNode)) {
 				if (promotableTypesAssignment(childTypes) == 1) {
 					promoteCharacter(node);
 				} else if (promotableTypesAssignment(childTypes) == 2) {
@@ -165,6 +194,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.setType(targetType);
 	}
 	
+
 
 	// blockStatement
 	@Override
@@ -478,7 +508,80 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.ERROR);
 		}
 	}
-
+	
+	
+	
+	///////////////////////////////////////////////////////////////////////////
+	// functions
+	@Override
+	public void visitLeave(ReturnStatementNode node) {
+		assert(node.nChildren() <= 1); 
+		
+		//1. check to make sure that this return statement is inside some function definition:
+		FunctionNode parentFunction = node.findParentFunctionNode(); 
+		
+		//2. if there exists the parent function for this return statement, then perform type-checking:
+		if(parentFunction == null) {
+			node.setType(PrimitiveType.ERROR);
+			return; 
+		}
+		Type expectedReturnType = parentFunction.getChildNode_returnType().getType();
+		Type actualReturnType = PrimitiveType.VOID; 
+		if(node.nChildren() == 1) {
+			actualReturnType = node.child(0).getType();
+		}
+		
+		if(!expectedReturnType.equivalent(actualReturnType)) {
+			functionReturnTypeCheckError(parentFunction, node, expectedReturnType, actualReturnType);
+			node.setType(PrimitiveType.ERROR);
+			return; 
+		}
+		node.setType(expectedReturnType);
+	}
+	
+	@Override 
+	public void visitLeave(CallStatementNode node) {
+		node.setType(node.child(0).getType());
+	}
+	
+	@Override 
+	public void visitLeave(FunctionInvocationNode node) {
+		// 1. make sure the function exists (already handled by visit(IdentifierNode))
+		IdentifierNode functionIdentifier = (IdentifierNode) node.getChildNode_functionName();
+		if(functionIdentifier.getType().equivalent(PrimitiveType.ERROR)) {
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
+		
+		// 2. make sure the function is visible (not being shadowed)
+		FunctionSignature functionSignature = functionIdentifier.getBinding().getFunctionSignature();
+		if(functionSignature == FunctionSignature.nullInstance()) {
+			functionDoesNotExistError(functionIdentifier);
+			node.setType(PrimitiveType.ERROR);
+			return; 
+		}
+		
+		// 3. type-check: make sure argument types match the parameter types
+		List<Type> argTypes = ((ExpressionListNode) node.getChildNode_expressionList()).getChildTypes(); 
+		if(!functionSignature.accepts(argTypes)) {
+			functionParametersTypeCheckError(functionIdentifier, argTypes);
+			node.setType(PrimitiveType.ERROR);
+			return; 
+		}
+		node.setType(functionSignature.resultType().concreteType());
+	}
+	
+	@Override
+	public void visitLeave(ExpressionListNode node) {
+		List<Type> argTypes = new ArrayList<>(); 
+		for(ParseNode child: node.getChildren()) {
+			argTypes.add(child.getType()); 
+		}
+		node.setChildTypes(argTypes);
+	}
+	
+	
+	
 
 	///////////////////////////////////////////////////////////////////////////
 	// simple leaf nodes
@@ -556,9 +659,28 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		identifierNode.setBinding(binding);
 	}
 	
+	
+	
+	
+	
+	
 	///////////////////////////////////////////////////////////////////////////
 	// error logging/printing
-
+	private void functionParametersTypeCheckError(ParseNode functionIdentifier, List<Type> actualTypes) {
+		Token functionNameToken = functionIdentifier.getToken(); 
+		logError("function '" + functionNameToken.getLexeme() + "' not defined for types " + actualTypes + " at " + functionNameToken.getLocation());
+	}
+	
+	private void functionDoesNotExistError(ParseNode node) {
+		Token functionNameToken = node.getToken(); 
+		logError("function '" + functionNameToken.getLexeme() + "' does not exist, currently being invoked at: " + functionNameToken.getLocation());
+	}
+	
+	private void functionReturnTypeCheckError(FunctionNode node, ReturnStatementNode returnNode, Type expectedReturnType, Type actualReturnType) {
+		String functionNameString = node.getChildNode_functionName().getToken().getLexeme();
+		logError("function '" + functionNameString + "' should have " + expectedReturnType.infoString() + " return type; but currently returning " + actualReturnType.infoString() + " type, at: " + returnNode.getToken().getLocation());
+	}
+	
 	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
 		Token token = node.getToken();
 		if (token.isLextant(Punctuator.CAST)) {

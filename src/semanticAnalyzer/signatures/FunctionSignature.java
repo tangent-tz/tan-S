@@ -30,6 +30,12 @@ public class FunctionSignature {
 		this.whichVariant = whichVariant;
 		findTypeVariables();
 	}
+	public FunctionSignature(Type[] paramTypes, Type returnType) {
+		this.paramTypes = paramTypes; 
+		this.resultType = returnType; 
+		this.whichVariant = 1; 
+		findTypeVariables();
+	}
 	private void storeParamTypes(Type[] types) {
 		paramTypes = new Type[types.length-1];
 		for(int i=0; i<types.length-1; i++) {

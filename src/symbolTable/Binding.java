@@ -2,6 +2,7 @@ package symbolTable;
 
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import inputHandler.TextLocation;
+import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 
@@ -15,6 +16,9 @@ public class Binding {
 		IS_VARIABLE,
 	}
 	private Constancy constancy;
+	private FunctionSignature functionSignature;
+	private String functionLabel;
+	private int allocatedSizeForFunction; 
 
 
 	
@@ -25,6 +29,19 @@ public class Binding {
 		this.memoryLocation = memoryLocation;
 		this.lexeme = lexeme;
 		this.constancy = constancy;
+		this.functionSignature = FunctionSignature.nullInstance();
+		this.allocatedSizeForFunction = -1;
+	}
+
+	public Binding(Type type, TextLocation location, MemoryLocation memoryLocation, String lexeme, Constancy constancy, FunctionSignature functionSignature) {
+		super();
+		this.type = type;
+		this.textLocation = location;
+		this.memoryLocation = memoryLocation;
+		this.lexeme = lexeme;
+		this.constancy = constancy;
+		this.functionSignature = functionSignature;
+		this.allocatedSizeForFunction = -1;
 	}
 	
 
@@ -51,6 +68,21 @@ public class Binding {
 	}
 	public boolean isConstant() {
 		return constancy == Constancy.IS_CONSTANT;
+	}
+	public FunctionSignature getFunctionSignature() {
+		return this.functionSignature; 
+	}
+	public void setFunctionLabel(String label) {
+		this.functionLabel = label;
+	}
+	public String getFunctionLabel() {
+		return functionLabel;
+	}
+	public void setAllocatedSize(int size) {
+		this.allocatedSizeForFunction = size; 
+	}
+	public int getAllocatedSize() {
+		return allocatedSizeForFunction; 
 	}
 	
 ////////////////////////////////////////////////////////////////////////////////////

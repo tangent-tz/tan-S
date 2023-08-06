@@ -1,0 +1,21 @@
+subr void holler([int] m) {
+	print m \n;
+	const limit := 4;
+	
+	var n := 0;
+	while (n < limit) {
+		print "Yoo hoo!!!!" \n;
+		n := n + 1;
+	}
+	
+	return;
+}
+
+main {
+	call holler( [1, 2, 3, 4] );
+	
+	var m := 0.34;
+	call holler( [11, 22, 33, 44] );
+	
+	print "all done." \n;
+}

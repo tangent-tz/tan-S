@@ -1,0 +1,27 @@
+subr void sequence(int startingNumber) {
+	print \n;
+	
+	var num := startingNumber;
+	print num \n;
+	while (num != 1) {
+		num := num / 2;
+		if(num == 8) {
+			break;
+		}
+		print num \n;
+	}
+	print num \n;
+	return;
+}
+
+main {
+	const min := 10;
+	const max := 20;
+	
+	var count := min;
+	while (count < max) {
+		call sequence(count);
+		count := count + 1;
+	}
+	print "done." \n;
+}
