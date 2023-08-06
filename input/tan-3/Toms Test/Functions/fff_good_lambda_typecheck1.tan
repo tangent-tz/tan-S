@@ -1,8 +1,7 @@
-
-func [float] apply ([int] a, <int> r){
-	imm result := alloc [float](length a);
+subr [float] apply ([int] a, <int> r){
+	const result := alloc [float](length a);
 	
-	mut i := 0;
+	var i := 0;
 	while (i < length a) {
 		result[i] := pax(a[i]);
 		i := i + 1;
@@ -10,7 +9,7 @@ func [float] apply ([int] a, <int> r){
 	return result;
 }
 
-func float pax(int b) {
+subr float pax(int b) {
 	if (b < 4) {
 	    return 3.14;
 	}
@@ -18,13 +17,13 @@ func float pax(int b) {
 }
 
 main {
-	imm max := 5;
+	const max := 5;
 	
-	mut AA := [1, 3, 5, 7, 11];
-	print AA $n;
-	print apply(AA, <1..11>) $n;	
-	mut count := 0;
-	print  $n;
+	var AA := [1, 3, 5, 7, 11];
+	print AA \n;
+	print apply(AA, <1..11>) \n;
+	var count := 0;
+	print  \n;
 	
-	print "all done." $n;
+	print "all done." \n;
 }
