@@ -28,6 +28,7 @@ public class RunTime {
 	public static final String FLOAT_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$f-divide-by-zero";
 	public static final String ARRAY_NEGATIVE_NUMBER_OF_ELEMENTS = "$$-array-negative-number-of-elements";
 	public static final String ARRAY_INDEX_OUT_OF_BOUNDS = "$$-array-index-out-of-bounds";
+	public static final String MISSING_RETURN_STATEMENT = "$$-missing-return-statement"; 
 
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
@@ -112,6 +113,7 @@ public class RunTime {
 		floatDivideByZeroError(frag);
 		arrayNegativeNumberOfElements(frag);
 		arrayIndexOutOfBounds(frag);
+		missingReturnStatement(frag); 
 		
 		return frag;
 	}
@@ -168,6 +170,16 @@ public class RunTime {
 
 		frag.add(Label, ARRAY_INDEX_OUT_OF_BOUNDS);
 		frag.add(PushD, arrayIndexOutOfBoundsMessage);
+		frag.add(Jump, GENERAL_RUNTIME_ERROR);
+	}
+	private void missingReturnStatement(ASMCodeFragment frag) {
+		String missingReturnStatementMessage = "$errors-missing-function-return-statement";
+
+		frag.add(DLabel, missingReturnStatementMessage);
+		frag.add(DataS, "missing function return statement");
+
+		frag.add(Label, MISSING_RETURN_STATEMENT);
+		frag.add(PushD, missingReturnStatementMessage);
 		frag.add(Jump, GENERAL_RUNTIME_ERROR);
 	}
 	

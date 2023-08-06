@@ -29,4 +29,6 @@ main {
 		
 		call printFiboLine(n, thisFib);
 	}
+	
+	print "all done." \n;
 }

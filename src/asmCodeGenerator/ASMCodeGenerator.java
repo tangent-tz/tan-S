@@ -346,19 +346,21 @@ public class ASMCodeGenerator {
 			FrameStack.saveReturnAddress(code);
 			code.append(functionBodyCode);
 			
-//			if(node.getChildNode_returnType().getType() != PrimitiveType.VOID) {
-//				// stack: [... returnValue]
-//				FrameStack.loadReturnAddress(code);        //stack: [... returnValue, returnAddress]
-//				code.add(Exchange);                        //stack: [...  returnAddress, returnValue]
-//
-//				FrameStack.restorePointers(code);
-//				FrameStack.saveReturnValue(code, returnType);    //stack: [... returnAddress]
-//			} else {
-//				//stack: [...]
-//				FrameStack.loadReturnAddress(code);			//stack: [... returnAddress]
-//				FrameStack.restorePointers(code);
-//			}
 			
+			//if we reach this point, meaning we did not reach any return statement in the function body
+			//this can only be 2 cases:
+			if(node.getChildNode_returnType().getType() != PrimitiveType.VOID) {
+				//the function fails to return any value even though it is not a void function, so we throw runtime error:
+				// stack: [...]
+				code.add(Jump, RunTime.MISSING_RETURN_STATEMENT);
+			} else {
+				//the function is indeed a void function as expected, so we proceed with the return protocol:
+				//stack: [...]
+				FrameStack.loadReturnAddress(code);			//stack: [... returnAddress]
+				FrameStack.restorePointers(code);
+			}
+			
+			//the default 'Return' opcode is appended in the functionASM() above already!
 		}
 		
 

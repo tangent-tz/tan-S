@@ -28,4 +28,6 @@ main {
 		prevFib := prevHolder;
 		call printFiboLine(n, thisFib);
 	}
+	
+	print "all done." \n;
 }
