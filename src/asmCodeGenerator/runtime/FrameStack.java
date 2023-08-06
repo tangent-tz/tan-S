@@ -27,6 +27,8 @@ public class FrameStack {
           code.add(Add);
           code.append(expressionCode);
           code.add(opcodeForStore(type));
+
+          updateTempFramePointer(code);
      }
      
      public static void moveStackPointerBy(ASMCodeFragment code, int size) {
@@ -72,7 +74,7 @@ public class FrameStack {
           code.add(StoreI);
           moveStackPointerBy(code, -SIZE_RETURN_ADDRESS);
           
-          updateTempFramePointer(code); 
+          //updateTempFramePointer(code); 
      }
      
      private static void updateTempFramePointer(ASMCodeFragment code) {
@@ -88,16 +90,16 @@ public class FrameStack {
           
           moveStackPointerBy(code, SIZE_RETURN_ADDRESS);
      }
-     public static void restorePointers(ASMCodeFragment code, int totalSize) {
+     public static void restorePointers(ASMCodeFragment code) {
           //restore frame pointer
-          //todo: re-assign frame pointer
           code.add(PushD, FRAME_POINTER); 
           loadDynamicLink(code); 
           code.add(StoreI); 
           
-          
           //restore stack pointer
-          moveStackPointerBy(code, totalSize);
+          code.add(PushD, STACK_POINTER); 
+          loadIFrom(code, TEMP_FRAME_POINTER);
+          code.add(StoreI); 
           
           //todo:reset tempFP to point to the top of the latest frame
           code.add(PushD, TEMP_FRAME_POINTER); 

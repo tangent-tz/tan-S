@@ -11,7 +11,7 @@ subr void sequence(int startingNumber) {
 	print \n;
 	
 	var num := startingNumber;
-	while (num != 1) {
+	while (num > 1) {
 		print num \s;
 		num := syracuse(num);
 	}
@@ -20,13 +20,7 @@ subr void sequence(int startingNumber) {
 }
 
 main {
-	const min := 90;
-	const max := 100;
-	
-	var count := min;
-	while (count < max) {
-		call sequence(count);
-		count := count + 1;
-	}
+    call sequence(10);
+    
 	print "done." \n;
 }

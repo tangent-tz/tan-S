@@ -110,32 +110,32 @@ public class ASMCodeGenerator {
 	}
 
 	// frame stack ------------------------------------------------------
-	private ASMCodeFragment setUpFrameStack() {
-		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
-		code.add(DLabel, RunTime.FRAME_POINTER); 
-		code.add(DataZ, 4); 
-		code.add(DLabel, RunTime.STACK_POINTER); 
-		code.add(DataZ, 4); 
-		code.add(DLabel, RunTime.PREV_FRAME_POINTER); 
-		code.add(DataZ, 4); 
-		
-		//initialize frame pointer 
-		code.add(PushD, RunTime.FRAME_POINTER); 
-		code.add(Memtop); 
-		code.add(StoreI); 
-		
-		//initialize stack pointer
-		code.add(PushD, RunTime.STACK_POINTER); 
-		code.add(Memtop); 
-		code.add(StoreI);
-		
-		//initialize previous frame pointer 
-		code.add(PushD, RunTime.PREV_FRAME_POINTER);
-		code.add(Memtop);
-		code.add(StoreI); 
-		
-		return code; 
-	}
+//	private ASMCodeFragment setUpFrameStack() {
+//		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
+//		code.add(DLabel, RunTime.FRAME_POINTER); 
+//		code.add(DataZ, 4); 
+//		code.add(DLabel, RunTime.STACK_POINTER); 
+//		code.add(DataZ, 4); 
+//		code.add(DLabel, RunTime.PREV_FRAME_POINTER); 
+//		code.add(DataZ, 4); 
+//		
+//		//initialize frame pointer 
+//		code.add(PushD, RunTime.FRAME_POINTER); 
+//		code.add(Memtop); 
+//		code.add(StoreI); 
+//		
+//		//initialize stack pointer
+//		code.add(PushD, RunTime.STACK_POINTER); 
+//		code.add(Memtop); 
+//		code.add(StoreI);
+//		
+//		//initialize previous frame pointer 
+//		code.add(PushD, RunTime.PREV_FRAME_POINTER);
+//		code.add(Memtop);
+//		code.add(StoreI); 
+//		
+//		return code; 
+//	}
 	
 	
 	// main ASM ------------------------------------------------------
@@ -335,8 +335,7 @@ public class ASMCodeGenerator {
 			newVoidCode(node);
 			
 			String functionStartLabel = node.getASMLabel();
-			Type returnType = node.getChildNode_returnType().getType(); 
-			int totalByteConsumption = node.getAllocatedSize(); 
+			Type returnType = node.getChildNode_returnType().getType();
 			////////////////////////
 
 			ParseNode functionBodyNode = node.getChildNode_functionBody();
@@ -347,18 +346,18 @@ public class ASMCodeGenerator {
 			FrameStack.saveReturnAddress(code);
 			code.append(functionBodyCode);
 			
-			if(node.getChildNode_returnType().getType() != PrimitiveType.VOID) {
-				// stack: [... returnValue]
-				FrameStack.loadReturnAddress(code);        //stack: [... returnValue, returnAddress]
-				code.add(Exchange);                        //stack: [...  returnAddress, returnValue]
-
-				FrameStack.restorePointers(code, totalByteConsumption);
-				FrameStack.saveReturnValue(code, returnType);    //stack: [... returnAddress]
-			} else {
-				//stack: [...]
-				FrameStack.loadReturnAddress(code);			//stack: [... returnAddress]
-				FrameStack.restorePointers(code, totalByteConsumption);
-			}
+//			if(node.getChildNode_returnType().getType() != PrimitiveType.VOID) {
+//				// stack: [... returnValue]
+//				FrameStack.loadReturnAddress(code);        //stack: [... returnValue, returnAddress]
+//				code.add(Exchange);                        //stack: [...  returnAddress, returnValue]
+//
+//				FrameStack.restorePointers(code);
+//				FrameStack.saveReturnValue(code, returnType);    //stack: [... returnAddress]
+//			} else {
+//				//stack: [...]
+//				FrameStack.loadReturnAddress(code);			//stack: [... returnAddress]
+//				FrameStack.restorePointers(code);
+//			}
 			
 		}
 		
@@ -366,12 +365,28 @@ public class ASMCodeGenerator {
 		public void visitLeave(CallStatementNode node) {
 			newVoidCode(node);
 			code.append(removeValueCode(node.child(0)));
+			Type returnType = node.child(0).getType(); 
+			if(returnType != PrimitiveType.VOID) {
+				code.add(Pop);
+			}
 		}
 		public void visitLeave(ReturnStatementNode node) {
 			newVoidCode(node);
 			if(node.nChildren() == 1) {
 				ASMCodeFragment returnedExpression = removeValueCode(node.child(0));
 				code.append(returnedExpression);
+				// stack: [... returnValue]
+				FrameStack.loadReturnAddress(code);        //stack: [... returnValue, returnAddress]
+				code.add(Exchange);                        //stack: [...  returnAddress, returnValue]
+
+				FrameStack.restorePointers(code);
+				FrameStack.saveReturnValue(code, node.getType());    //stack: [... returnAddress]
+				code.add(Return);
+			} else {
+				//stack: [...]
+				FrameStack.loadReturnAddress(code);			//stack: [... returnAddress]
+				FrameStack.restorePointers(code);
+				code.add(Return); 
 			}
 		}
 

@@ -1,5 +1,4 @@
 
-
 subr int syrup (int number) {
 	var habanero := 0.25;
 	if(number / 2 == 0) {
