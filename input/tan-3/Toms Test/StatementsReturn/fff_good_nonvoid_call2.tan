@@ -1,14 +1,14 @@
 subr [int] giveNum (int number) {
 	if((number / 2)*2 == number) {
-		return [number / 2];
+		return number / 2;
 	} 
 	else {
-		return [3 * number + 1];
+		return 3 * number + 1;
 	}
 }
 
 main {
-	const max := 800000;
+	const max := 800;
 	
 	var count := 10;
 	while (count < max) {

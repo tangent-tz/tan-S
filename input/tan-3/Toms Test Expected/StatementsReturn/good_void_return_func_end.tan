@@ -16,7 +16,6 @@ subr void sequence(int startingNumber) {
 		num := syracuse(num);
 	}
 	print num \n;
-	return;
 }
 
 main {
