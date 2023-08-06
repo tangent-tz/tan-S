@@ -8,7 +8,7 @@ subr [int] giveNum (int number) {
 }
 
 main {
-	const max := 800000;
+	const max := 80000;
 	
 	var count := 10;
 	while (count < max) {

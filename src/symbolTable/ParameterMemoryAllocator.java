@@ -59,13 +59,13 @@ public class ParameterMemoryAllocator implements MemoryAllocator {
         int bookmarkIndex = bookmarks.size()-1;
         currentOffset = (int) bookmarks.remove(bookmarkIndex);
         
-//        if(bookmarks.size() == 0) {
+        if(bookmarks.size() == 0) {
 //            int allocatedSize = getMaxAllocatedSize();
 //            for(MemoryLocation location : allocatedLocations) {
-//                location.adjustOffset(allocatedSize); 
+//                location.adjustOffset(allocatedSize);
 //            }
-//            // Clear the list of MemoryLocations for the next state
-//            allocatedLocations.clear();
-//        }
+            // Clear the list of MemoryLocations for the next state
+            allocatedLocations.clear();
+        }
     }
 }
