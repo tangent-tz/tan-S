@@ -1,0 +1,9 @@
+0 false ab
+1 true bc
+2 false cd
+3 true de
+4 false ef
+5 true fg
+6 false gh
+36 false
+all done.

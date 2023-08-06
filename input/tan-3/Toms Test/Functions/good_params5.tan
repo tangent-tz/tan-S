@@ -3,7 +3,7 @@ subr void holler(char c) {
 	
 	var n := 0;
 	
-	while (n < c - <int>(%000)) {
+	while (n < c - <int>(%140)) {
 		print "Yoo hoo!!!!" \n;
 		n := n + 1;
 	}
@@ -11,10 +11,10 @@ subr void holler(char c) {
 }
 
 main {
-	call holler( %004 );
+	call holler( %144 );
 	
 	var m := 0.34;
-	call holler( %002 );
+	call holler( %142 );
 	
 	print "all done." \n;
 }
