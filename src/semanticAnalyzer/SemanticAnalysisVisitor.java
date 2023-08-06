@@ -165,6 +165,10 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 
 	private void typeCheckAssignment_ArrayReference(AssignmentStatementNode node) {
+//		if(node.child(1) instanceof FunctionInvocationNode) {
+//			logError("promotion not allowed for functions");
+//			return;
+//		}
 		List<Type> childTypes = Arrays.asList(node.child(0).getType(), node.child(1).getType());
 
 		TargetableArrayReferenceNode target = (TargetableArrayReferenceNode) (node.child(0));
@@ -173,8 +177,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Type targetType = target.getType();
 		Type expressionType = expression.getType();
 
-		if (!(expressionType.equivalent(targetType))) {
-			if (promotableTypesAssignment(childTypes) != 0) {
+		if (!(expressionType.equivalent(targetType)) ) {
+			if (promotableTypesAssignment(childTypes) != 0 && !(node.child(1) instanceof FunctionInvocationNode)) {
 				if (promotableTypesAssignment(childTypes) == 1) {
 					promoteCharacter(node);
 				} else if (promotableTypesAssignment(childTypes) == 2) {
