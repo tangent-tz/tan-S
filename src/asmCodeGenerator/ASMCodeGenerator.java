@@ -401,20 +401,22 @@ public class ASMCodeGenerator {
 			List<Type> argTypeList = expressionListNode.getChildTypes();
 			
 			
+			//////////////////////////////////////////////
+			for(int i=expressionListNode.nChildren()-1; i >= 0; i--) {
+				ParseNode expressionNode = expressionListNode.child(i);
+				ASMCodeFragment expressionCode = removeValueCode(expressionNode);
+				code.append(expressionCode);
+			}
 			
 			//////////////////////////////////////////////
 			
 			int totalOffset = 0;
 			for(int i=0; i < expressionListNode.nChildren(); i++) {
-				ParseNode expressionNode = expressionListNode.child(i);
-				ASMCodeFragment expressionCode = removeValueCode(expressionNode);
 				Type type = argTypeList.get(i);
 				totalOffset -= type.getSize();
-				FrameStack.passInParameter(code, totalOffset, type, expressionCode);
+				FrameStack.passInParameter(code, totalOffset, type);
 			}
-
-			//entrance for nested function
-			//FrameStack.performEntranceHandshake(code);
+			
 			
 			//update stack pointer after all local variables were allocated:
 			int offset = -( ((IdentifierNode) functionNameNode).getAllocatedSize() ); 

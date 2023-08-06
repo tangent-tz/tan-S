@@ -20,12 +20,12 @@ public class FrameStack {
      private static int count = 0; 
      
      
-     public static void passInParameter(ASMCodeFragment code, int totalOffset, Type type, ASMCodeFragment expressionCode) {
+     public static void passInParameter(ASMCodeFragment code, int totalOffset, Type type) {
           code.add(PushD, STACK_POINTER);
           code.add(LoadI);
           code.add(PushI, totalOffset);
           code.add(Add);
-          code.append(expressionCode);
+          code.add(Exchange);
           code.add(opcodeForStore(type));
 
           updateTempFramePointer(code);
